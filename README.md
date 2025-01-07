@@ -206,6 +206,7 @@ Error Response:
     }
     ```
 
+
 ## PROVIDER ENDPOINTS
 
 ### Create Provider Profile
