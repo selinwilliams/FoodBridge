@@ -266,6 +266,136 @@ Error Response:
     }
     ```
 
+### Get All Providers
+
+Returns all providers.
+
+Require Authentication: true
+
+Request:
+- Method: GET
+- URL: /api/providers
+- Query Parameters:
+    - business_type (optional): Filter by type
+    - page (optional): Page number
+    - per_page (optional): Items per page
+
+Successful Response:
+- Status Code: 200
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "providers": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "business_name": "Fresh Foods Market",
+          "address": "123 Main St",
+          "business_type": "restaurant",
+          "latitude": 37.7749,
+          "longitude": -122.4194,
+          "created_at": "2024-03-15T10:00:00Z"
+        }
+      ],
+      "page": 1,
+      "total_pages": 5
+    }
+    ```
+
+### Get Single Provider
+
+Returns details of a specific provider.
+
+Require Authentication: true
+
+Request:
+- Method: GET
+- URL: /api/providers/:id
+
+Successful Response:
+- Status Code: 200
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "id": 1,
+      "user_id": 1,
+      "business_name": "Fresh Foods Market",
+      "address": "123 Main St",
+      "business_type": "restaurant",
+      "latitude": 37.7749,
+      "longitude": -122.4194,
+      "created_at": "2024-03-15T10:00:00Z"
+    }
+    ```
+
+### Update Provider
+
+Updates an existing provider profile.
+
+Require Authentication: true
+Authorization: Provider owner only
+
+Request:
+- Method: PUT
+- URL: /api/providers/:id
+- Headers:
+    - Content-Type: application/json
+    - Authorization: Bearer <token>
+- Body:
+    ```json
+    {
+      "business_name": "Fresh Foods Market Updated",
+      "address": "124 Main St",
+      "business_type": "grocery"
+    }
+    ```
+
+Successful Response:
+- Status Code: 200
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "id": 1,
+      "user_id": 1,
+      "business_name": "Fresh Foods Market Updated",
+      "address": "124 Main St",
+      "business_type": "grocery",
+      "latitude": 37.7749,
+      "longitude": -122.4194,
+      "updated_at": "2024-03-15T11:00:00Z"
+    }
+    ```
+
+### Delete Provider
+
+Deletes an existing provider profile.
+
+Require Authentication: true
+Authorization: Provider owner only
+
+Request:
+- Method: DELETE
+- URL: /api/providers/:id
+- Headers:
+    - Authorization: Bearer <token>
+
+Successful Response:
+- Status Code: 200
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "message": "Successfully deleted provider profile"
+    }
+    ```
+
 ## FOOD LISTING ENDPOINTS
 
 ### Create Food Listing
@@ -514,37 +644,6 @@ Error Response:
       "message": "Food listing couldn't be found"
     }
     ```
-
-## Development
-
-### Running Tests
-```bash
-# Backend tests
-pytest
-
-# Frontend tests
-npm test
-```
-
-### Code Style
-We follow:
-- PEP 8 for Python
-- Airbnb JavaScript Style Guide
-
-## Deployment
-
-Detailed deployment guides for:
-- Render
-- Heroku
-- AWS
-
-## License
-
-MIT License - see LICENSE.md
-
-## Support
-- Email: support@foodbridge.com
-- Documentation: docs.foodbridge.com
 
 ## RESERVATION ENDPOINTS
 
@@ -1018,28 +1117,30 @@ Error Response:
     }
     ```
 
-## IMPACT METRICS ENDPOINTS
+## DONATION TAX RECORDS ENDPOINTS
 
-### Create Impact Metric
+### Create Tax Record
 
-Creates a new impact metric entry.
+Creates a new donation tax record.
 
 Require Authentication: true
 Authorization: Provider only
 
 Request:
 - Method: POST
-- URL: /api/metrics
+- URL: /api/tax-records
 - Headers:
     - Content-Type: application/json
     - Authorization: Bearer <token>
 - Body:
     ```json
     {
-      "provider_id": 1,
-      "food_weight": 100.5,
-      "estimated_meals": 120,
-      "date": "2024-03-15"
+      "listing_id": 1,
+      "donation_date": "2024-03-15",
+      "food_value": 500.00,
+      "tax_deduction_amount": 250.00,
+      "tax_year": 2024,
+      "receipt_number": "DON-2024-001"
     }
     ```
 
@@ -1052,9 +1153,12 @@ Successful Response:
     {
       "id": 1,
       "provider_id": 1,
-      "food_weight": 100.5,
-      "estimated_meals": 120,
-      "date": "2024-03-15",
+      "listing_id": 1,
+      "donation_date": "2024-03-15",
+      "food_value": 500.00,
+      "tax_deduction_amount": 250.00,
+      "tax_year": 2024,
+      "receipt_number": "DON-2024-001",
       "created_at": "2024-03-15T10:00:00Z"
     }
     ```
@@ -1068,23 +1172,25 @@ Error Response:
     {
       "message": "Validation error",
       "errors": {
-        "food_weight": "Food weight must be greater than 0",
-        "estimated_meals": "Estimated meals must be greater than 0"
+        "listing_id": "Listing must exist",
+        "food_value": "Food value must be greater than 0",
+        "tax_year": "Tax year is required"
       }
     }
     ```
 
-### Get Impact Metrics
+### Get Tax Records
 
-Returns impact metrics with optional filtering.
+Returns donation tax records with optional filtering.
 
 Require Authentication: true
+Authorization: Provider owner only
 
 Request:
 - Method: GET
-- URL: /api/metrics
+- URL: /api/tax-records
 - Query Parameters:
-    - provider_id (optional): Filter by provider
+    - tax_year (optional): Filter by tax year
     - start_date (optional): Filter from date
     - end_date (optional): Filter to date
     - page (optional): Page number
@@ -1097,46 +1203,96 @@ Successful Response:
 - Body:
     ```json
     {
-      "metrics": [
+      "records": [
         {
           "id": 1,
           "provider_id": 1,
-          "food_weight": 100.5,
-          "estimated_meals": 120,
-          "date": "2024-03-15",
+          "listing_id": 1,
+          "donation_date": "2024-03-15",
+          "food_value": 500.00,
+          "tax_deduction_amount": 250.00,
+          "tax_year": 2024,
+          "receipt_number": "DON-2024-001",
           "created_at": "2024-03-15T10:00:00Z",
-          "provider": {
-            "business_name": "Fresh Foods Market"
+          "listing": {
+            "title": "Fresh Produce"
           }
         }
       ],
-      "totals": {
-        "total_weight": 1500.75,
-        "total_meals": 1800
+      "summary": {
+        "total_donations": 5000.00,
+        "total_deductions": 2500.00,
+        "donation_count": 10
       },
       "page": 1,
       "total_pages": 5
     }
     ```
 
-### Update Impact Metric
+### Get Single Tax Record
 
-Updates an existing impact metric entry.
+Returns details of a specific tax record.
 
 Require Authentication: true
-Authorization: Provider owner or Admin
+Authorization: Provider owner only
+
+Request:
+- Method: GET
+- URL: /api/tax-records/:id
+
+Successful Response:
+- Status Code: 200
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "id": 1,
+      "provider_id": 1,
+      "listing_id": 1,
+      "donation_date": "2024-03-15",
+      "food_value": 500.00,
+      "tax_deduction_amount": 250.00,
+      "tax_year": 2024,
+      "receipt_number": "DON-2024-001",
+      "created_at": "2024-03-15T10:00:00Z",
+      "listing": {
+        "title": "Fresh Produce",
+        "description": "Assorted vegetables"
+      }
+    }
+    ```
+
+Error Response:
+- Status Code: 404
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "message": "Tax record couldn't be found"
+    }
+    ```
+
+### Update Tax Record
+
+Updates an existing tax record.
+
+Require Authentication: true
+Authorization: Provider owner only
 
 Request:
 - Method: PUT
-- URL: /api/metrics/:id
+- URL: /api/tax-records/:id
 - Headers:
     - Content-Type: application/json
     - Authorization: Bearer <token>
 - Body:
     ```json
     {
-      "food_weight": 110.5,
-      "estimated_meals": 130
+      "food_value": 550.00,
+      "tax_deduction_amount": 275.00,
+      "receipt_number": "DON-2024-001-REV"
     }
     ```
 
@@ -1149,49 +1305,52 @@ Successful Response:
     {
       "id": 1,
       "provider_id": 1,
-      "food_weight": 110.5,
-      "estimated_meals": 130,
-      "date": "2024-03-15",
+      "listing_id": 1,
+      "donation_date": "2024-03-15",
+      "food_value": 550.00,
+      "tax_deduction_amount": 275.00,
+      "tax_year": 2024,
+      "receipt_number": "DON-2024-001-REV",
       "updated_at": "2024-03-15T11:00:00Z"
     }
     ```
 
-## ALLERGEN ALERTS ENDPOINTS
+### Delete Tax Record
 
-### Create Allergen Alert
-
-Creates a new allergen alert for a user.
+Deletes an existing tax record.
 
 Require Authentication: true
+Authorization: Provider owner only
 
 Request:
-- Method: POST
-- URL: /api/allergens/alerts
+- Method: DELETE
+- URL: /api/tax-records/:id
 - Headers:
-    - Content-Type: application/json
     - Authorization: Bearer <token>
-- Body:
-    ```json
-    {
-      "allergen_name": "peanuts"
-    }
-    ```
 
 Successful Response:
-- Status Code: 201
+- Status Code: 200
 - Headers:
     - Content-Type: application/json
 - Body:
     ```json
     {
-      "id": 1,
-      "user_id": 1,
-      "allergen_name": "peanuts",
-      "created_at": "2024-03-15T10:00:00Z"
+      "message": "Successfully deleted tax record"
     }
     ```
 
-### Get User's Allergen Alerts
+Error Response:
+- Status Code: 404
+- Headers:
+    - Content-Type: application/json
+- Body:
+    ```json
+    {
+      "message": "Tax record couldn't be found"
+    }
+    ```
+
+### Get All Allergen Alerts
 
 Returns all allergen alerts for the authenticated user.
 
@@ -1214,181 +1373,28 @@ Successful Response:
           "user_id": 1,
           "allergen_name": "peanuts",
           "created_at": "2024-03-15T10:00:00Z"
-        },
-        {
-          "id": 2,
-          "user_id": 1,
-          "allergen_name": "dairy",
-          "created_at": "2024-03-15T10:00:00Z"
         }
       ]
     }
     ```
 
-### Check Food Listing Allergens
+### Update Allergen Alert
 
-Checks if a food listing contains any allergens that match the user's alerts.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/allergens/check/:listing_id
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "has_matches": true,
-      "matching_allergens": ["peanuts"],
-      "listing_id": 1,
-      "listing_title": "Mixed Nuts Package"
-    }
-    ```
-
-### Delete Allergen Alert
-
-Deletes an allergen alert.
+Updates an existing allergen alert.
 
 Require Authentication: true
 Authorization: Alert owner only
 
 Request:
-- Method: DELETE
+- Method: PUT
 - URL: /api/allergens/alerts/:id
 - Headers:
-    - Authorization: Bearer <token>
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Successfully deleted allergen alert"
-    }
-    ```
-
-Error Response:
-- Status Code: 404
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Allergen alert not found"
-    }
-    ```
-
-## PROVIDER ENDPOINTS
-
-### Get All Providers
-
-Returns a list of all providers.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/providers
-- Query Parameters:
-    - business_type (optional): Filter by type (restaurant, grocery, farm)
-    - latitude (optional): Center latitude for proximity search
-    - longitude (optional): Center longitude for proximity search
-    - radius (optional): Search radius in kilometers
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "providers": [
-        {
-          "id": 1,
-          "user_id": 1,
-          "business_name": "Fresh Foods Market",
-          "address": "123 Main St",
-          "latitude": 37.7749,
-          "longitude": -122.4194,
-          "business_type": "grocery",
-          "created_at": "2024-03-15T10:00:00Z",
-          "user": {
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone": "123-456-7890"
-          }
-        }
-      ]
-    }
-    ```
-
-### Get Provider Details
-
-Returns details of a specific provider.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/providers/:id
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "id": 1,
-      "user_id": 1,
-      "business_name": "Fresh Foods Market",
-      "address": "123 Main St",
-      "latitude": 37.7749,
-      "longitude": -122.4194,
-      "business_type": "grocery",
-      "created_at": "2024-03-15T10:00:00Z",
-      "user": {
-        "first_name": "John",
-        "last_name": "Doe",
-        "phone": "123-456-7890"
-      },
-      "active_listings": [
-        {
-          "id": 1,
-          "title": "Fresh Produce",
-          "status": "available"
-        }
-      ]
-    }
-    ```
-
-### Update Provider
-
-Updates provider information.
-
-Require Authentication: true
-Authorization: Provider owner only
-
-Request:
-- Method: PUT
-- URL: /api/providers/:id
-- Headers:
     - Content-Type: application/json
     - Authorization: Bearer <token>
 - Body:
     ```json
     {
-      "business_name": "Fresh Foods Market Updated",
-      "address": "124 Main St",
-      "business_type": "grocery",
-      "latitude": 37.7749,
-      "longitude": -122.4194
+      "allergen_name": "tree_nuts"
     }
     ```
 
@@ -1401,473 +1407,7 @@ Successful Response:
     {
       "id": 1,
       "user_id": 1,
-      "business_name": "Fresh Foods Market Updated",
-      "address": "124 Main St",
-      "latitude": 37.7749,
-      "longitude": -122.4194,
-      "business_type": "grocery",
-      "updated_at": "2024-03-15T11:00:00Z"
-    }
-    ```
-
-### Delete Provider
-
-Deletes a provider profile.
-
-Require Authentication: true
-Authorization: Provider owner or Admin only
-
-Request:
-- Method: DELETE
-- URL: /api/providers/:id
-- Headers:
-    - Authorization: Bearer <token>
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Successfully deleted provider"
-    }
-    ```
-
-## FOOD LISTING ENDPOINTS (Additional)
-
-### Update Food Listing
-
-Updates an existing food listing.
-
-Require Authentication: true
-Authorization: Provider owner only
-
-Request:
-- Method: PUT
-- URL: /api/listings/:id
-- Headers:
-    - Content-Type: application/json
-    - Authorization: Bearer <token>
-- Body:
-    ```json
-    {
-      "title": "Updated Fresh Produce",
-      "description": "Updated description",
-      "quantity": 45.5,
-      "unit": "kg",
-      "expiration_date": "2024-03-21T15:00:00Z",
-      "allergens": ["nuts", "dairy", "soy"]
-    }
-    ```
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "id": 1,
-      "provider_id": 1,
-      "title": "Updated Fresh Produce",
-      "description": "Updated description",
-      "quantity": 45.5,
-      "unit": "kg",
-      "expiration_date": "2024-03-21T15:00:00Z",
-      "status": "available",
-      "allergens": ["nuts", "dairy", "soy"],
-      "updated_at": "2024-03-15T11:00:00Z"
-    }
-    ```
-
-### Delete Food Listing
-
-Deletes an existing food listing.
-
-Require Authentication: true
-Authorization: Provider owner only
-
-Request:
-- Method: DELETE
-- URL: /api/listings/:id
-- Headers:
-    - Authorization: Bearer <token>
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Successfully deleted listing"
-    }
-    ```
-
-### Search Food Listings by Location
-
-Returns food listings within a specified radius.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/listings/nearby
-- Query Parameters:
-    - latitude: Current latitude
-    - longitude: Current longitude
-    - radius: Search radius in kilometers (default: 10)
-    - allergens (optional): Exclude listings with specific allergens
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "listings": [
-        {
-          "id": 1,
-          "provider_id": 1,
-          "title": "Fresh Produce",
-          "distance": 2.5,
-          "provider": {
-            "business_name": "Fresh Foods Market",
-            "address": "123 Main St"
-          }
-        }
-      ]
-    }
-    ```
-
-## DISTRIBUTION CENTER ENDPOINTS (Additional)
-
-### Get All Distribution Centers
-
-Returns a list of all distribution centers.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/distribution-centers
-- Query Parameters:
-    - latitude (optional): Center latitude for proximity search
-    - longitude (optional): Center longitude for proximity search
-    - radius (optional): Search radius in kilometers
-    - operating (optional): Filter by currently operating (based on hours)
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "centers": [
-        {
-          "id": 1,
-          "name": "Downtown Food Bank",
-          "address": "456 Center St",
-          "latitude": 37.7749,
-          "longitude": -122.4194,
-          "contact_person": "Jane Smith",
-          "phone": "555-0123",
-          "operating_hours": "Mon-Fri 9AM-5PM",
-          "distance": 1.5,
-          "is_operating": true
-        }
-      ]
-    }
-    ```
-
-### Update Distribution Center
-
-Updates an existing distribution center.
-
-Require Authentication: true
-Authorization: Admin only
-
-Request:
-- Method: PUT
-- URL: /api/distribution-centers/:id
-- Headers:
-    - Content-Type: application/json
-    - Authorization: Bearer <token>
-- Body:
-    ```json
-    {
-      "name": "Updated Food Bank",
-      "address": "457 Center St",
-      "contact_person": "Jane Wilson",
-      "phone": "555-0124",
-      "operating_hours": "Mon-Sat 9AM-6PM"
-    }
-    ```
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "id": 1,
-      "name": "Updated Food Bank",
-      "address": "457 Center St",
-      "latitude": 37.7749,
-      "longitude": -122.4194,
-      "contact_person": "Jane Wilson",
-      "phone": "555-0124",
-      "operating_hours": "Mon-Sat 9AM-6PM",
-      "updated_at": "2024-03-15T11:00:00Z"
-    }
-    ```
-
-### Delete Distribution Center
-
-Deletes a distribution center.
-
-Require Authentication: true
-Authorization: Admin only
-
-Request:
-- Method: DELETE
-- URL: /api/distribution-centers/:id
-- Headers:
-    - Authorization: Bearer <token>
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Successfully deleted distribution center"
-    }
-    ```
-
-## IMPACT METRICS ENDPOINTS
-
-### Create Impact Metric
-
-Creates a new impact metric entry.
-
-Require Authentication: true
-Authorization: Provider only
-
-Request:
-- Method: POST
-- URL: /api/metrics
-- Headers:
-    - Content-Type: application/json
-    - Authorization: Bearer <token>
-- Body:
-    ```json
-    {
-      "provider_id": 1,
-      "food_weight": 100.5,
-      "estimated_meals": 120,
-      "date": "2024-03-15"
-    }
-    ```
-
-Successful Response:
-- Status Code: 201
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "id": 1,
-      "provider_id": 1,
-      "food_weight": 100.5,
-      "estimated_meals": 120,
-      "date": "2024-03-15",
-      "created_at": "2024-03-15T10:00:00Z"
-    }
-    ```
-
-Error Response:
-- Status Code: 400
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Validation error",
-      "errors": {
-        "food_weight": "Food weight must be greater than 0",
-        "estimated_meals": "Estimated meals must be greater than 0"
-      }
-    }
-    ```
-
-### Get Impact Metrics
-
-Returns impact metrics with optional filtering.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/metrics
-- Query Parameters:
-    - provider_id (optional): Filter by provider
-    - start_date (optional): Filter from date
-    - end_date (optional): Filter to date
-    - page (optional): Page number
-    - per_page (optional): Items per page
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "metrics": [
-        {
-          "id": 1,
-          "provider_id": 1,
-          "food_weight": 100.5,
-          "estimated_meals": 120,
-          "date": "2024-03-15",
-          "created_at": "2024-03-15T10:00:00Z",
-          "provider": {
-            "business_name": "Fresh Foods Market"
-          }
-        }
-      ],
-      "totals": {
-        "total_weight": 1500.75,
-        "total_meals": 1800
-      },
-      "page": 1,
-      "total_pages": 5
-    }
-    ```
-
-### Update Impact Metric
-
-Updates an existing impact metric entry.
-
-Require Authentication: true
-Authorization: Provider owner or Admin
-
-Request:
-- Method: PUT
-- URL: /api/metrics/:id
-- Headers:
-    - Content-Type: application/json
-    - Authorization: Bearer <token>
-- Body:
-    ```json
-    {
-      "food_weight": 110.5,
-      "estimated_meals": 130
-    }
-    ```
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "id": 1,
-      "provider_id": 1,
-      "food_weight": 110.5,
-      "estimated_meals": 130,
-      "date": "2024-03-15",
-      "updated_at": "2024-03-15T11:00:00Z"
-    }
-    ```
-
-### Delete Impact Metric
-
-Deletes an impact metric.
-
-Require Authentication: true
-Authorization: Provider owner or Admin
-
-Request:
-- Method: DELETE
-- URL: /api/metrics/:id
-- Headers:
-    - Authorization: Bearer <token>
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "message": "Successfully deleted impact metric"
-    }
-    ```
-
-## ALLERGEN ALERTS ENDPOINTS (Additional)
-
-### Check Listing Against User Alerts
-
-Checks if a food listing contains any allergens that a user has alerts for.
-
-Require Authentication: true
-
-Request:
-- Method: GET
-- URL: /api/allergens/check/:listing_id
-- Headers:
-    - Authorization: Bearer <token>
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "has_allergens": true,
-      "matching_allergens": ["nuts", "dairy"],
-      "listing_id": 1,
-      "listing_title": "Fresh Produce"
-    }
-    ```
-
-### Batch Update Allergen Alerts
-
-Updates multiple allergen alerts for a user.
-
-Require Authentication: true
-
-Request:
-- Method: PUT
-- URL: /api/allergens/alerts/batch
-- Headers:
-    - Content-Type: application/json
-    - Authorization: Bearer <token>
-- Body:
-    ```json
-    {
-      "allergens": ["peanuts", "dairy", "soy"]
-    }
-    ```
-
-Successful Response:
-- Status Code: 200
-- Headers:
-    - Content-Type: application/json
-- Body:
-    ```json
-    {
-      "user_id": 1,
-      "allergens": ["peanuts", "dairy", "soy"],
+      "allergen_name": "tree_nuts",
       "updated_at": "2024-03-15T11:00:00Z"
     }
     ```
