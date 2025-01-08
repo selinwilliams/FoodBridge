@@ -5,7 +5,8 @@ from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
-
+    __table_args__ = {'schema': 'food_bridge_schema'}
+    
     if environment == "production":
         __table_args__ = {'schema': SCHEMA}
 
@@ -13,6 +14,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    user_type = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     @property
     def password(self):
