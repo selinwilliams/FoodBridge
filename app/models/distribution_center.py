@@ -1,7 +1,16 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+import re
+import json
+from sqlalchemy.orm import validates
 
 class DistributionCenter(db.Model):
     __tablename__ = 'distribution_centers'
+
+    # Add indexes for frequently queried fields
+    __table_args__ = (
+        db.Index('idx_lat_long', 'latitude', 'longitude'),
+        {'schema': SCHEMA} if environment == "production" else None
+    )
 
     if environment == "production":
         __table_args__ = {'schema': SCHEMA}
@@ -15,9 +24,51 @@ class DistributionCenter(db.Model):
     phone = db.Column(db.String(20))
     operating_hours = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    email = db.Column(db.String(255))
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(),
+                          onupdate=db.func.current_timestamp())
+    image_url = db.Column(db.String(255))
+    capacity_limit = db.Column(db.Integer, default=100)
+    status = db.Column(db.String(50), default='active')
 
     # Relationships
     food_listings = db.relationship('FoodListing', back_populates='distribution_center', cascade="all, delete-orphan")
+
+    # Add validation for coordinates
+    @validates('latitude')
+    def validate_latitude(self, key, value):
+        if value is not None and not -90 <= value <= 90:
+            raise ValueError("Latitude must be between -90 and 90")
+        return value
+
+    @validates('longitude')
+    def validate_longitude(self, key, value):
+        if value is not None and not -180 <= value <= 180:
+            raise ValueError("Longitude must be between -180 and 180")
+        return value
+
+    # Add phone validation
+    @validates('phone')
+    def validate_phone(self, key, value):
+        if value and not re.match(r'^\+?1?\d{9,15}$', value):
+            raise ValueError("Invalid phone number format")
+        return value
+
+    # Add operating_hours validation
+    @validates('operating_hours')
+    def validate_operating_hours(self, key, value):
+        # Implement validation based on your hours format
+        # Example: JSON format with days of week
+        if value:
+            try:
+                hours = json.loads(value)
+                # Add your validation logic here
+            except json.JSONDecodeError:
+                raise ValueError("Operating hours must be valid JSON")
+        return value
+
+    def __repr__(self):
+        return f'<DistributionCenter {self.name} at {self.address}>'
 
     def to_dict(self):
         return {

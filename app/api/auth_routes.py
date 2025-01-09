@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app.models import User, db
 from app.forms import LoginForm
 from app.forms import SignUpForm
@@ -54,14 +54,14 @@ def sign_up():
         user = User(
             username=form.data['username'],
             email=form.data['email'],
-            password=form.data['password']
+            password=form.data['password'],
+            user_type=form.data['user_type']
         )
         db.session.add(user)
         db.session.commit()
         login_user(user)
         return user.to_dict()
-    return form.errors, 401
-
+    return {'errors': form.errors}, 400
 
 @auth_routes.route('/unauthorized')
 def unauthorized():

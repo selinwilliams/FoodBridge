@@ -7,23 +7,29 @@ RUN apk add --no-cache \
     python3-dev \
     musl-dev \
     build-base \
-    libffi-dev
+    libffi-dev \
+    postgresql-client \
+    curl
 
-# Set working directory
 WORKDIR /app
 
-# Copy requirements and install dependencies
+# Copy requirements first for better caching
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 RUN pip install psycopg2-binary
 
-# Copy the rest of the application
+# Copy application code
 COPY . .
+
+# Copy and make entrypoint script executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Set environment variables
 ENV FLASK_APP=__init__.py
-ENV FLASK_ENV=development
 ENV PYTHONPATH=/app
+ENV POSTGRES_HOST=db
+ENV POSTGRES_DB=postgres
+ENV POSTGRES_USER=postgres
 
-# Run the application
-CMD flask run --host=0.0.0.0
+ENTRYPOINT ["docker-entrypoint.sh"]
