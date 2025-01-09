@@ -8,6 +8,13 @@ from flask_login import LoginManager
 from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
+from .api.provider_routes import provider_routes
+from .api.food_listing_routes import food_listing_routes
+from .api.reservation_routes import reservation_routes
+from .api.distribution_center_routes import dc_routes
+from .api.admin_routes import admin_routes
+from .api.search_routes import search_routes
+from .api.analytics_routes import analytics_routes
 from .seeds import seed_commands
 from .config import Config
 
@@ -28,8 +35,18 @@ def load_user(id):
 app.cli.add_command(seed_commands)
 
 app.config.from_object(Config)
+
+# Register all blueprints
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(provider_routes, url_prefix='/api/providers')
+app.register_blueprint(food_listing_routes, url_prefix='/api/listings')
+app.register_blueprint(reservation_routes, url_prefix='/api/reservations')
+app.register_blueprint(dc_routes, url_prefix='/api/distribution-centers')
+app.register_blueprint(admin_routes, url_prefix='/api/admin')
+app.register_blueprint(search_routes, url_prefix='/api/search')
+app.register_blueprint(analytics_routes, url_prefix='/api/analytics')
+
 db.init_app(app)
 Migrate(app, db)
 

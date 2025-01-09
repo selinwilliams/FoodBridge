@@ -48,6 +48,31 @@ def update_center(id):
     center.update_center(data)
     return center.to_dict()
 
+@dc_routes.route('/<int:id>', methods=['DELETE'])
+@login_required
+def delete_center(id):
+    """Delete a distribution center"""
+    if not current_user.is_admin():
+        return {'errors': ['Unauthorized']}, 403
+        
+    center = DistributionCenter.query.get_or_404(id)
+    db.session.delete(center)
+    db.session.commit()
+    return {'message': 'Distribution center deleted successfully'}
+
+@dc_routes.route('/nearby')
+def get_nearby_centers():
+    """Get nearby distribution centers"""
+    lat = request.args.get('lat', type=float)
+    lng = request.args.get('lng', type=float)
+    radius = request.args.get('radius', 10, type=float)
+    
+    if not (lat and lng):
+        return {'errors': ['Location required']}, 400
+    
+    centers = DistributionCenter.get_nearby_centers(lat, lng, radius)
+    return {'centers': [center.to_dict() for center in centers]}
+
 @dc_routes.route('/<int:id>/schedule')
 def get_center_schedule(id):
     """Get center's schedule"""
@@ -57,11 +82,37 @@ def get_center_schedule(id):
         return center.get_daily_schedule(datetime.fromisoformat(date))
     return center.get_weekly_schedule()
 
+@dc_routes.route('/<int:id>/schedule', methods=['PUT'])
+@login_required
+def update_center_schedule(id):
+    """Update center's schedule"""
+    if not current_user.is_admin():
+        return {'errors': ['Unauthorized']}, 403
+        
+    center = DistributionCenter.query.get_or_404(id)
+    data = request.json
+    if center.update_schedule(data):
+        return center.get_weekly_schedule()
+    return {'errors': ['Unable to update schedule']}, 400
+
 @dc_routes.route('/<int:id>/capacity')
 def get_center_capacity(id):
     """Get center's current capacity status"""
     center = DistributionCenter.query.get_or_404(id)
     return center.get_capacity_metrics()
+
+@dc_routes.route('/<int:id>/capacity', methods=['PUT'])
+@login_required
+def update_center_capacity(id):
+    """Update center's capacity limits"""
+    if not current_user.is_admin():
+        return {'errors': ['Unauthorized']}, 403
+        
+    center = DistributionCenter.query.get_or_404(id)
+    data = request.json
+    if center.update_capacity_limits(data):
+        return center.get_capacity_metrics()
+    return {'errors': ['Unable to update capacity']}, 400
 
 @dc_routes.route('/<int:id>/impact')
 def get_center_impact(id):
@@ -75,4 +126,11 @@ def get_center_impact(id):
     if end_date:
         end_date = datetime.fromisoformat(end_date)
         
-    return center.get_impact_metrics(start_date, end_date) 
+    return center.get_impact_metrics(start_date, end_date)
+
+@dc_routes.route('/<int:id>/stats')
+def get_center_stats(id):
+    """Get center's operational statistics"""
+    center = DistributionCenter.query.get_or_404(id)
+    timeframe = request.args.get('timeframe', 'week')  # week, month, year
+    return center.get_operational_stats(timeframe) 
