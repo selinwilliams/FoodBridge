@@ -1,4 +1,4 @@
-import { csrfFetch } from "../utils/csrf";
+import { csrfFetch } from "../../utils/csrf";
 
 // Action Types
 const LOAD_TAX_RECORDS = 'taxRecords/LOAD_TAX_RECORDS';

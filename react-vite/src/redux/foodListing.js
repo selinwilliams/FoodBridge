@@ -1,4 +1,4 @@
-import { csrfFetch } from "../utils/csrf";
+import { csrfFetch } from "../../utils/csrf";
 
 //Action Types
 const LOAD_LISTINGS = 'foodListing/LOAD_LISTINGS';
