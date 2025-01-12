@@ -1,6 +1,5 @@
 import os
-from flask import Flask, render_template, request, session, redirect, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, session, redirect
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -8,16 +7,8 @@ from flask_login import LoginManager
 from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
-from .api.provider_routes import provider_routes
-from .api.food_listing_routes import food_listing_routes
-from .api.reservation_routes import reservation_routes
-from .api.distribution_center_routes import dc_routes
-from .api.admin_routes import admin_routes
-from .api.search_routes import search_routes
-from .api.analytics_routes import analytics_routes
 from .seeds import seed_commands
 from .config import Config
-
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
@@ -35,23 +26,13 @@ def load_user(id):
 app.cli.add_command(seed_commands)
 
 app.config.from_object(Config)
-
-# Register all blueprints
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
-app.register_blueprint(provider_routes, url_prefix='/api/providers')
-app.register_blueprint(food_listing_routes, url_prefix='/api/listings')
-app.register_blueprint(reservation_routes, url_prefix='/api/reservations')
-app.register_blueprint(dc_routes, url_prefix='/api/distribution-centers')
-app.register_blueprint(admin_routes, url_prefix='/api/admin')
-app.register_blueprint(search_routes, url_prefix='/api/search')
-app.register_blueprint(analytics_routes, url_prefix='/api/analytics')
-
 db.init_app(app)
 Migrate(app, db)
 
 # Application Security
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app)
 
 
 # Since we are deploying with Docker and Flask,
@@ -108,24 +89,3 @@ def react_root(path):
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
-
-
-@app.route('/api/debug/routes')
-def list_routes():
-    routes = []
-    for rule in app.url_map.iter_rules():
-        routes.append({
-            'endpoint': rule.endpoint,
-            'methods': list(rule.methods),
-            'path': str(rule)
-        })
-    return jsonify(routes)
-
-
-@app.route("/api/health")
-def health_check():
-    return {"status": "healthy"}, 200
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
