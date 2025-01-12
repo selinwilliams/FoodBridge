@@ -6,9 +6,24 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
+import reservationReducer from "./reservation";
+import foodListingReducer from "./foodListing";
+import distributionCenterReducer from "./distributionCenter";
+import providerReducer from "./provider";
+import donationTaxRecordReducer from "./donationTaxRecord";
+import allergenAlertReducer from "./allergenAlert";
+import userReducer from "./user";
+
 
 const rootReducer = combineReducers({
   session: sessionReducer,
+  users: userReducer,
+  reservations: reservationReducer,
+  foodListings: foodListingReducer,
+  distributionCenters: distributionCenterReducer,
+  providers: providerReducer,
+  donationTaxRecords: donationTaxRecordReducer,
+  allergenAlerts: allergenAlertReducer
 });
 
 let enhancer;
