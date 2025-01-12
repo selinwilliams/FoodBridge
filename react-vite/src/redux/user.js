@@ -1,4 +1,4 @@
-import { csrfFetch } from "../utils/csrf";
+import { csrfFetch } from "../../utils/csrf";
 
 // User Types Enum
 export const USER_TYPES = {

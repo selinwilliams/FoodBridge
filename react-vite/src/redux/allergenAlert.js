@@ -1,4 +1,4 @@
-import { csrfFetch } from "../utils/csrf";
+import { csrfFetch } from "../../utils/csrf";
 
 // Action Types
 const LOAD_ALLERGEN_ALERTS = 'allergenAlerts/LOAD_ALLERGEN_ALERTS';
