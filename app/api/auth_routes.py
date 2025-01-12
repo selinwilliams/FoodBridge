@@ -54,14 +54,14 @@ def sign_up():
         user = User(
             username=form.data['username'],
             email=form.data['email'],
-            password=form.data['password'],
-            user_type=form.data['user_type']
+            password=form.data['password']
         )
         db.session.add(user)
         db.session.commit()
         login_user(user)
         return user.to_dict()
-    return {'errors': form.errors}, 400
+    return form.errors, 401
+
 
 @auth_routes.route('/unauthorized')
 def unauthorized():
