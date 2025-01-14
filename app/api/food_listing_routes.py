@@ -1,6 +1,6 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models import FoodListing, db
+from app.models import FoodListing, db, UserType
 from datetime import datetime
 
 food_listing_routes = Blueprint('food_listings', __name__)
@@ -42,24 +42,36 @@ def get_listing(id):
 def update_listing(id):
     """Update a food listing"""
     listing = FoodListing.query.get_or_404(id)
+    
     if listing.provider_id != current_user.provider.id:
         return {'errors': ['Unauthorized']}, 403
         
     data = request.json
-    listing.update_listing(data)
-    return listing.to_dict()
+    try:
+        # Update the listing
+        for key, value in data.items():
+            if hasattr(listing, key):
+                setattr(listing, key, value)
+        db.session.commit()
+        return listing.to_dict()
+    except Exception as e:
+        return {'errors': [str(e)]}, 400
 
 @food_listing_routes.route('/<int:id>', methods=['DELETE'])
 @login_required
 def delete_listing(id):
     """Delete a food listing"""
     listing = FoodListing.query.get_or_404(id)
+    
     if listing.provider_id != current_user.provider.id:
         return {'errors': ['Unauthorized']}, 403
-    
-    db.session.delete(listing)
-    db.session.commit()
-    return {'message': 'Listing deleted successfully'}
+        
+    try:
+        db.session.delete(listing)
+        db.session.commit()
+        return {'message': 'Successfully deleted listing'}
+    except Exception as e:
+        return {'errors': [str(e)]}, 400
 
 @food_listing_routes.route('/search')
 def search_listings():

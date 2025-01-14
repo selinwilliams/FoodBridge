@@ -7,7 +7,7 @@ provider_routes = Blueprint('providers', __name__)
 
 
 #Create
-@provider_routes.route('/', methods=['POST'])
+@provider_routes.route('', methods=['POST'])
 @login_required
 def create_provider():
     """Create a new provider profile"""

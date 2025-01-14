@@ -20,17 +20,20 @@ def get_all_reservations():
 @login_required
 def create_reservation():
     """Create a new reservation"""
-    if not current_user.can_make_reservation():
-        return {'errors': ['Unauthorized']}, 403
+    if current_user.user_type != UserType.RECIPIENT:
+        return {'errors': ['Only recipients can create reservations']}, 403
         
     data = request.json
-    data['recipient_id'] = current_user.id
-    reservation = Reservation.create_reservation(data)
-    
-    if not reservation:
-        return {'errors': ['Invalid reservation request']}, 400
-        
-    return reservation.to_dict(), 201
+    try:
+        reservation = Reservation.create_reservation(
+            recipient_id=current_user.id,
+            listing_id=data.get('listing_id'),
+            quantity=data.get('quantity'),
+            pickup_time=data.get('pickup_time')
+        )
+        return reservation.to_dict()
+    except Exception as e:
+        return {'errors': [str(e)]}, 400
 
 @reservation_routes.route('/user')
 @login_required
@@ -51,48 +54,57 @@ def get_provider_reservations():
     reservations = Reservation.get_provider_reservations(current_user.provider.id, status)
     return {'reservations': [r.to_dict() for r in reservations]}
 
-@reservation_routes.route('/<int:id>', methods=['GET'])
+@reservation_routes.route('/<int:id>')
 @login_required
 def get_reservation(id):
     """Get specific reservation details"""
     reservation = Reservation.query.get_or_404(id)
     
     # Check authorization
-    is_recipient = reservation.recipient_id == current_user.id
-    is_provider = current_user.is_provider() and reservation.food_listing.provider_id == current_user.provider.id
-    is_admin = current_user.is_admin()
-    
-    if not (is_recipient or is_provider or is_admin):
+    if not (reservation.recipient_id == current_user.id or 
+            (current_user.is_provider() and reservation.food_listing.provider_id == current_user.provider.id)):
         return {'errors': ['Unauthorized']}, 403
-    
+        
     return reservation.to_dict()
 
 @reservation_routes.route('/<int:id>', methods=['PUT'])
 @login_required
 def update_reservation(id):
-    """Update reservation status"""
+    """Update reservation details"""
     reservation = Reservation.query.get_or_404(id)
     
     # Check authorization
-    is_recipient = reservation.recipient_id == current_user.id
-    is_provider = current_user.is_provider() and reservation.food_listing.provider_id == current_user.provider.id
-    
-    if not (is_recipient or is_provider):
+    if not (reservation.recipient_id == current_user.id or 
+            (current_user.is_provider() and reservation.food_listing.provider_id == current_user.provider.id)):
         return {'errors': ['Unauthorized']}, 403
-    
-    action = request.json.get('action')
-    if action == 'confirm' and is_provider:
-        success = reservation.confirm()
-    elif action == 'complete' and is_provider:
-        success = reservation.complete()
-    elif action == 'cancel' and (is_recipient or is_provider):
-        success = reservation.cancel()
-    else:
-        return {'errors': ['Invalid action']}, 400
         
-    if success:
+    data = request.json
+    try:
+        for key, value in data.items():
+            if hasattr(reservation, key):
+                setattr(reservation, key, value)
+        db.session.commit()
         return reservation.to_dict()
-    return {'errors': ['Unable to update reservation']}, 400
+    except Exception as e:
+        return {'errors': [str(e)]}, 400
+
+@reservation_routes.route('/<int:id>', methods=['DELETE'])
+@login_required
+def delete_reservation(id):
+    """Cancel/delete a reservation"""
+    reservation = Reservation.query.get_or_404(id)
+    
+    # Check authorization
+    if not (reservation.recipient_id == current_user.id or 
+            (current_user.is_provider() and reservation.food_listing.provider_id == current_user.provider.id)):
+        return {'errors': ['Unauthorized']}, 403
+        
+    try:
+        db.session.delete(reservation)
+        db.session.commit()
+        return {'message': 'Successfully cancelled reservation'}
+    except Exception as e:
+        return {'errors': [str(e)]}, 400
 
 @reservation_routes.route('/<int:id>/pickup-time', methods=['PUT'])
 @login_required

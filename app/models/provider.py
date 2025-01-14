@@ -173,3 +173,23 @@ class Provider(db.Model):
             
         current_time = now.strftime('%H:%M')
         return hours['open'] <= current_time <= hours['close']
+
+    @classmethod
+    def create_provider(cls, user_id, data):
+        """Create a new provider profile"""
+        try:
+            business_type = BusinessType(data.get('business_type').lower())
+        except ValueError:
+            raise ValueError("Invalid business type. Must be restaurant, grocery, farm, or other")
+
+        provider = cls(
+            user_id=user_id,
+            business_name=data.get('business_name'),
+            address=data.get('address'),
+            business_type=business_type,
+            latitude=data.get('latitude'),
+            longitude=data.get('longitude')
+        )
+        db.session.add(provider)
+        db.session.commit()
+        return provider

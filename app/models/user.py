@@ -150,8 +150,14 @@ class User(db.Model, UserMixin):
         return self.user_type == UserType.ADMIN
 
     def is_provider(self):
-        """Check if user is provider"""
-        return self.user_type == UserType.PROVIDER
+        """Check if user is a provider"""
+        try:
+            return (self.user_type == UserType.PROVIDER and 
+                    hasattr(self, 'provider') and 
+                    self.provider is not None)
+        except Exception as e:
+            print(f"Error in is_provider check: {str(e)}")
+            return False
 
     def is_recipient(self):
         """Check if user is recipient"""

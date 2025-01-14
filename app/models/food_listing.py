@@ -93,29 +93,36 @@ class FoodListing(db.Model):
     @classmethod
     def create_listing(cls, provider_id, data):
         """Create a new food listing with validation"""
-        if datetime.utcnow() >= data.get('expiration_date'):
+        # Convert string dates to datetime objects and make them timezone-naive
+        expiration_date = datetime.fromisoformat(data.get('expiration_date').replace('Z', '')).replace(tzinfo=None)
+        pickup_window_start = datetime.fromisoformat(data.get('pickup_window_start').replace('Z', '')).replace(tzinfo=None)
+        pickup_window_end = datetime.fromisoformat(data.get('pickup_window_end').replace('Z', '')).replace(tzinfo=None)
+        
+        # Get current time as naive datetime
+        current_time = datetime.utcnow()
+        
+        # Validate dates
+        if current_time >= expiration_date:
             raise ValueError("Expiration date must be in the future")
+        if current_time >= pickup_window_start:
+            raise ValueError("Pickup window must be in the future")
+        if pickup_window_end <= pickup_window_start:
+            raise ValueError("Pickup window end must be after start")
+        
+        # Convert food type string to enum
+        food_type = FoodType[data.get('food_type')]
 
         listing = cls(
             provider_id=provider_id,
             title=data.get('title'),
             description=data.get('description'),
-            food_type=data.get('food_type'),
+            food_type=food_type,
             quantity=data.get('quantity'),
             unit=data.get('unit'),
-            original_price=data.get('original_price'),
-            discounted_price=data.get('discounted_price'),
-            expiration_date=data.get('expiration_date'),
-            best_by_date=data.get('best_by_date'),
-            pickup_window_start=data.get('pickup_window_start'),
-            pickup_window_end=data.get('pickup_window_end'),
-            allergens=data.get('allergens', []),
-            storage_instructions=data.get('storage_instructions'),
-            handling_instructions=data.get('handling_instructions'),
-            is_perishable=data.get('is_perishable', True),
-            temperature_requirements=data.get('temperature_requirements'),
-            distribution_center_id=data.get('distribution_center_id'),
-            image_url=data.get('image_url')
+            expiration_date=expiration_date,
+            pickup_window_start=pickup_window_start,
+            pickup_window_end=pickup_window_end,
+            is_perishable=data.get('is_perishable', True)
         )
         db.session.add(listing)
         db.session.commit()
