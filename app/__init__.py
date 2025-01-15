@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -9,6 +9,9 @@ from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .seeds import seed_commands
 from .config import Config
+from .api.food_listing_routes import food_listing_routes
+from .api.provider_routes import provider_routes
+from .api.distribution_center_routes import dc_routes
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
@@ -28,6 +31,9 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(food_listing_routes, url_prefix='/api/food-listings')
+app.register_blueprint(provider_routes, url_prefix='/api/providers')
+app.register_blueprint(dc_routes, url_prefix='/api/distribution-centers')
 db.init_app(app)
 Migrate(app, db)
 
@@ -89,3 +95,8 @@ def react_root(path):
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
+
+
+@app.route('/api/health')
+def health_check():
+    return jsonify({'status': 'healthy'}), 200

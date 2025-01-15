@@ -1,7 +1,11 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from .reservation import Reservation
 import re
 import json
 from sqlalchemy.orm import validates
+from math import radians, cos, sin, asin, sqrt
+from sqlalchemy import func
+from sqlalchemy import text
 
 class DistributionCenter(db.Model):
     __tablename__ = 'distribution_centers'
@@ -50,8 +54,11 @@ class DistributionCenter(db.Model):
     # Add phone validation
     @validates('phone')
     def validate_phone(self, key, value):
-        if value and not re.match(r'^\+?1?\d{9,15}$', value):
-            raise ValueError("Invalid phone number format")
+        if value:
+            # Remove any non-digit characters for validation
+            digits_only = ''.join(filter(str.isdigit, value))
+            if not 9 <= len(digits_only) <= 15:
+                raise ValueError("Phone number must have 9-15 digits")
         return value
 
     # Add operating_hours validation
@@ -80,17 +87,59 @@ class DistributionCenter(db.Model):
             'contact_person': self.contact_person,
             'phone': self.phone,
             'operating_hours': self.operating_hours,
-            'created_at': self.created_at.isoformat()
+            'email': self.email,
+            'status': self.status,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'active_listings': [
+                {
+                    'id': listing.id,
+                    'title': listing.title,
+                    'status': listing.status.value if hasattr(listing.status, 'value') else listing.status
+                }
+                for listing in self.food_listings 
+                if listing.status not in ['CANCELLED', 'EXPIRED']
+            ] if self.food_listings else []
         } 
 
     @classmethod
     def get_nearby_centers(cls, latitude, longitude, radius_km=10):
         """Find centers within a certain radius"""
-        radius = radius_km / 111  # Rough conversion to degrees
-        return cls.query.filter(
-            cls.latitude.between(latitude - radius, latitude + radius),
-            cls.longitude.between(longitude - radius, longitude + radius)
-        ).all()
+        try:
+            # Convert radius from km to degrees (approximate)
+            radius_deg = radius_km / 111.0
+            
+            # Query using simple bounding box first
+            centers = cls.query.filter(
+                cls.latitude.between(latitude - radius_deg, latitude + radius_deg),
+                cls.longitude.between(longitude - radius_deg, longitude + radius_deg)
+            ).all()
+            
+            # Calculate actual distances and filter
+            result = []
+            for center in centers:
+                # Haversine formula
+                lat1, lon1 = radians(latitude), radians(longitude)
+                lat2, lon2 = radians(center.latitude), radians(center.longitude)
+                
+                dlat = lat2 - lat1
+                dlon = lon2 - lon1
+                
+                a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+                c = 2 * asin(sqrt(a))
+                distance = 6371 * c  # Earth's radius in km
+                
+                if distance <= radius_km:
+                    center_dict = center.to_dict()
+                    center_dict['distance'] = round(distance, 2)
+                    result.append(center_dict)
+            
+            print(f"Found {len(result)} centers")  # Debug print
+            return sorted(result, key=lambda x: x['distance'])
+            
+        except Exception as e:
+            print(f"Error in get_nearby_centers: {str(e)}")  # Debug print
+            return []
 
     def get_current_inventory(self):
         """Get all available food listings at this center"""
@@ -157,7 +206,7 @@ class DistributionCenter(db.Model):
         current = len(self.get_current_inventory())
         return {
             'current_items': current,
-            'capacity_status': 'available' if current < 100 else 'full',
+            'capacity_status': 'available' if current < self.capacity_limit else 'full',
             'upcoming_pickups': len([l for l in self.food_listings 
                                    if any(r.status == 'confirmed' for r in l.reservations)])
         } 

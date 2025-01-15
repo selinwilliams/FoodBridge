@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from flask_login import current_user
 from app.models import FoodListing, Provider, DistributionCenter
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 
 search_routes = Blueprint('search', __name__)
 
@@ -56,7 +57,7 @@ def search_providers():
         'current_page': results.page
     }
 
-@search_routes.route('/centers')
+@search_routes.route('/distribution-centers')
 def search_centers():
     """Search distribution centers with filters"""
     query = request.args.get('q')
@@ -77,6 +78,43 @@ def search_centers():
         'pages': results.pages,
         'current_page': results.page
     }
+
+@search_routes.route('/distribution-centers/nearby')
+def search_nearby_centers():
+    """Search nearby distribution centers"""
+    try:
+        # Get and validate parameters
+        lat = request.args.get('lat', type=float)
+        lng = request.args.get('lng', type=float)
+        radius = request.args.get('radius', 10.0, type=float)
+        
+        if not (lat and lng):
+            return {'errors': ['Latitude and longitude are required']}, 400
+            
+        if not (-90 <= lat <= 90) or not (-180 <= lng <= 180):
+            return {'errors': ['Invalid coordinates']}, 400
+            
+        if radius <= 0 or radius > 100:  # Set a reasonable maximum radius
+            return {'errors': ['Invalid radius']}, 400
+            
+        # Get nearby centers
+        centers = DistributionCenter.get_nearby_centers(lat, lng, radius)
+        
+        return {
+            'centers': centers,
+            'total': len(centers),
+            'metadata': {
+                'latitude': lat,
+                'longitude': lng,
+                'radius_km': radius
+            }
+        }
+        
+    except ValueError as e:
+        return {'errors': [str(e)]}, 400
+    except Exception as e:
+        db.session.rollback()
+        return {'errors': ['An unexpected error occurred']}, 500
 
 @search_routes.route('/advanced')
 def advanced_search():
