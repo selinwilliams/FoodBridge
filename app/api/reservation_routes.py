@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
-from app.models import Reservation, db
+from app.models import Reservation, db, UserType
 from datetime import datetime
 
 reservation_routes = Blueprint('reservations', __name__)
@@ -24,14 +24,13 @@ def create_reservation():
         return {'errors': ['Only recipients can create reservations']}, 403
         
     data = request.json
+    data['recipient_id'] = current_user.id
+    
     try:
-        reservation = Reservation.create_reservation(
-            recipient_id=current_user.id,
-            listing_id=data.get('listing_id'),
-            quantity=data.get('quantity'),
-            pickup_time=data.get('pickup_time')
-        )
-        return reservation.to_dict()
+        reservation = Reservation.create_reservation(data)
+        if reservation:
+            return reservation.to_dict(), 201
+        return {'errors': ['Unable to create reservation']}, 400
     except Exception as e:
         return {'errors': [str(e)]}, 400
 
@@ -80,13 +79,42 @@ def update_reservation(id):
         
     data = request.json
     try:
+        # Only allow updating certain fields
+        allowed_fields = ['pickup_time', 'quantity', 'notes']
         for key, value in data.items():
-            if hasattr(reservation, key):
+            if key in allowed_fields and hasattr(reservation, key):
                 setattr(reservation, key, value)
         db.session.commit()
         return reservation.to_dict()
     except Exception as e:
         return {'errors': [str(e)]}, 400
+
+@reservation_routes.route('/<int:id>/status', methods=['PUT'])
+@login_required
+def update_reservation_status(id):
+    """Update reservation status (confirm, complete, cancel)"""
+    reservation = Reservation.query.get_or_404(id)
+    
+    # Check authorization
+    is_recipient = reservation.recipient_id == current_user.id
+    is_provider = current_user.is_provider() and reservation.food_listing.provider_id == current_user.provider.id
+    
+    if not (is_recipient or is_provider):
+        return {'errors': ['Unauthorized']}, 403
+    
+    action = request.json.get('action')
+    if action == 'confirm' and is_provider:
+        success = reservation.confirm()
+    elif action == 'complete' and is_provider:
+        success = reservation.complete()
+    elif action == 'cancel' and (is_recipient or is_provider):
+        success = reservation.cancel()
+    else:
+        return {'errors': ['Invalid action']}, 400
+        
+    if success:
+        return reservation.to_dict()
+    return {'errors': ['Unable to update reservation status']}, 400
 
 @reservation_routes.route('/<int:id>', methods=['DELETE'])
 @login_required

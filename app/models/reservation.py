@@ -2,7 +2,7 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 from datetime import datetime
 from enum import Enum
 from sqlalchemy.orm import validates
-
+from .food_listing import FoodListing
 class ReservationStatus(Enum):
     PENDING = 'pending'
     CONFIRMED = 'confirmed'
@@ -61,35 +61,52 @@ class Reservation(db.Model):
 
     @classmethod
     def create_reservation(cls, data):
-        """Create a new reservation with availability check"""
+        """Create a new reservation"""
+        # Get the listing
         listing = FoodListing.query.get(data.get('listing_id'))
-        
-        # Check if listing exists and has enough quantity
-        if not listing or listing.available_quantity < data.get('quantity_reserved', 0):
-            return None
-            
-        # Check if pickup time is within allowed window
-        pickup_time = data.get('pickup_time')
-        if not (listing.pickup_window_start <= pickup_time <= listing.pickup_window_end):
-            return None
+        if not listing:
+            raise ValueError("Food listing not found")
 
+        # Calculate available quantity (total quantity minus sum of existing reservations)
+        reserved_quantity = sum(r.quantity_reserved for r in listing.reservations 
+                              if r.status not in [ReservationStatus.CANCELLED, ReservationStatus.EXPIRED])
+        available = listing.quantity - reserved_quantity
+
+        # Check available quantity
+        requested_quantity = data.get('quantity_reserved', 0)
+        if available < requested_quantity:
+            raise ValueError("Not enough quantity available")
+
+        # Convert pickup time string to datetime
+        try:
+            pickup_time = datetime.fromisoformat(data.get('pickup_time').replace('Z', ''))
+        except (ValueError, AttributeError):
+            raise ValueError("Invalid pickup time format")
+
+        # Validate pickup time is within window
+        if not (listing.pickup_window_start <= pickup_time <= listing.pickup_window_end):
+            raise ValueError("Pickup time must be within the listing's pickup window")
+
+        # Create reservation
         reservation = cls(
-            listing_id=data.get('listing_id'),
+            listing_id=listing.id,
             recipient_id=data.get('recipient_id'),
+            quantity_reserved=requested_quantity,
             pickup_time=pickup_time,
-            quantity_reserved=data.get('quantity_reserved'),
-            notes=data.get('notes'),
-            expiration_time=listing.expiration_time,
             pickup_window_start=listing.pickup_window_start,
-            pickup_window_end=listing.pickup_window_end
+            pickup_window_end=listing.pickup_window_end,
+            expiration_time=listing.expiration_date,
+            notes=data.get('notes'),
+            status=ReservationStatus.PENDING
         )
-        
-        # Update available quantity
-        listing.available_quantity -= reservation.quantity_reserved
-        
-        db.session.add(reservation)
-        db.session.commit()
-        return reservation
+
+        try:
+            db.session.add(reservation)
+            db.session.commit()
+            return reservation
+        except Exception as e:
+            db.session.rollback()
+            raise ValueError(f"Error creating reservation: {str(e)}")
 
     def confirm(self):
         """Confirm this reservation"""
