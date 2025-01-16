@@ -89,7 +89,7 @@ function LandingPage() {
                     <section className="info-section" id="contact">
                         <div className="section-icon contact-icon">
                             <img 
-                                src="/selin_pp.png" 
+                                src="/selin.jpg" 
                                 alt="Delicious food spread"
                                 className="icon-image"
                             />
