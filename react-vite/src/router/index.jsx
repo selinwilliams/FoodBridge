@@ -10,7 +10,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LandingPage/>,
+        element: <LandingPage />,
       },
       {
         path: "login",
@@ -22,4 +22,11 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+]
+// // {
+// //   future: {
+// //     v7_startTransition: true,
+// //     v7_relativeSplatPath: true
+//  }
+// }
+);

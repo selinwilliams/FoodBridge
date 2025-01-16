@@ -1,0 +1,360 @@
+.admin-dashboard {
+    /* Dashboard-specific variables */
+    --admin-primary: #7C9885;
+    --admin-primary-light: #9FB8A8;
+    --admin-primary-dark: #566D5F;
+    --admin-background: var(--beige-light, #F3E9E0);
+    --admin-card-bg: var(--white, #FFFFFF);
+    --admin-text: var(--brown, #5C4033);
+    --admin-text-light: var(--brown-light, #8B6B5D);
+    --admin-border: #E0E0E0;
+    --admin-warning: #FFA500;
+    --admin-error: #FF4444;
+    --admin-success: #00C851;
+
+    padding: 2rem;
+    background: var(--admin-background);
+    min-height: calc(100vh - 60px);
+    margin-top: 60px;
+}
+
+.admin-dashboard .dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.admin-dashboard .profile-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--admin-card-bg);
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(92, 64, 51, 0.1);
+}
+
+.admin-dashboard .profile-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--admin-primary-light);
+}
+
+.admin-dashboard .profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-dashboard .profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-dashboard .profile-info h2 {
+    margin: 0;
+    color: var(--admin-text);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.admin-dashboard .version {
+    color: var(--admin-text-light);
+    font-size: 0.9rem;
+}
+
+.admin-dashboard .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.admin-dashboard .dashboard-card {
+    background: var(--admin-card-bg);
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(92, 64, 51, 0.1);
+    border: 1px solid rgba(92, 64, 51, 0.08);
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(92, 64, 51, 0.12);
+    border-color: transparent;
+}
+
+.admin-dashboard .dashboard-card h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--admin-text);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Stats Container */
+.admin-dashboard .stats-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-dashboard .stat-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 8px solid var(--admin-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard .stat-circle:hover {
+    transform: scale(1.05);
+}
+
+.admin-dashboard .stat-content {
+    text-align: center;
+}
+
+.admin-dashboard .stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--admin-primary);
+}
+
+.admin-dashboard .stat-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--admin-text-light);
+}
+
+.admin-dashboard .metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-dashboard .metric {
+    text-align: center;
+}
+
+.admin-dashboard .metric-value {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--admin-text);
+}
+
+.admin-dashboard .metric-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--admin-text-light);
+}
+
+/* Chart Container */
+.admin-dashboard .chart-container {
+    height: 200px;
+    margin-bottom: 1rem;
+}
+
+.admin-dashboard .chart-placeholder {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 1rem 0;
+}
+
+.admin-dashboard .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.admin-dashboard .bar {
+    width: 12%;
+    background: var(--admin-primary);
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s ease;
+}
+
+.admin-dashboard .bar:hover {
+    background: var(--admin-primary-dark);
+}
+
+/* Chart Legend */
+.admin-dashboard .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.admin-dashboard .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-dashboard .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.admin-dashboard .legend-dot.providers {
+    background: var(--admin-primary);
+}
+
+.admin-dashboard .legend-dot.recipients {
+    background: var(--admin-primary-light);
+}
+
+/* Status Grid */
+.admin-dashboard .status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-dashboard .status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-dashboard .status-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.admin-dashboard .status-icon.online {
+    background: var(--admin-success);
+}
+
+.admin-dashboard .status-icon.warning {
+    background: var(--admin-warning);
+}
+
+.admin-dashboard .status-icon.error {
+    background: var(--admin-error);
+}
+
+.admin-dashboard .status-label {
+    font-size: 0.9rem;
+    color: var(--admin-text-light);
+}
+
+/* System Metrics */
+.admin-dashboard .system-metrics {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Notification List */
+.admin-dashboard .notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-dashboard .notification-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--admin-background);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard .notification-item:hover {
+    transform: translateX(5px);
+}
+
+.admin-dashboard .notification-icon {
+    font-size: 1.2rem;
+}
+
+.admin-dashboard .notification-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-dashboard .notification-text {
+    font-size: 0.9rem;
+    color: var(--admin-text);
+}
+
+.admin-dashboard .notification-time {
+    font-size: 0.8rem;
+    color: var(--admin-text-light);
+}
+
+/* Card Actions */
+.admin-dashboard .card-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.admin-dashboard .action-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.admin-dashboard .action-button.primary {
+    background: var(--admin-primary);
+    color: var(--admin-card-bg);
+}
+
+.admin-dashboard .action-button.primary:hover {
+    background: var(--admin-primary-dark);
+    transform: translateY(-2px);
+}
+
+.admin-dashboard .action-button.secondary {
+    background: var(--admin-background);
+    color: var(--admin-text);
+    border: 1px solid rgba(92, 64, 51, 0.2);
+}
+
+.admin-dashboard .action-button.secondary:hover {
+    background: var(--admin-border);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .admin-dashboard .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 1rem;
+    }
+
+    .admin-dashboard .stats-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .admin-dashboard .metrics {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}

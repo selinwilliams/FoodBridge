@@ -97,6 +97,11 @@ def not_found(e):
     return app.send_static_file('index.html')
 
 
+@app.route('/api/csrf/restore')
+def csrf_restore():
+    return {'csrf_token': generate_csrf()}
+
+
 @app.route('/api/health')
 def health_check():
     return jsonify({'status': 'healthy'}), 200

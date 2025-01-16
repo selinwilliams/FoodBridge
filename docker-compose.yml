@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: foodbridge-backend
     build: 
       context: ./app
       dockerfile: Dockerfile
@@ -26,8 +27,22 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+  
+  frontend:
+    container_name: foodbridge-frontend
+    build:
+      context: ./react-vite
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./react-vite:/app
+      - /app/node_modules
+    depends_on:
+      - backend
 
   db:
+    container_name: foodbridge-db
     image: postgres:14
     environment:
       - POSTGRES_USER=postgres

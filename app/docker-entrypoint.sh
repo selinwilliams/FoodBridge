@@ -26,6 +26,45 @@ until postgres_ready; do
 done
 echo "PostgreSQL is available"
 
+# Reset database tables and types
+echo "Resetting database tables and types..."
+python << END
+import psycopg2
+
+conn = psycopg2.connect(
+    dbname="${POSTGRES_DB}",
+    user="${POSTGRES_USER}",
+    password="${POSTGRES_PASSWORD}",
+    host="${POSTGRES_HOST}"
+)
+cur = conn.cursor()
+
+# Drop all tables
+cur.execute("""
+    SELECT tablename FROM pg_tables WHERE schemaname = 'public';
+""")
+tables = cur.fetchall()
+
+for table in tables:
+    cur.execute(f'DROP TABLE IF EXISTS {table[0]} CASCADE;')
+
+# Drop all enum types
+cur.execute("""
+    SELECT t.typname
+    FROM pg_type t
+    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typtype = 'e' AND n.nspname = 'public';
+""")
+enums = cur.fetchall()
+
+for enum in enums:
+    cur.execute(f'DROP TYPE IF EXISTS {enum[0]} CASCADE;')
+
+conn.commit()
+cur.close()
+conn.close()
+END
+
 echo "Checking for existing migrations..."
 if [ ! -d "migrations" ]; then
     echo "Initializing migrations directory..."

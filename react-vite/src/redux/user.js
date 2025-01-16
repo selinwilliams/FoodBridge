@@ -20,7 +20,7 @@ const loadUsers = (users) => ({
     payload: users
 });
 
-const updateUser = (user) => ({
+export const updateUser = (user) => ({
     type: UPDATE_USER,
     payload: user
 });

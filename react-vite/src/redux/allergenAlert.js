@@ -24,7 +24,7 @@ const updateAllergenAlert = (alert) => ({
     payload: alert
 });
 
-const removeAllergenAlert = (alertId) => ({
+export const removeAllergenAlert = (alertId) => ({
     type: REMOVE_ALLERGEN_ALERT,
     payload: alertId
 });

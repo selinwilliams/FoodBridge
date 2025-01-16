@@ -1,60 +1,104 @@
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
-import heroImage from '../../assets/food-waste-hero.jpg';
 
 function LandingPage() {
     const navigate = useNavigate();
-    const user = useSelector((store) => store.session.user)
+    const user = useSelector((store) => store.session.user);
 
     return (
         <div className="landing-page">
-            <nav className="landing-nav">
-                <div className="nav-left">
-                    <h1>FoodBridge</h1>
-                </div>
-                <div className="nav-right">
-                    {!user && (
-                        <>
-                            <button onClick={() => navigate('/login')} className="nav-button">Login</button>
-                            <button onClick={() => navigate('/signup')} className="nav-button signup">Sign Up</button>
-                        </>
-                    )}
-                </div>
-            </nav>
-
-            <section className="hero-section">
-                <div 
-                    className="hero-image" 
-                    style={{ backgroundImage: `url(${heroImage})` }}
-                >
-                    <div className="hero-overlay"></div>
-                </div>
-                <div className="hero-content">
-                    <h1>Bridge the Gap Between Surplus & Need</h1>
-                    <p>Connect food providers with distribution centers to reduce waste and feed communities</p>
-                    <button onClick={() => navigate('/signup')} className="cta-button">Get Started</button>
-                </div>
-            </section>
-
-            <div className="info-sections">
-                <section className="info-section">
-                    <h2>For Providers</h2>
-                    <p>Easily donate surplus food to those who need it most. Reduce waste and make a difference in your community.</p>
-                    <button onClick={() => navigate('/provider-signup')} className="section-button">Join as Provider</button>
+            <div className="landing-container">
+                <section className="hero-section">
+                    <div className="hero-content">
+                        <h1>Reduce food waste,<br />feed a community</h1>
+                        <p>Connect surplus food with communities in need through our simple platform</p>
+                        <button onClick={() => navigate('/signup')} className="hero-button">
+                            Get Started
+                        </button>
+                    </div>
+                    <div className="hero-illustrations">
+                        <div className="food-illustration bread-basket">
+                            <img 
+                                src="/anime-food.jpg" 
+                                alt="Anime style food illustration"
+                                className="food-image"
+                            />
+                        </div>
+                        <div className="food-illustration fruits-bowl">
+                            <img 
+                                src="/japan.avif" 
+                                alt="Various delicious foods"
+                                className="food-image"
+                            />
+                        </div>
+                        <div className="food-illustration veggies-crate">
+                            <img 
+                                src="/anime-girls.avif" 
+                                alt="Anime girl with food"
+                                className="food-image"
+                            />
+                        </div>
+                    </div>
                 </section>
 
-                <section className="info-section">
-                    <h2>For Distribution Centers</h2>
-                    <p>Access fresh food donations and efficiently distribute them to your communities in need.</p>
-                    <button onClick={() => navigate('/center-signup')} className="section-button">Join as Center</button>
-                </section>
+                <div className="info-sections">
+                    <section className="info-section" id="about">
+                        <div className="section-icon about-icon">
+                            <img 
+                                src="/reduce.jpg" 
+                                alt="Bowl of delicious noodles"
+                                className="icon-image"
+                            />
+                        </div>
+                        <h3>About Us</h3>
+                        <p>Building bridges between food surplus and community needs</p>
+                        <button onClick={() => navigate('/signup')} className="section-button">
+                            Learn More
+                        </button>
+                    </section>
 
-                <section className="info-section">
-                    <h2>How It Works</h2>
-                    <p>Our platform connects food providers with distribution centers, making food donation simple and efficient.</p>
-                    <button className="section-button">Learn More</button>
-                </section>
+                    <section className="info-section" id="join">
+                        <div className="section-icon join-icon">
+                            <img 
+                                src="/japan.avif" 
+                                alt="Japanese convenience store"
+                                className="icon-image"
+                            />
+                        </div>
+                        <h3>Join Us</h3>
+                        <p>Make a difference in your local community today</p>
+                        <button onClick={() => navigate('/provider-signup')} className="section-button">
+                            Get Started
+                        </button>
+                    </section>
+
+                    <section className="info-section" id="how">
+                        <div className="section-icon how-icon">
+                            <img 
+                                src="/zero.jpg" 
+                                alt="Group sharing food"
+                                className="icon-image"
+                            />
+                        </div>
+                        <h3>How it Works</h3>
+                        <p>Simple steps to connect and distribute food</p>
+                        <button className="section-button">See More</button>
+                    </section>
+
+                    <section className="info-section" id="contact">
+                        <div className="section-icon contact-icon">
+                            <img 
+                                src="/selin_pp.png" 
+                                alt="Delicious food spread"
+                                className="icon-image"
+                            />
+                        </div>
+                        <h3>Contact</h3>
+                        <p>Questions? We're here to help</p>
+                        <button className="section-button">Reach Out</button>
+                    </section>
+                </div>
             </div>
         </div>
     );
