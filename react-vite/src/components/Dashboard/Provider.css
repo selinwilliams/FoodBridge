@@ -12,6 +12,9 @@
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .provider-profile {
@@ -20,7 +23,7 @@
     gap: 2rem;
 }
 
-.provider-profile img {
+.profile-image {
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -269,4 +272,132 @@
     .chart {
         margin: 0 auto;
     }
+}
+
+.loading,
+.error-message,
+.provider-setup-needed {
+    text-align: center;
+    padding: 3rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+    color: #666;
+}
+
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.provider-setup-needed {
+    color: #333;
+}
+
+.provider-setup-needed h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.provider-setup-needed p {
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+.setup-profile-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #4a90e2;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.setup-profile-btn:hover {
+    background-color: #357abd;
+}
+
+.loading-state,
+.error-state,
+.setup-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px);
+    padding: 2rem;
+    text-align: center;
+    background: #f8f9fa;
+}
+
+.loading-spinner {
+    color: #4a90e2;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.error-state h2 {
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.error-state p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.retry-btn,
+.setup-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.retry-btn:hover,
+.setup-btn:hover {
+    background-color: #357abd;
+}
+
+.setup-state h2 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.setup-state p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.no-history {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.edit-profile-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.2s;
+}
+
+.edit-profile-btn:hover {
+    background-color: #45a049;
 }

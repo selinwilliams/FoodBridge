@@ -68,7 +68,7 @@ def get_current_provider_listings():
         return {'errors': [str(e)]}, 500
 
 @provider_routes.route('', methods=['POST'])
-@provider_required
+@login_required
 def create_provider():
     """Create a new provider profile"""
     if current_user.provider:
@@ -76,24 +76,30 @@ def create_provider():
         
     try:
         data = request.json
+        
+        # Update user type first
+        current_user.user_type = UserType.PROVIDER
+        
+        # Create provider profile
         provider = Provider(
             user_id=current_user.id,
             business_name=data.get('business_name'),
-            business_type=BusinessType[data.get('business_type', '').upper()],
+            business_type=BusinessType[data.get('business_type', 'RESTAURANT')],
             address=data.get('address'),
-            city='Default City',  # Default values for required fields
-            state='CA',
-            zip_code='00000',
-            phone='000-000-0000'
+            city=data.get('city'),
+            state=data.get('state'),
+            zip_code=data.get('zip_code'),
+            phone=data.get('phone'),
+            website=data.get('website')
         )
         
         db.session.add(provider)
         db.session.commit()
         return provider.to_dict(), 201
-        
+            
     except Exception as e:
         db.session.rollback()
-        return {'errors': [str(e)]}, 400
+        return {'errors': [str(e)]}, 500
 
 @provider_routes.route('', methods=['GET'])
 def get_all_providers():

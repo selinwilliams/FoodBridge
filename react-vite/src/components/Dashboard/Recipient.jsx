@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Recipient.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { thunkGetProviderById } from '../../redux/provider';
+import { Link } from 'react-router-dom';
 
 const Recipient = () => {
     const [version] = useState('0.2.16');
@@ -10,13 +12,35 @@ const Recipient = () => {
         { name: 'Gluten', count: 5 },
         { name: 'Dairy', count: 4 }
     ]);
+    const [isCheckingProvider, setIsCheckingProvider] = useState(true);
+    const [isProvider, setIsProvider] = useState(false);
     
     const sessionUser = useSelector(state => state.session.user);
+    const providerState = useSelector(state => state.provider || {});
+    const { currentProvider } = providerState;
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Fetch food listings and allergy filters
         // This will be implemented with actual API calls
     }, []);
+
+    useEffect(() => {
+        const checkProviderStatus = async () => {
+            if (sessionUser?.id) {
+                try {
+                    const provider = await dispatch(thunkGetProviderById(sessionUser.id));
+                    setIsProvider(!!provider);
+                } catch (error) {
+                    console.error('Error checking provider status:', error);
+                } finally {
+                    setIsCheckingProvider(false);
+                }
+            }
+        };
+
+        checkProviderStatus();
+    }, [dispatch, sessionUser]);
 
     return (
         <div className="recipient-dashboard">
@@ -28,6 +52,24 @@ const Recipient = () => {
                         <span className="version">v{version}</span>
                     </div>
                 </div>
+                {!isCheckingProvider && !isProvider && (
+                    <>
+                        <div className="provider-benefits">
+                            <div className="benefits-content">
+                                <h4>Would you like to become a provider?</h4>
+                                <ul>
+                                    <li>Receive tax deductions for your donations</li>
+                                    <li>Make a meaningful impact in your community</li>
+                                    <li>Reduce food waste and help the environment</li>
+                                    <li>Increase your business visibility</li>
+                                </ul>
+                            </div>
+                            <Link to="/provider/profile" className="become-provider-btn">
+                                Become a Provider
+                            </Link>
+                        </div>
+                    </>
+                )}
             </div>
 
             <div className="dashboard-cards">

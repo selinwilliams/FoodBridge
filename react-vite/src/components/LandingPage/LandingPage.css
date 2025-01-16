@@ -148,12 +148,11 @@
         "bread fruits"
         "veggies veggies";
     gap: 2.5rem;
-    z-index: 1;
+    z-index: 2;
     transform: rotate(-3deg);
 }
 
 .food-illustration {
-    position: relative;
     background: transparent;
     border-radius: 30px;
     padding: 0;
@@ -163,7 +162,6 @@
     box-shadow: none;
     transition: all 0.3s ease;
     overflow: hidden;
-    z-index: 2;
 }
 
 .food-image {
@@ -185,13 +183,11 @@
 .bread-basket {
     grid-area: bread;
     aspect-ratio: 1;
-    z-index: 3;
 }
 
 .fruits-bowl {
     grid-area: fruits;
     aspect-ratio: 1;
-    z-index: 3;
 }
 
 .veggies-crate {
@@ -205,7 +201,6 @@
     position: relative;
     margin: 0;
     border-radius: 32px;
-    z-index: 1;
 }
 
 .veggies-crate .food-image {

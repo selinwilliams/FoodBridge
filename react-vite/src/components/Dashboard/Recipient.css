@@ -12,6 +12,9 @@
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .recipient-profile {
@@ -191,6 +194,37 @@
     margin-bottom: 1rem;
 }
 
+.provider-benefits {
+    background: #e8f5e9;
+    border: 1px solid #4CAF50;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.benefits-content {
+    flex: 1;
+}
+
+.benefits-content h4 {
+    color: #2e7d32;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.benefits-content ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #1b5e20;
+}
+
+.benefits-content li {
+    margin: 0.25rem 0;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .recipient-dashboard {
@@ -215,4 +249,31 @@
         margin-right: 0;
         margin-bottom: 1rem;
     }
+}
+
+.become-provider-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+    white-space: nowrap;
+}
+
+.become-provider-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.become-provider-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 }

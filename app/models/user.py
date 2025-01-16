@@ -8,7 +8,7 @@ from sqlalchemy import func, and_
 class UserType(Enum):
     PROVIDER = 'PROVIDER'
     RECIPIENT = 'RECIPIENT'
-    ADMIN = 'ADMIN'
+    ADMIN = 'ADMIN' 
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
