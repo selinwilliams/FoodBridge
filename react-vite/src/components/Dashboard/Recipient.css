@@ -1,0 +1,218 @@
+.recipient-dashboard {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 80px auto 0;
+    min-height: calc(100vh - 80px);
+    background-color: #f5f5f5;
+}
+
+.recipient-header {
+    margin-bottom: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipient-profile {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.recipient-profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4CAF50;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
+}
+
+.recipient-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.recipient-info h2 {
+    margin: 0;
+    color: #333;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.version {
+    color: #666;
+    font-size: 1rem;
+    background: #f5f5f5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card h3 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.food-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+.stat-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #4CAF50;
+    margin-right: 2rem;
+}
+
+.stat-content {
+    text-align: center;
+}
+
+.listing-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+.actions button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.view-btn, .add-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.view-btn:hover, .add-btn:hover {
+    background: #45a049;
+}
+
+.filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+.filter-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+.filter-name {
+    color: #333;
+    font-weight: 500;
+}
+
+.filter-count {
+    background: #4CAF50;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+    margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .recipient-dashboard {
+        padding: 1rem;
+        margin-top: 60px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .food-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .listing-metrics {
+        width: 100%;
+    }
+
+    .stat-circle {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
