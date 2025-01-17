@@ -185,3 +185,15 @@ def delete_provider(id):
     except Exception as e:
         db.session.rollback()
         return {'errors': [str(e)]}, 400
+
+@provider_routes.route('/user/<int:user_id>', methods=['GET'])
+def get_provider_by_user_id(user_id):
+    """Get provider profile by user ID"""
+    try:
+        provider = Provider.query.filter_by(user_id=user_id).first()
+        if not provider:
+            return {'errors': ['Provider not found']}, 404
+            
+        return provider.to_dict()
+    except Exception as e:
+        return {'errors': [str(e)]}, 500

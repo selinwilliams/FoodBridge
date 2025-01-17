@@ -9,18 +9,11 @@ const Provider = () => {
     const navigate = useNavigate();
     const [dataLoaded, setDataLoaded] = useState(false);
     
-    // Get data from Redux store with safe defaults
     const sessionUser = useSelector(state => state.session.user);
     const providerState = useSelector(state => state.provider || {});
     const { currentProvider, providerListings = [], errors, isLoading } = providerState;
 
     const [version] = useState('2.8.38');
-
-    // Debug log to check session state
-    useEffect(() => {
-        console.log('Session User:', sessionUser);
-        console.log('User Type:', sessionUser?.user_type);
-    }, [sessionUser]);
 
     // Initial data load
     useEffect(() => {
@@ -28,90 +21,19 @@ const Provider = () => {
             if (!sessionUser?.id) return;
 
             try {
-                const provider = await dispatch(thunkGetProviderById(sessionUser.id));
-                
-                // Only fetch listings if we have a provider
-                if (provider?.id) {
-                    await dispatch(thunkGetProviderListings(provider.id));
+                const providerData = await dispatch(thunkGetProviderById(sessionUser.id));
+                if (providerData?.id) {
+                    await dispatch(thunkGetProviderListings(providerData.id));
                 }
+            } catch (error) {
+                console.error('Error loading provider data:', error);
             } finally {
                 setDataLoaded(true);
             }
         };
 
-        if (sessionUser?.user_type === 'PROVIDER') {
-            loadInitialData();
-        }
+        loadInitialData();
     }, [dispatch, sessionUser]);
-
-    // Loading state while session is being initialized
-    if (!sessionUser && !dataLoaded) {
-        return (
-            <div className="loading-state">
-                <div className="loading-spinner">Loading session...</div>
-            </div>
-        );
-    }
-
-    // Early returns for all edge cases
-    if (!sessionUser) {
-        return (
-            <div className="error-state">
-                <h2>Access Denied</h2>
-                <p>Please log in to access the provider dashboard.</p>
-                <Link to="/login" className="retry-btn">Log In</Link>
-            </div>
-        );
-    }
-
-    if (sessionUser.user_type !== 'PROVIDER') {
-        return (
-            <div className="error-state">
-                <h2>Access Denied</h2>
-                <p>This dashboard is only accessible to providers. Current type: {sessionUser.user_type}</p>
-                <Link to="/dashboard" className="retry-btn">Go to Dashboard</Link>
-            </div>
-        );
-    }
-
-    if (isLoading || !dataLoaded) {
-        return (
-            <div className="loading-state">
-                <div className="loading-spinner">Loading your dashboard...</div>
-            </div>
-        );
-    }
-
-    if (errors) {
-        return (
-            <div className="error-state">
-                <h2>Something went wrong</h2>
-                <p>{errors}</p>
-                <button onClick={() => window.location.reload()} className="retry-btn">
-                    Try Again
-                </button>
-            </div>
-        );
-    }
-
-    // Show setup state if user doesn't have a provider profile
-    if (!currentProvider) {
-        return (
-            <div className="setup-state">
-                <h2>Welcome to FoodBridge</h2>
-                <p>Complete your provider profile to start managing donations.</p>
-                <Link to="/provider/profile" className="setup-btn">
-                    Complete Profile Setup
-                </Link>
-            </div>
-        );
-    }
-
-    // At this point, we're sure we have a currentProvider
-    const {
-        profile_image = '/default-avatar.png',
-        name = 'Provider'
-    } = currentProvider;
 
     // Calculate metrics
     const metrics = {
@@ -120,22 +42,17 @@ const Provider = () => {
         completed: providerListings.filter(listing => listing.status === 'completed').length
     };
 
-    // Calculate deductions
-    const deductions = providerListings
-        .filter(listing => listing.status === 'completed')
-        .reduce((total, listing) => total + (listing.value || 0), 0);
-
     return (
         <div className="provider-dashboard">
             <div className="provider-header">
                 <div className="provider-profile">
                     <img 
-                        src={profile_image}
-                        alt={name}
+                        src={currentProvider?.profile_image || '/prvrd.png'}
+                        alt={currentProvider?.business_name || 'Provider'}
                         className="profile-image"
                     />
                     <div className="provider-info">
-                        <h2>Welcome, {name}</h2>
+                        <h2>Welcome, {currentProvider?.business_name || 'Provider'}</h2>
                         <span className="version">v{version}</span>
                     </div>
                 </div>
@@ -149,64 +66,122 @@ const Provider = () => {
                     <h3>Food Donations</h3>
                     <div className="metrics">
                         <div className="metric">
-                            <span className="value">{metrics.total}</span>
-                            <span className="label">Total Donations</span>
+                            <span className="value">{metrics.total || 0}</span>
+                            <span className="label">Total Listings</span>
                         </div>
                         <div className="metric">
-                            <span className="value">{metrics.pending}</span>
+                            <span className="value">{metrics.pending || 0}</span>
                             <span className="label">Pending</span>
                         </div>
                         <div className="metric">
-                            <span className="value">{metrics.completed}</span>
+                            <span className="value">{metrics.completed || 0}</span>
                             <span className="label">Completed</span>
                         </div>
                     </div>
                     <div className="actions">
-                        <Link to="/listings/new" className="add-btn">Add Donation</Link>
+                        <button className="add-btn">Add</button>
+                        <button className="purge-btn">Purge</button>
                     </div>
                 </div>
 
                 <div className="card deductions">
                     <h3>Tax Deductions</h3>
-                    <div className="deduction-info">
-                        <div className="deduction-amount">
-                            <span className="value">${deductions.toLocaleString()}</span>
+                    <div className="metrics">
+                        <div className="metric">
+                            <span className="value">${(metrics.completed * 25).toFixed(2)}</span>
                             <span className="label">Total Deductions</span>
                         </div>
-                        <div className="chart">
-                            {/* Placeholder for deductions chart */}
-                        </div>
-                    </div>
-                    <div className="actions">
-                        <Link to="/deductions" className="add-btn">View Details</Link>
                     </div>
                 </div>
 
                 <div className="card donation-history">
-                    <h3>Recent Donations</h3>
+                    <h3>Donation History</h3>
                     <div className="history-list">
                         {providerListings.length > 0 ? (
-                            providerListings.slice(0, 5).map((listing) => (
-                                <div key={listing.id} className="history-item">
+                            providerListings.map((listing, index) => (
+                                <div key={index} className="history-item">
                                     <div className="history-info">
-                                        <span className="history-title">{listing.title}</span>
-                                        <span className="history-date">
-                                            {new Date(listing.created_at).toLocaleDateString()}
-                                        </span>
+                                        <span className="history-title">{listing.title || 'Food Donation'}</span>
+                                        <span className="history-date">{new Date(listing.created_at).toLocaleDateString()}</span>
                                     </div>
                                     <span className={`history-status ${listing.status}`}>
-                                        {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+                                        {listing.status}
                                     </span>
                                 </div>
                             ))
                         ) : (
                             <div className="no-history">
-                                <p>No donations yet. Start by adding your first donation!</p>
+                                <p>No donation history yet</p>
                             </div>
                         )}
                     </div>
-                    <div className="actions">
-                        <Link to="/listings" className="add-btn">View All History</Link>
+                </div>
+
+                <div className="card analytics">
+                    <h3>Monthly Analytics</h3>
+                    <div className="chart-container">
+                        <div className="bar-chart">
+                            {[...Array(7)].map((_, i) => (
+                                <div key={i} className="bar-wrapper">
+                                    <div 
+                                        className="bar" 
+                                        style={{ height: `${Math.random() * 100}%` }}
+                                    />
+                                    <span className="bar-label">Month {i + 1}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card deduction-details">
+                    <h3>Deduction Breakdown</h3>
+                    <div className="deduction-info">
+                        <div className="deduction-amount">
+                            <span className="value">${(metrics.completed * 25).toFixed(2)}</span>
+                            <span className="label">Total Deductions</span>
+                        </div>
+                        <div className="chart">
+                            <span className="percentage">
+                                {metrics.completed ? ((metrics.completed / metrics.total) * 100).toFixed(0) : 0}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card user-analytics">
+                    <h3>User Analytics</h3>
+                    <div className="metrics">
+                        <div className="metric">
+                            <span className="value">
+                                {providerListings.filter(l => l.status === 'claimed').length}
+                            </span>
+                            <span className="label">Claimed Items</span>
+                        </div>
+                        <div className="metric">
+                            <span className="value">
+                                {providerListings.filter(l => l.status === 'expired').length}
+                            </span>
+                            <span className="label">Expired Items</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card notifications">
+                    <h3>System Notifications</h3>
+                    <div className="notification-list">
+                        <div className="notification">
+                            <span className="icon">🔔</span>
+                            <span className="message">Welcome to your provider dashboard!</span>
+                        </div>
+                        <div className="notification">
+                            <span className="icon">📊</span>
+                            <span className="message">Your monthly analytics are ready.</span>
+                        </div>
+                        <div className="notification">
+                            <span className="icon">📦</span>
+                            <span className="message">New donation features available!</span>
+                        </div>
                     </div>
                 </div>
             </div>

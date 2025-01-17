@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { thunkCreateProvider, thunkUpdateProvider, thunkGetProviderById } from '../../redux/provider';
+import { thunkCreateProvider, thunkUpdateProvider, thunkGetProviderByUserId, setCurrentProvider } from '../../redux/provider';
 import './ProviderProfile.css';
 
 const ProviderProfile = () => {
@@ -9,11 +9,11 @@ const ProviderProfile = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const sessionUser = useSelector(state => state.session.user);
-    const providerState = useSelector(state => state.provider || {});
+    const providerState = useSelector(state => state.providers || {});
     const { currentProvider, errors } = providerState;
 
     const [formData, setFormData] = useState({
-        name: '',  // maps to business_name
+        name: '',
         business_type: 'RESTAURANT',
         address: '',
         city: '',
@@ -24,7 +24,6 @@ const ProviderProfile = () => {
         website: ''
     });
 
-    // Load provider data if it exists
     useEffect(() => {
         const loadProvider = async () => {
             if (!sessionUser?.id) {
@@ -33,91 +32,68 @@ const ProviderProfile = () => {
             }
 
             try {
-                await dispatch(thunkGetProviderById(sessionUser.id));
+                const data = await dispatch(thunkGetProviderByUserId(sessionUser.id));
+                if (data) {
+                    console.log('Loaded provider data:', data);
+                    dispatch(setCurrentProvider(data));
+                    setFormData({
+                        name: data.business_name || '',
+                        business_type: data.business_type || 'RESTAURANT',
+                        address: data.address || '',
+                        city: data.city || '',
+                        state: data.state || '',
+                        zip_code: data.zip_code || '',
+                        phone: data.phone || '',
+                        email: data.email || sessionUser?.email || '',
+                        website: data.website || ''
+                    });
+                }
             } catch (error) {
                 console.error('Error loading provider:', error);
             } finally {
                 setIsLoading(false);
             }
         };
+
         loadProvider();
     }, [dispatch, sessionUser]);
-
-    // Update form when provider data changes
-    useEffect(() => {
-        if (currentProvider) {
-            setFormData({
-                name: currentProvider.business_name || '',
-                business_type: currentProvider.business_type || 'RESTAURANT',
-                address: currentProvider.address || '',
-                city: currentProvider.city || '',
-                state: currentProvider.state || '',
-                zip_code: currentProvider.zip_code || '',
-                phone: currentProvider.phone || '',
-                email: currentProvider.email || sessionUser?.email || '',
-                website: currentProvider.website || ''
-            });
-        }
-    }, [currentProvider, sessionUser]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         
         try {
-            let result;
+            console.log('Current Provider:', currentProvider);
             if (currentProvider?.id) {
-                result = await dispatch(thunkUpdateProvider(currentProvider.id, formData));
-            } else {
-                result = await dispatch(thunkCreateProvider(formData));
-            }
-
-            if (result?.errors) {
-                console.error('Validation errors:', result.errors);
-                return;
-            }
-
-            if (result?.id) {
-                await dispatch(thunkGetProviderById(result.id));
-                navigate('/dashboard/provider');
+                const result = await dispatch(thunkUpdateProvider(currentProvider.id, formData));
+                if (result?.errors) {
+                    console.error('Validation errors:', result.errors);
+                    return;
+                }
+                if (result?.id) {
+                    navigate('/dashboard/provider');
+                }
             }
         } catch (error) {
-            console.error('Error submitting form:', error);
+            console.error('Error updating provider:', error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Early returns for edge cases
-    if (!sessionUser) {
-        return (
-            <div className="error-state">
-                <h2>Access Denied</h2>
-                <p>Please log in to access this page.</p>
-                <Link to="/login" className="retry-btn">Log In</Link>
-            </div>
-        );
-    }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-    if (isLoading) {
-        return (
-            <div className="loading-state">
-                <div className="loading-spinner">Loading...</div>
-            </div>
-        );
-    }
+    if (isLoading) return <div>Loading...</div>;
 
     return (
         <div className="provider-profile-form">
-            <h2>{currentProvider ? 'Edit Provider Profile' : 'Create Provider Profile'}</h2>
+            <h2>Edit Provider Profile</h2>
             {errors && <div className="error-message">{errors}</div>}
             
             <form onSubmit={handleSubmit}>
@@ -236,7 +212,7 @@ const ProviderProfile = () => {
                 </div>
 
                 <button type="submit" className="submit-btn" disabled={isLoading}>
-                    {isLoading ? 'Processing...' : (currentProvider ? 'Update Profile' : 'Create Profile')}
+                    {isLoading ? 'Processing...' : 'Update Profile'}
                 </button>
             </form>
         </div>

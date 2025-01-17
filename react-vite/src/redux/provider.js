@@ -33,7 +33,7 @@ const removeProvider = (providerId) => ({
     payload: providerId
 });
 
-const setCurrentProvider = (provider) => ({
+export  const setCurrentProvider = (provider) => ({
     type: SET_CURRENT_PROVIDER,
     payload: provider
 });
@@ -120,10 +120,22 @@ export const thunkCreateProvider = (providerData) => async (dispatch) => {
         });
 
         if (response.ok) {
-            const newProvider = await response.json();
-            dispatch(addProvider(newProvider));
-            dispatch(setCurrentProvider(newProvider));
-            return newProvider;
+            const data = await response.json();
+            
+            // Update provider state
+            dispatch(addProvider(data.provider));
+            dispatch(setCurrentProvider(data.provider));
+            
+            // Update session user with new user type
+            dispatch({ 
+                type: 'session/SET_USER', 
+                payload: { 
+                    ...data.user, 
+                    user_type: 'PROVIDER' 
+                } 
+            });
+            
+            return data.provider;
         } else {
             const error = await response.json();
             dispatch(setErrors(error.errors || error.message || 'Failed to create provider'));
@@ -137,22 +149,35 @@ export const thunkCreateProvider = (providerData) => async (dispatch) => {
 };
 
 export const thunkUpdateProvider = (providerId, updates) => async (dispatch) => {
+    console.log('Updating provider with ID:', providerId);
+    console.log('Updates:', updates);
+    dispatch(setLoading(true));
     try {
         const response = await csrfFetch(`/api/providers/${providerId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
         });
-
+        
+        console.log('Response:', response);
+        const data = await response.json();
+        
         if (response.ok) {
-            const updatedProvider = await response.json();
-            dispatch(updateProvider(updatedProvider));
-            dispatch(setCurrentProvider(updatedProvider));
-            return updatedProvider;
+            dispatch(updateProvider(data));
+            dispatch(setCurrentProvider(data));
+            dispatch(setErrors(null));
+            return data;
+        } else {
+            console.error('Update error:', data);
+            dispatch(setErrors(data.errors || 'Failed to update provider'));
+            return null;
         }
     } catch (error) {
-        dispatch(setErrors(error.message));
-        return error;
+        console.error('Update provider error:', error);
+        dispatch(setErrors('Failed to update provider'));
+        return null;
+    } finally {
+        dispatch(setLoading(false));
     }
 };
 
@@ -198,6 +223,31 @@ export const thunkGetProviderListings = (providerId) => async (dispatch) => {
     } catch (error) {
         dispatch(setErrors(error.message));
         return error;
+    }
+};
+
+export const thunkGetProviderByUserId = (userId) => async (dispatch) => {
+    dispatch(setLoading(true));
+    try {
+        const response = await csrfFetch(`/api/providers/user/${userId}`);
+        if (response.ok) {
+            const data = await response.json();
+            dispatch(setCurrentProvider(data));
+            dispatch(setErrors(null));
+            return data;
+        } else {
+            const errorData = await response.json();
+            dispatch(setErrors(errorData.errors || 'Failed to load provider'));
+            dispatch(clearCurrentProvider());
+            return null;
+        }
+    } catch (error) {
+        console.error('Error in thunkGetProviderByUserId:', error);
+        dispatch(setErrors('Failed to load provider profile'));
+        dispatch(clearCurrentProvider());
+        return null;
+    } finally {
+        dispatch(setLoading(false));
     }
 };
 

@@ -59,93 +59,77 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    margin-top: 2rem;
+    padding: 2rem;
 }
 
 .card {
     background: white;
-    border-radius: 15px;
+    border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card h3 {
-    margin: 0 0 1.5rem 0;
     color: #333;
+    margin-bottom: 1.5rem;
     font-size: 1.2rem;
-    font-weight: 600;
 }
 
 .metrics {
     display: flex;
     justify-content: space-around;
-    align-items: center;
     margin-bottom: 1.5rem;
-    flex: 1;
-    flex-wrap: wrap;
-    gap: 1.5rem;
 }
 
 .metric {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
     text-align: center;
-    background: #f5f5f5;
-    padding: 1.5rem;
-    border-radius: 10px;
-    min-width: 120px;
-    flex: 1;
 }
 
-.value {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #4CAF50;
+.metric .value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #4a90e2;
+    margin-bottom: 0.5rem;
 }
 
-.label {
-    font-size: 0.9rem;
+.metric .label {
     color: #666;
-    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .actions {
     display: flex;
     gap: 1rem;
-    margin-top: auto;
-    padding-top: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .actions button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 25px;
+    flex: 1;
+    padding: 0.75rem;
     border: none;
+    border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
+    transition: background-color 0.2s;
 }
 
 .add-btn {
-    background: #4CAF50;
+    background-color: #4CAF50;
     color: white;
 }
 
 .purge-btn {
-    background: #f5f5f5;
-    color: #333;
+    background-color: #f44336;
+    color: white;
 }
 
 .add-btn:hover {
-    background: #45a049;
+    background-color: #43A047;
 }
 
 .purge-btn:hover {
-    background: #e0e0e0;
+    background-color: #E53935;
 }
 
 .deduction-info {
@@ -400,4 +384,100 @@
 
 .edit-profile-btn:hover {
     background-color: #45a049;
+}
+
+.chart-placeholder {
+    height: 200px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.bar-chart {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.bar {
+    flex: 1;
+    background: #4CAF50;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s ease;
+}
+
+.notification-list {
+    margin-top: 1rem;
+}
+
+.notification {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.notification .icon {
+    font-size: 1.2rem;
+}
+
+.notification .message {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.user-analytics .metrics {
+    margin-top: 1rem;
+}
+
+.donation-history .chart {
+    margin-top: 1rem;
+}
+
+.chart-container {
+    height: 200px;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.bar-chart {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bar {
+    width: 100%;
+    background: #4CAF50;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s ease;
+}
+
+.bar-label {
+    font-size: 0.8rem;
+    color: #666;
+    transform: rotate(-45deg);
+}
+
+.percentage {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4CAF50;
 }
