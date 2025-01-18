@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { thunkAddListing, thunkGetProviderListings, setLoading } from '../../redux/foodListing';
 import { thunkGetProviderByUserId } from '../../redux/provider';
 import { useModal } from '../../context/Modal';
-import './FoodListingModal.css';
+import './CreateFoodListingModal.css';
 
-function FoodListingModal() {
+function CreateFoodListingModal() {
     const dispatch = useDispatch();
     const { closeModal } = useModal();
     const [errors, setErrors] = useState({});
@@ -245,4 +245,4 @@ function FoodListingModal() {
     );
 }
 
-export default FoodListingModal; 
+export default CreateFoodListingModal; 

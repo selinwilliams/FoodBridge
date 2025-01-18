@@ -4,16 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { thunkGetProviderById } from '../../redux/provider';
 import { thunkGetProviderListings } from '../../redux/foodListing';
 import { useModal } from '../../context/Modal';
-import FoodListingModal from '../FoodListingModal/FoodListingModal';
+import CreateFoodListingModal from '../FoodListing/CreateFoodListingModal'
 import './Provider.css';
-import { mockProvider } from '../../mock/mockProvider';
-// import { thunkGetProviderListings } from '../../redux/foodListing';
+import EditListingModal from '../FoodListing/EditListingModal';
+import DeleteListingModal from '../FoodListing/DeleteListingModal';
 
 const Provider = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [dataLoaded, setDataLoaded] = useState(false);
-    const { setModalContent } = useModal();
+    const { setModalContent, closeModal } = useModal();
     const sessionUser = useSelector(state => state.session.user);
     const currentProvider = useSelector(state => state.providers.currentProvider);
     const providerListings = useSelector(state => state.foodListings.listings);
@@ -25,11 +25,10 @@ const Provider = () => {
             if (sessionUser?.id) {
                 try {
                     const provider = await dispatch(thunkGetProviderById(sessionUser.id));
-                    console.log('Loaded provider:', provider);
+                  
                     
                     if (provider?.id) {
                         const listings = await dispatch(thunkGetProviderListings(provider.id));
-                        console.log('Loaded listings:', listings);
                     }
                 } catch (error) {
                     console.error('Error loading data:', error);
@@ -44,15 +43,7 @@ const Provider = () => {
         loadData();
     }, [dispatch, sessionUser]);
 
-    // Debug logging
-    useEffect(() => {
-        console.log('Current State:', {
-            sessionUser,
-            currentProvider,
-            providerListings,
-            isLoading
-        });
-    }, [sessionUser, currentProvider, providerListings, isLoading]);
+
 
     if (isLoading) {
         return (
@@ -69,10 +60,10 @@ const Provider = () => {
     pending: providerListings.filter(listing => listing.status === 'pending').length,
     completed: providerListings.filter(listing => listing.status === 'completed').length
 };
-console.log('currentProvider', currentProvider);
+
 // Add this check
 const handleAddListing = () => {
-    setModalContent(<FoodListingModal />);
+    setModalContent(<CreateFoodListingModal />);
 };
     if (!currentProvider) {
         return (
@@ -84,6 +75,26 @@ const handleAddListing = () => {
         );
     }
 
+    const handleEdit = (listing) => {
+        setModalContent(
+            <EditListingModal 
+            listing={listing}
+            onSuccess={() => {
+                closeModal();
+                if (currentProvider?.id) {
+                    dispatch(thunkGetProviderListings(currentProvider.id));
+                }
+            }}
+            />
+        );
+    };
+
+    const handleDelete = (listing) => {
+        setModalContent(
+            <DeleteListingModal listing={listing} />
+        )
+    }
+    
     return (
         <div className="provider-dashboard">
             <div className="dashboard-header">
@@ -239,8 +250,8 @@ const handleAddListing = () => {
                                     </div>
                                 </div>
                                 <div className="listing-actions">
-                                    <button className="edit-btn">Edit</button>
-                                    <button className="delete-btn">Delete</button>
+                                    <button className="edit-btn" onClick={() => handleEdit(listing)}>Edit</button>
+                                    <button className="delete-btn" onClick={() => handleDelete(listing)}>Delete</button>
                                 </div>
                             </div>
                         ))}

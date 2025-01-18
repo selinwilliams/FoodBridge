@@ -89,14 +89,30 @@ export const thunkAddListing = (listingData) => async (dispatch) => {
 export const thunkUpdateListing = (listingId, listing) => async (dispatch) => {
     dispatch(setLoading(true));
     try {
+        console.log('Updating listing:', listingId, listing);
         const response = await csrfFetch(`/api/food-listings/${listingId}`, {
             method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(listing)
         });
-        const data = await response.json();
-        dispatch(updateListing(data));
+
+        if (!response.ok) {
+            const error = await response.json();
+            console.error('Update failed:', error);
+            return { errors: error.errors || 'Failed to update listing' };
+        }
+
+        const updatedListing = await response.json();
+        console.log('Update successful:', updatedListing);
+        
+        dispatch(updateListing(updatedListing));
+        return updatedListing;
+
     } catch (error) {
-        dispatch(setError(error));
+        console.error('Error in thunkUpdateListing:', error);
+        return { errors: { server: error.message || 'An error occurred while updating the listing' } };
     } finally {
         dispatch(setLoading(false));
     }
