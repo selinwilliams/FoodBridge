@@ -2,10 +2,15 @@
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    background: #f8f9fa;
 }
 
 .admin-header {
     margin-bottom: 2rem;
+    background: #1e2a38;
+    border-radius: 15px;
+    padding: 1.5rem;
+    color: white;
 }
 
 .admin-profile {
@@ -29,12 +34,12 @@
 
 .admin-info h2 {
     margin: 0;
-    color: #333;
+    color: white;
     font-size: 1.5rem;
 }
 
 .version {
-    color: #666;
+    color: #a8b2c1;
     font-size: 0.9rem;
 }
 
@@ -138,4 +143,193 @@
 .notification-list {
     max-height: 300px;
     overflow-y: auto;
+}
+
+.card.distribution-centers {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.center-list {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.center-item {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.center-item:last-child {
+    border-bottom: none;
+}
+
+.center-info {
+    flex: 1;
+}
+
+.center-info h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.center-details {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.center-details p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.center-details strong {
+    color: #333;
+}
+
+.status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status.open {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.status.closed {
+    background: #fde7e9;
+    color: #dc3545;
+}
+
+.center-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.edit-btn:hover {
+    background: #0056b3;
+}
+
+.add-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-btn:hover {
+    background: #218838;
+}
+
+.view-all-btn {
+    background: #f5f5f5;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.view-all-btn:hover {
+    background: #e0e0e0;
+}
+
+.metrics {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+}
+
+.metric {
+    text-align: center;
+}
+
+.metric .value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.metric .label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+/* Add these styles for loading state */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #dc3545;
+    padding: 1rem;
+}
+
+.error-message i {
+    font-size: 1.2rem;
+}
+
+/* Disabled state for buttons */
+.action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

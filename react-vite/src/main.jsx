@@ -22,7 +22,7 @@ if (import.meta.env.MODE !== "production") {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ReduxProvider store={store}>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} future={{v7_startTransition: true, v7_relativeSplatPath: true}}/>
     </ReduxProvider>
   </React.StrictMode>
 );
