@@ -11,7 +11,8 @@ const ProviderProfile = () => {
     const sessionUser = useSelector(state => state.session.user);
     const providerState = useSelector(state => state.providers || {});
     const { currentProvider, errors } = providerState;
-
+    const isNewProvider = !currentProvider?.id;
+    // console.log('isNewProvider', isNewProvider);
     const [formData, setFormData] = useState({
         name: '',
         business_type: 'RESTAURANT',
@@ -34,7 +35,6 @@ const ProviderProfile = () => {
             try {
                 const data = await dispatch(thunkGetProviderByUserId(sessionUser.id));
                 if (data) {
-                    console.log('Loaded provider data:', data);
                     dispatch(setCurrentProvider(data));
                     setFormData({
                         name: data.business_name || '',
@@ -63,19 +63,23 @@ const ProviderProfile = () => {
         setIsLoading(true);
         
         try {
-            console.log('Current Provider:', currentProvider);
-            if (currentProvider?.id) {
-                const result = await dispatch(thunkUpdateProvider(currentProvider.id, formData));
-                if (result?.errors) {
-                    console.error('Validation errors:', result.errors);
-                    return;
-                }
-                if (result?.id) {
-                    navigate('/dashboard/provider');
-                }
+            let result;
+            if (isNewProvider) {
+                result = await dispatch(thunkCreateProvider(formData));
+            } else {
+                result = await dispatch(thunkUpdateProvider(currentProvider.id, formData));
+            }
+
+            if (result?.errors) {
+                console.error('Validation errors:', result.errors);
+                return;
+            }
+            
+            if (result?.id) {
+                navigate('/dashboard/provider');
             }
         } catch (error) {
-            console.error('Error updating provider:', error);
+            console.error('Error saving provider:', error);
         } finally {
             setIsLoading(false);
         }
@@ -93,7 +97,7 @@ const ProviderProfile = () => {
 
     return (
         <div className="provider-profile-form">
-            <h2>Edit Provider Profile</h2>
+            <h2>{isNewProvider ? 'Create Provider Profile' : 'Edit Provider Profile'}</h2>
             {errors && <div className="error-message">{errors}</div>}
             
             <form onSubmit={handleSubmit}>
@@ -212,7 +216,7 @@ const ProviderProfile = () => {
                 </div>
 
                 <button type="submit" className="submit-btn" disabled={isLoading}>
-                    {isLoading ? 'Processing...' : 'Update Profile'}
+                    {isLoading ? 'Processing...' : (isNewProvider ? 'Create Profile' : 'Update Profile')}
                 </button>
             </form>
         </div>

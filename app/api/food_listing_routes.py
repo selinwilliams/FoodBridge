@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app.models import FoodListing, db
 from app.models.food_listing import FoodStatus, FoodType
@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from sqlalchemy import and_, or_
 from functools import wraps
 import json
+from app.utils.error_handlers import handle_errors
+
 
 food_listing_routes = Blueprint('food_listings', __name__, url_prefix='/api/food-listings')
 
@@ -142,6 +144,7 @@ def get_listing(id):
 
 @food_listing_routes.route('', methods=['POST'])
 @provider_required
+@handle_errors
 def create_listing():
     """Create a new food listing"""
     try:

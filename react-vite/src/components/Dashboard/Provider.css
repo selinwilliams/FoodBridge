@@ -101,35 +101,44 @@
 .actions {
     display: flex;
     gap: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
-.actions button {
-    flex: 1;
-    padding: 0.75rem;
+.add-btn, .purge-btn {
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    min-width: 100px;
 }
 
 .add-btn {
-    background-color: #4CAF50;
+    background-color: #4a90e2;
     color: white;
-}
-
-.purge-btn {
-    background-color: #f44336;
-    color: white;
+    pointer-events: auto;
 }
 
 .add-btn:hover {
-    background-color: #43A047;
+    background-color: #357abd;
+    transform: translateY(-1px);
+}
+
+.purge-btn {
+    background-color: #e53e3e;
+    color: white;
 }
 
 .purge-btn:hover {
-    background-color: #E53935;
+    background-color: #c53030;
+}
+
+/* Remove any disabled styles that might interfere */
+.add-btn:not(:disabled) {
+    opacity: 1;
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 .deduction-info {
@@ -480,4 +489,89 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: #4CAF50;
+}
+
+.listings-section {
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+.listings-section h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.food-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+}
+
+.food-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.food-info h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.listing-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.listing-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.listing-actions button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #43A047;
+}
+
+.delete-btn:hover {
+    background-color: #E53935;
 }

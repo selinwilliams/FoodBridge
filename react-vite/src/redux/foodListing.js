@@ -29,9 +29,9 @@ const deleteListing = (listingId) => ({
     payload: listingId
 });
 
-const setLoading = (loading) => ({
+export const setLoading = (isLoading) => ({
     type: SET_LOADING,
-    payload: loading
+    payload: isLoading
 });
 
 const setError = (error) => ({
@@ -53,17 +53,34 @@ export const thunkLoadListings = () => async (dispatch) => {
     }
 };
 
-export const thunkAddListing = (listing) => async (dispatch) => {
+export const thunkAddListing = (listingData) => async (dispatch) => {
     dispatch(setLoading(true));
     try {
+        console.log('Sending listing data:', listingData); // Debug log
+        
         const response = await csrfFetch('/api/food-listings', {
             method: 'POST',
-            body: JSON.stringify(listing)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(listingData)
         });
-        const data = await response.json();
-        dispatch(addListing(data));
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server error:', errorData); // Debug log
+            return { errors: errorData.errors || 'Failed to create listing' };
+        }
+        
+        const newListing = await response.json();
+        console.log('Created listing:', newListing); // Debug log
+        
+        dispatch(addListing(newListing));
+        return newListing;
+        
     } catch (error) {
-        dispatch(setError(error));
+        console.error('Error in thunkAddListing:', error); // Debug log
+        return { errors: { server: 'An error occurred while creating the listing' } };
     } finally {
         dispatch(setLoading(false));
     }
@@ -97,27 +114,70 @@ export const thunkDeleteListing = (listingId) => async (dispatch) => {
     }
 };
 
+export const thunkGetProviderListings = (providerId) => async (dispatch) => {
+    dispatch(setLoading(true));
+    try {
+        const response = await csrfFetch(`/api/providers/${providerId}/listings`);
+        
+        if (response.ok) {
+            const listings = await response.json();
+            dispatch(loadListings(listings));
+            return listings;
+        } else {
+            const errors = await response.json();
+            dispatch(setError(errors));
+            return { errors };
+        }
+    } catch (error) {
+        console.error('Error fetching provider listings:', error);
+        dispatch(setError({ server: 'Failed to load listings' }));
+        return { errors: { server: 'Failed to load listings' } };
+    } finally {
+        dispatch(setLoading(false));
+    }
+};
+
 //Reducer
 const initialState = {
     listings: [],
-    loading: false,
+    isLoading: false,
     error: null
 };
 
 const foodListingReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_LISTINGS:
-            return { ...state, listings: action.payload };
+            return {
+                ...state,
+                listings: action.payload.listings || action.payload // Handle both {listings: []} and [] formats
+            };
         case ADD_LISTING:
-            return { ...state, listings: [...state.listings, action.payload] };
+            return {
+                ...state,
+                listings: [...state.listings, action.payload]
+            };
         case UPDATE_LISTING:
-            return { ...state, listings: state.listings.map(listing => listing.id === action.payload.id ? action.payload : listing) };
+            return {
+                ...state,
+                listings: state.listings.map(listing =>
+                    listing.id === action.payload.id ? action.payload : listing
+                )
+            };
         case DELETE_LISTING:
-            return { ...state, listings: state.listings.filter(listing => listing.id !== action.payload) };
+            return {
+                ...state,
+                listings: state.listings.filter(listing => listing.id !== action.payload)
+            };
         case SET_LOADING:
-            return { ...state, loading: action.payload };
+            return {
+                ...state,
+                isLoading: action.payload
+            };
         case SET_ERROR:
-            return { ...state, error: action.payload };
+            return {
+                ...state,
+                error: action.payload
+            };
         default:
             return state;
     }

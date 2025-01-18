@@ -197,3 +197,21 @@ def get_provider_by_user_id(user_id):
         return provider.to_dict()
     except Exception as e:
         return {'errors': [str(e)]}, 500
+
+@provider_routes.route('/<int:provider_id>/listings', methods=['GET'])
+@login_required
+def get_provider_listings(provider_id):
+    """
+    Get all food listings for a specific provider
+    """
+    provider = Provider.query.get_or_404(provider_id)
+    
+    # Add debug logging
+    print(f"Fetching listings for provider {provider_id}")
+    
+    listings = FoodListing.query.filter_by(provider_id=provider_id).all()
+    
+    # Add debug logging
+    print(f"Found {len(listings)} listings")
+    
+    return {'listings': [listing.to_dict() for listing in listings]}

@@ -20,3 +20,4 @@ sqlalchemy==1.4.46
 werkzeug==2.2.2
 wtforms==3.0.1
 psycopg2-binary
+email_validator==2.1.0

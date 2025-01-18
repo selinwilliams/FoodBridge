@@ -67,33 +67,25 @@ export const thunkGetProviders = () => async (dispatch) => {
     }
 };
 
-export const thunkGetProviderById = (providerId) => async (dispatch) => {
-    dispatch(setLoading(true));
+export const thunkGetProviderById = (userId) => async (dispatch) => {
     try {
-        // First try to get the current provider if no ID is provided
-        const endpoint = providerId ? `/api/providers/${providerId}` : '/api/providers/current';
-        const response = await csrfFetch(endpoint);
+        console.log('Fetching provider for user:', userId); // Debug log
+        const response = await csrfFetch(`/api/providers/user/${userId}`);
         
-        if (response.ok) {
-            const provider = await response.json();
-            dispatch(setCurrentProvider(provider));
-            dispatch(setErrors(null));
-            return provider;
-        } else if (response.status === 404) {
-            // This is not an error, just means the user hasn't created a provider profile yet
-            dispatch(clearCurrentProvider());
-            dispatch(setErrors(null));
-            return null;
-        } else {
-            const errorData = await response.json();
-            dispatch(setErrors(errorData.errors || 'Failed to load provider'));
+        if (!response.ok) {
+            console.error('Failed to fetch provider:', response.status);
             return null;
         }
+        
+        const provider = await response.json();
+        console.log('Fetched provider:', provider); // Debug log
+        
+        dispatch(setCurrentProvider(provider));
+        return provider;
+        
     } catch (error) {
-        dispatch(setErrors(error.message || 'Failed to load provider'));
+        console.error('Error fetching provider:', error);
         return null;
-    } finally {
-        dispatch(setLoading(false));
     }
 };
 
@@ -212,19 +204,6 @@ export const thunkGetNearbyProviders = (latitude, longitude, radius) => async (d
     }
 };
 
-export const thunkGetProviderListings = (providerId) => async (dispatch) => {
-    try {
-        const response = await csrfFetch(`/api/providers/${providerId}/listings`);
-        if (response.ok) {
-            const listings = await response.json();
-            dispatch(loadProviderListings(listings));
-            return listings;
-        }
-    } catch (error) {
-        dispatch(setErrors(error.message));
-        return error;
-    }
-};
 
 export const thunkGetProviderByUserId = (userId) => async (dispatch) => {
     dispatch(setLoading(true));
@@ -253,10 +232,9 @@ export const thunkGetProviderByUserId = (userId) => async (dispatch) => {
 
 // Initial State
 const initialState = {
-    allProviders: {},
     currentProvider: null,
+    providers: [],
     nearbyProviders: [],
-    providerListings: [],
     errors: null,
     isLoading: false
 };
@@ -298,37 +276,27 @@ const providerReducer = (state = initialState, action) => {
         case ADD_PROVIDER:
             return {
                 ...state,
-                allProviders: {
-                    ...state.allProviders,
-                    [action.payload.id]: action.payload
-                },
+                providers: [...state.providers, action.payload],
                 errors: null
             };
         case UPDATE_PROVIDER:
             return {
                 ...state,
-                allProviders: {
-                    ...state.allProviders,
-                    [action.payload.id]: {
-                        ...state.allProviders[action.payload.id],
-                        ...action.payload
-                    }
-                },
+                providers: state.providers.map(provider =>
+                    provider.id === action.payload.id ? { ...provider, ...action.payload } : provider
+                ),
                 currentProvider: state.currentProvider?.id === action.payload.id 
                     ? { ...state.currentProvider, ...action.payload }
                     : state.currentProvider,
                 errors: null
             };
-        case REMOVE_PROVIDER: {
-            const newProviders = { ...state.allProviders };
-            delete newProviders[action.payload];
+        case REMOVE_PROVIDER:
             return {
                 ...state,
-                allProviders: newProviders,
+                providers: state.providers.filter(provider => provider.id !== action.payload),
                 currentProvider: state.currentProvider?.id === action.payload ? null : state.currentProvider,
                 errors: null
             };
-        }
         case LOAD_NEARBY_PROVIDERS:
             return {
                 ...state,

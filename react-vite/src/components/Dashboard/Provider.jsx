@@ -1,64 +1,93 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { thunkGetProviderById, thunkGetProviderListings } from '../../redux/provider';
+import { useNavigate } from 'react-router-dom';
+import { thunkGetProviderById } from '../../redux/provider';
+import { thunkGetProviderListings } from '../../redux/foodListing';
+import { useModal } from '../../context/Modal';
+import FoodListingModal from '../FoodListingModal/FoodListingModal';
 import './Provider.css';
+import { mockProvider } from '../../mock/mockProvider';
+// import { thunkGetProviderListings } from '../../redux/foodListing';
 
 const Provider = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [dataLoaded, setDataLoaded] = useState(false);
-    
+    const { setModalContent } = useModal();
     const sessionUser = useSelector(state => state.session.user);
-    const providerState = useSelector(state => state.provider || {});
-    const { currentProvider, providerListings = [], errors, isLoading } = providerState;
+    const currentProvider = useSelector(state => state.providers.currentProvider);
+    const providerListings = useSelector(state => state.foodListings.listings);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [version] = useState('2.8.38');
-
-    // Initial data load
+    // First useEffect - Always runs
     useEffect(() => {
-        const loadInitialData = async () => {
-            if (!sessionUser?.id) return;
-
-            try {
-                const providerData = await dispatch(thunkGetProviderById(sessionUser.id));
-                if (providerData?.id) {
-                    await dispatch(thunkGetProviderListings(providerData.id));
+        const loadData = async () => {
+            if (sessionUser?.id) {
+                try {
+                    const provider = await dispatch(thunkGetProviderById(sessionUser.id));
+                    console.log('Loaded provider:', provider);
+                    
+                    if (provider?.id) {
+                        const listings = await dispatch(thunkGetProviderListings(provider.id));
+                        console.log('Loaded listings:', listings);
+                    }
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                } finally {
+                    setIsLoading(false);
                 }
-            } catch (error) {
-                console.error('Error loading provider data:', error);
-            } finally {
-                setDataLoaded(true);
+            } else {
+                setIsLoading(false);
             }
         };
 
-        loadInitialData();
+        loadData();
     }, [dispatch, sessionUser]);
 
-    // Calculate metrics
-    const metrics = {
-        total: providerListings.length,
-        pending: providerListings.filter(listing => listing.status === 'pending').length,
-        completed: providerListings.filter(listing => listing.status === 'completed').length
-    };
+    // Debug logging
+    useEffect(() => {
+        console.log('Current State:', {
+            sessionUser,
+            currentProvider,
+            providerListings,
+            isLoading
+        });
+    }, [sessionUser, currentProvider, providerListings, isLoading]);
+
+    if (isLoading) {
+        return (
+            <div className="provider-dashboard">
+                <div className="loading-state">
+                    <p>Loading provider data...</p>
+                </div>
+            </div>
+        );
+    }
+ // Calculate metrics
+ const metrics = {
+    total: providerListings.length,
+    pending: providerListings.filter(listing => listing.status === 'pending').length,
+    completed: providerListings.filter(listing => listing.status === 'completed').length
+};
+console.log('currentProvider', currentProvider);
+// Add this check
+const handleAddListing = () => {
+    setModalContent(<FoodListingModal />);
+};
+    if (!currentProvider) {
+        return (
+            <div className="provider-dashboard">
+                <div className="no-provider-state">
+                    <p>No provider profile found. Please create one first.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="provider-dashboard">
-            <div className="provider-header">
-                <div className="provider-profile">
-                    <img 
-                        src={currentProvider?.profile_image || '/prvrd.png'}
-                        alt={currentProvider?.business_name || 'Provider'}
-                        className="profile-image"
-                    />
-                    <div className="provider-info">
-                        <h2>Welcome, {currentProvider?.business_name || 'Provider'}</h2>
-                        <span className="version">v{version}</span>
-                    </div>
-                </div>
-                <Link to="/provider/profile" className="edit-profile-btn">
-                    Edit Profile
-                </Link>
+            <div className="dashboard-header">
+                <h1>Welcome, {currentProvider.business_name}!</h1>
             </div>
 
             <div className="dashboard-cards">
@@ -79,7 +108,12 @@ const Provider = () => {
                         </div>
                     </div>
                     <div className="actions">
-                        <button className="add-btn">Add</button>
+                        <button 
+                            className="add-btn" 
+                            onClick={handleAddListing}
+                        >
+                            Add Listing
+                        </button>
                         <button className="purge-btn">Purge</button>
                     </div>
                 </div>
@@ -184,6 +218,38 @@ const Provider = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div className="listings-section">
+                <h2>Your Listings</h2>
+                {Array.isArray(providerListings) && providerListings.length > 0 ? (
+                    <div className="food-grid">
+                        {providerListings.map(listing => (
+                            <div key={listing.id} className="food-card">
+                                <div className="food-card-content">
+                                    <div className="food-info">
+                                        <h3>{listing.title}</h3>
+                                        <p>{listing.description}</p>
+                                        <div className="listing-details">
+                                            <span>Quantity: {listing.quantity} {listing.unit}</span>
+                                            <span>Status: {listing.status}</span>
+                                            <span>Type: {listing.food_type}</span>
+                                            <span>Expires: {new Date(listing.expiration_date).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="listing-actions">
+                                    <button className="edit-btn">Edit</button>
+                                    <button className="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="no-listings">
+                        <p>No listings found. Create your first listing!</p>
+                    </div>
+                )}
             </div>
         </div>
     );
