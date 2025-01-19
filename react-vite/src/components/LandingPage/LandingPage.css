@@ -144,12 +144,16 @@
 .hero-illustrations {
     position: relative;
     display: grid;
-    grid-template-areas: 
-        "bread fruits"
-        "veggies veggies";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
     gap: 2.5rem;
     z-index: 2;
     transform: rotate(-3deg);
+    width: 100%;
+    height: 100%;
+    align-items: start;
+    /* padding: 0 2rem; */
+    /* padding-right: 10rem; */
 }
 
 .food-illustration {
@@ -162,6 +166,8 @@
     box-shadow: none;
     transition: all 0.3s ease;
     overflow: hidden;
+    position: relative;
+    z-index: 3;
 }
 
 .food-image {
@@ -170,6 +176,7 @@
     object-fit: cover;
     border-radius: 24px;
     transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .food-illustration:hover {
@@ -181,17 +188,22 @@
 }
 
 .bread-basket {
-    grid-area: bread;
+    width: 100%;
     aspect-ratio: 1;
+    justify-self: start;
+    transform: translateX(-2rem);
 }
 
 .fruits-bowl {
-    grid-area: fruits;
+    width: 100%;
     aspect-ratio: 1;
+    margin-right: 60px;
+    justify-self: end;
+    transform: translateX(2rem);
 }
 
 .veggies-crate {
-    grid-area: veggies;
+    grid-column: 1 / -1;
     width: 100%;
     height: 320px;
     overflow: hidden;
@@ -201,6 +213,7 @@
     position: relative;
     margin: 0;
     border-radius: 32px;
+    z-index: 2;
 }
 
 .veggies-crate .food-image {
@@ -223,10 +236,13 @@
     background: var(--cream);
     padding: 3rem;
     border-radius: 36px;
-    text-align: left;
+    text-align: center;
     transition: all 0.3s ease;
     position: relative;
     border: 1px solid rgba(92, 64, 51, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .info-section:hover {
@@ -238,18 +254,24 @@
 .section-icon {
     width: 120px;
     height: 120px;
-    margin-bottom: 2.5rem;
+    margin: 0 auto 2.5rem auto;
     border-radius: 24px;
     overflow: hidden;
     transition: all 0.3s ease;
     box-shadow: 0 10px 20px rgba(92, 64, 51, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .icon-image {
-    width: 100%;
-    height: 100%;
+    width: 120px;
+    height: 120px;
     object-fit: cover;
+    object-position: center;
     transition: all 0.3s ease;
+    display: block;
 }
 
 .info-section:hover .section-icon {
@@ -419,4 +441,106 @@
 .veggies-crate:hover .food-image {
     animation: shake 0.5s ease-in-out infinite;
     transform: scale(1.1);  /* Maintain the scale we need for proper image display */
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.contact-modal {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.contact-modal h2 {
+    color: var(--brown);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: var(--brown);
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 0.8rem;
+    border: 2px solid var(--beige);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(124, 152, 133, 0.2);
+}
+
+.submit-button {
+    background: var(--sage);
+    color: var(--white);
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+    background: var(--sage-dark);
+    transform: translateY(-2px);
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--brown);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover {
+    color: var(--brown-dark);
+    transform: rotate(90deg);
 }

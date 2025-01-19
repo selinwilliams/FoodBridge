@@ -71,14 +71,13 @@ def get_current_provider_listings():
 @login_required
 def create_provider():
     """Create a new provider profile"""
-    if current_user.provider:
-        return {'errors': ['Provider profile already exists']}, 400
-        
     try:
-        data = request.json
+        # Check if provider profile already exists
+        existing_provider = Provider.query.filter_by(user_id=current_user.id).first()
+        if existing_provider:
+            return {'errors': ['Provider profile already exists']}, 400
         
-        # Update user type first
-        current_user.user_type = UserType.PROVIDER
+        data = request.json
         
         # Create provider profile
         provider = Provider(
@@ -95,7 +94,15 @@ def create_provider():
         
         db.session.add(provider)
         db.session.commit()
-        return provider.to_dict(), 201
+        
+        return {
+            'provider': provider.to_dict(),
+            'user': {
+                'id': current_user.id,
+                'email': current_user.email,
+                'user_type': current_user.user_type.value
+            }
+        }, 201
             
     except Exception as e:
         db.session.rollback()

@@ -333,3 +333,43 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+.card.user-stats {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+}
+
+.card.user-stats .metric .value,
+.card.user-stats .metric .label {
+    color: white;
+}
+
+.card.user-stats h3 {
+    color: white;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.metric {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.metric .value {
+    font-size: 2rem;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.metric .label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}

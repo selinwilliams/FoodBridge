@@ -40,25 +40,43 @@ const Admin = () => {
     
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [stats, setStats] = useState({
+        providers: 0,
+        recipients: 0,
+        activeListings: 0,
+        totalListings: 0
+    });
 
-    // Load centers
+    // Load centers and statistics
     useEffect(() => {
-        const loadCenters = async () => {
+        const loadData = async () => {
             try {
                 setIsLoading(true);
-                const response = await dispatch(thunkGetCenters());
-                if (response?.errors) {
-                    setError(response.errors);
+                const [centersResponse, statsResponse] = await Promise.all([
+                    dispatch(thunkGetCenters()),
+                    fetch('/api/admin/statistics')
+                ]);
+                
+                if (centersResponse?.errors) {
+                    setError(centersResponse.errors);
                 }
+
+                const statsData = await statsResponse.json();
+                setStats({
+                    providers: statsData.provider_stats?.total_providers || 0,
+                    recipients: statsData.user_stats?.total_recipients || 0,
+                    activeListings: statsData.listing_stats?.active_listings || 0,
+                    totalListings: statsData.listing_stats?.total_listings || 0
+                });
             } catch (err) {
-                console.error('Error loading centers:', err);
-                setError('Failed to load distribution centers');
+                console.error('Error loading data:', err);
+                setError('Failed to load dashboard data');
             } finally {
                 setIsLoading(false);
             }
         };
 
-        loadCenters();
+        loadData();
     }, [dispatch]);
 
     // Chart data
@@ -139,22 +157,33 @@ const Admin = () => {
             </div>
 
             <div className="dashboard-cards">
-                {/* Food Listings Card */}
-                <div className="card food-listings">
-                    <h3>Available Food Listings</h3>
+                {/* User Statistics Card */}
+                <div className="card user-stats">
+                    <h3>User Statistics</h3>
                     <div className="metrics">
                         <div className="metric">
-                            <span className="value">2</span>
+                            <span className="value">{stats.providers}</span>
+                            <span className="label">Providers</span>
+                        </div>
+                        <div className="metric">
+                            <span className="value">{stats.recipients}</span>
+                            <span className="label">Recipients</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Food Listings Card */}
+                <div className="card food-listings">
+                    <h3>Food Listings</h3>
+                    <div className="metrics">
+                        <div className="metric">
+                            <span className="value">{stats.activeListings}</span>
                             <span className="label">Active</span>
                         </div>
                         <div className="metric">
-                            <span className="value">39</span>
+                            <span className="value">{stats.totalListings}</span>
                             <span className="label">Total</span>
                         </div>
-                    </div>
-                    <div className="actions">
-                        <button className="action-btn add">Add</button>
-                        <button className="action-btn refresh">Refresh</button>
                     </div>
                 </div>
 
@@ -231,20 +260,6 @@ const Admin = () => {
                     <h3>User Analytics</h3>
                     <div className="chart-container">
                         <Line data={chartData} options={chartOptions} />
-                    </div>
-                    <div className="analytics-actions">
-                        <button className="action-btn">
-                            <i className="fas fa-history"></i>
-                            Posting History
-                        </button>
-                        <button className="action-btn">
-                            <i className="fas fa-users"></i>
-                            Top Members
-                        </button>
-                        <button className="action-btn">
-                            <i className="fas fa-hands-helping"></i>
-                            Top Volunteers
-                        </button>
                     </div>
                 </div>
             </div>

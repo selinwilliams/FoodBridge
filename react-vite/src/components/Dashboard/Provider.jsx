@@ -1,13 +1,34 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { thunkGetProviderById } from '../../redux/provider';
+import { thunkGetProviderByUserId } from '../../redux/provider';
 import { thunkGetProviderListings } from '../../redux/foodListing';
 import { useModal } from '../../context/Modal';
 import CreateFoodListingModal from '../FoodListing/CreateFoodListingModal'
 import './Provider.css';
 import EditListingModal from '../FoodListing/EditListingModal';
 import DeleteListingModal from '../FoodListing/DeleteListingModal';
+import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+} from 'chart.js';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const Provider = () => {
     const dispatch = useDispatch();
@@ -19,16 +40,73 @@ const Provider = () => {
     const providerListings = useSelector(state => state.foodListings.listings);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Chart configuration
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    color: '#F0EBCE'
+                }
+            },
+            title: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                grid: {
+                    color: 'rgba(240, 235, 206, 0.1)'
+                },
+                ticks: {
+                    color: '#F0EBCE'
+                }
+            },
+            x: {
+                grid: {
+                    color: 'rgba(240, 235, 206, 0.1)'
+                },
+                ticks: {
+                    color: '#F0EBCE'
+                }
+            }
+        }
+    };
+
+    const chartData = {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [
+            {
+                label: 'Donations',
+                data: [12, 19, 3, 5, 2, 3, 7],
+                borderColor: '#AA8B56',
+                backgroundColor: '#AA8B56',
+                tension: 0.4
+            },
+            {
+                label: 'Claims',
+                data: [8, 15, 2, 3, 1, 2, 5],
+                borderColor: '#F0EBCE',
+                backgroundColor: '#F0EBCE',
+                tension: 0.4
+            }
+        ]
+    };
+
     // First useEffect - Always runs
     useEffect(() => {
         const loadData = async () => {
             if (sessionUser?.id) {
                 try {
-                    const provider = await dispatch(thunkGetProviderById(sessionUser.id));
-                  
+                    console.log('Session User:', sessionUser);
+                    const provider = await dispatch(thunkGetProviderByUserId(sessionUser.id));
+                    console.log('Provider Response:', provider);
                     
                     if (provider?.id) {
                         const listings = await dispatch(thunkGetProviderListings(provider.id));
+                        console.log('Listings Response:', listings);
                     }
                 } catch (error) {
                     console.error('Error loading data:', error);
@@ -42,8 +120,6 @@ const Provider = () => {
 
         loadData();
     }, [dispatch, sessionUser]);
-
-
 
     if (isLoading) {
         return (
@@ -66,6 +142,7 @@ const handleAddListing = () => {
     setModalContent(<CreateFoodListingModal />);
 };
     if (!currentProvider) {
+        navigate('/provider/profile');
         return (
             <div className="provider-dashboard">
                 <div className="no-provider-state">
@@ -98,12 +175,30 @@ const handleAddListing = () => {
     return (
         <div className="provider-dashboard">
             <div className="dashboard-header">
-                <h1>Welcome, {currentProvider.business_name}!</h1>
+                <div className="profile-section">
+                    <img 
+                        src={currentProvider.image_url || "/prvd.png"} 
+                        alt="Profile" 
+                        className="profile-image" 
+                    />
+                    <div className="profile-info">
+                        <h2>Provider</h2>
+                        <div className="profile-status">
+                            <span className="status-dot"></span>
+                            <span className="status-text">Online</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="dashboard-cards">
+            <div className="dashboard-grid">
                 <div className="card food-donations">
-                    <h3>Food Donations</h3>
+                    <div className="header-actions">
+                        <h3>Food Donations</h3>
+                        <button className="add-btn" onClick={handleAddListing}>
+                            Add Listing
+                        </button>
+                    </div>
                     <div className="metrics">
                         <div className="metric">
                             <span className="value">{metrics.total || 0}</span>
@@ -117,46 +212,40 @@ const handleAddListing = () => {
                             <span className="value">{metrics.completed || 0}</span>
                             <span className="label">Completed</span>
                         </div>
-                    </div>
-                    <div className="actions">
-                        <button 
-                            className="add-btn" 
-                            onClick={handleAddListing}
-                        >
-                            Add Listing
-                        </button>
-                        <button className="purge-btn">Purge</button>
-                    </div>
-                </div>
-
-                <div className="card deductions">
-                    <h3>Tax Deductions</h3>
-                    <div className="metrics">
                         <div className="metric">
                             <span className="value">${(metrics.completed * 25).toFixed(2)}</span>
-                            <span className="label">Total Deductions</span>
+                            <span className="label">Deductions</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="card donation-history">
-                    <h3>Donation History</h3>
-                    <div className="history-list">
-                        {providerListings.length > 0 ? (
-                            providerListings.map((listing, index) => (
-                                <div key={index} className="history-item">
-                                    <div className="history-info">
-                                        <span className="history-title">{listing.title || 'Food Donation'}</span>
-                                        <span className="history-date">{new Date(listing.created_at).toLocaleDateString()}</span>
+                <div className="card food-listings">
+                    <h3>Your Listings</h3>
+                    <div className="listings-scroll">
+                        {Array.isArray(providerListings) && providerListings.length > 0 ? (
+                            providerListings.map(listing => (
+                                <div key={listing.id} className="food-card">
+                                    <div className="food-card-content">
+                                        <div className="food-info">
+                                            <h3>{listing.title}</h3>
+                                            <p>{listing.description}</p>
+                                            <div className="listing-details">
+                                                <span>Quantity: {listing.quantity} {listing.unit}</span>
+                                                <span>Status: {listing.status}</span>
+                                                <span>Type: {listing.food_type}</span>
+                                                <span>Expires: {new Date(listing.expiration_date).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span className={`history-status ${listing.status}`}>
-                                        {listing.status}
-                                    </span>
+                                    <div className="listing-actions">
+                                        <button className="edit-btn" onClick={() => handleEdit(listing)}>Edit</button>
+                                        <button className="delete-btn" onClick={() => handleDelete(listing)}>Delete</button>
+                                    </div>
                                 </div>
                             ))
                         ) : (
-                            <div className="no-history">
-                                <p>No donation history yet</p>
+                            <div className="no-listings">
+                                <p>No listings found. Create your first listing!</p>
                             </div>
                         )}
                     </div>
@@ -165,102 +254,9 @@ const handleAddListing = () => {
                 <div className="card analytics">
                     <h3>Monthly Analytics</h3>
                     <div className="chart-container">
-                        <div className="bar-chart">
-                            {[...Array(7)].map((_, i) => (
-                                <div key={i} className="bar-wrapper">
-                                    <div 
-                                        className="bar" 
-                                        style={{ height: `${Math.random() * 100}%` }}
-                                    />
-                                    <span className="bar-label">Month {i + 1}</span>
-                                </div>
-                            ))}
-                        </div>
+                        <Line options={chartOptions} data={chartData} />
                     </div>
                 </div>
-
-                <div className="card deduction-details">
-                    <h3>Deduction Breakdown</h3>
-                    <div className="deduction-info">
-                        <div className="deduction-amount">
-                            <span className="value">${(metrics.completed * 25).toFixed(2)}</span>
-                            <span className="label">Total Deductions</span>
-                        </div>
-                        <div className="chart">
-                            <span className="percentage">
-                                {metrics.completed ? ((metrics.completed / metrics.total) * 100).toFixed(0) : 0}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="card user-analytics">
-                    <h3>User Analytics</h3>
-                    <div className="metrics">
-                        <div className="metric">
-                            <span className="value">
-                                {providerListings.filter(l => l.status === 'claimed').length}
-                            </span>
-                            <span className="label">Claimed Items</span>
-                        </div>
-                        <div className="metric">
-                            <span className="value">
-                                {providerListings.filter(l => l.status === 'expired').length}
-                            </span>
-                            <span className="label">Expired Items</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="card notifications">
-                    <h3>System Notifications</h3>
-                    <div className="notification-list">
-                        <div className="notification">
-                            <span className="icon">🔔</span>
-                            <span className="message">Welcome to your provider dashboard!</span>
-                        </div>
-                        <div className="notification">
-                            <span className="icon">📊</span>
-                            <span className="message">Your monthly analytics are ready.</span>
-                        </div>
-                        <div className="notification">
-                            <span className="icon">📦</span>
-                            <span className="message">New donation features available!</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="listings-section">
-                <h2>Your Listings</h2>
-                {Array.isArray(providerListings) && providerListings.length > 0 ? (
-                    <div className="food-grid">
-                        {providerListings.map(listing => (
-                            <div key={listing.id} className="food-card">
-                                <div className="food-card-content">
-                                    <div className="food-info">
-                                        <h3>{listing.title}</h3>
-                                        <p>{listing.description}</p>
-                                        <div className="listing-details">
-                                            <span>Quantity: {listing.quantity} {listing.unit}</span>
-                                            <span>Status: {listing.status}</span>
-                                            <span>Type: {listing.food_type}</span>
-                                            <span>Expires: {new Date(listing.expiration_date).toLocaleDateString()}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="listing-actions">
-                                    <button className="edit-btn" onClick={() => handleEdit(listing)}>Edit</button>
-                                    <button className="delete-btn" onClick={() => handleDelete(listing)}>Delete</button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="no-listings">
-                        <p>No listings found. Create your first listing!</p>
-                    </div>
-                )}
             </div>
         </div>
     );

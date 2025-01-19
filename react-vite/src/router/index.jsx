@@ -9,6 +9,8 @@ import DistributionCenters from '../components/DistributionCenters/DistributionC
 import ProviderProfile from '../components/ProviderProfile/ProviderProfile';
 import NearbyProviders from '../components/NearbyProviders/NearbyProviders';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
+import About from '../components/About/About';
+import HowItWorks from '../components/HowItWorks/HowItWorks';
 
 // Dashboard wrapper component to handle the default route
 const Dashboard = () => {
@@ -34,6 +36,14 @@ export const router = createBrowserRouter([
             {
                 path: "signup",
                 element: <SignupFormPage />,
+            },
+            {
+                path: "about",
+                element: <About />,
+            },
+            {
+                path: "how-it-works",
+                element: <HowItWorks />,
             },
             {
                 path: "listings",

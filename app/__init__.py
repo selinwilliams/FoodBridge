@@ -12,6 +12,7 @@ from .config import Config
 from .api.food_listing_routes import food_listing_routes
 from .api.provider_routes import provider_routes
 from .api.distribution_center_routes import dc_routes
+from .api.admin_routes import admin_routes
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
@@ -34,6 +35,7 @@ app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(food_listing_routes, url_prefix='/api/food-listings')
 app.register_blueprint(provider_routes, url_prefix='/api/providers')
 app.register_blueprint(dc_routes, url_prefix='/api/distribution-centers')
+app.register_blueprint(admin_routes, url_prefix='/api/admin')
 db.init_app(app)
 Migrate(app, db)
 

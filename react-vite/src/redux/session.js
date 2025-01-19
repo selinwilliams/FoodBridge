@@ -65,18 +65,17 @@ export const thunkSignup = (user) => async (dispatch) => {
       credentials: 'include'
     });
 
-    // First check if it's JSON
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       const data = await response.json();
       
       if (response.ok) {
         dispatch(setUser(data));
-        return null;
+        // Return null for success, but include the user type for proper redirection
+        return { success: true, user_type: data.user_type };
       }
       return data;
     } else {
-      // If it's not JSON (likely HTML error page)
       const text = await response.text();
       console.error('Non-JSON response:', text);
       return {
