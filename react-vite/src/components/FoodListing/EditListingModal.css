@@ -1,0 +1,23 @@
+.food-listing-modal {
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Add any edit-specific styles here */ 
+
+.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 0.8rem;
+    margin-top: 4px;
+} 

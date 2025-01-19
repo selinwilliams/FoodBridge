@@ -1,0 +1,147 @@
+.distribution-center-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 300px;
+}
+
+.distribution-center-modal h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: #ffebee;
+    border-radius: 4px;
+}
+
+.form-group .error {
+    color: #d32f2f;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.submit-btn,
+.delete-btn,
+.cancel-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.submit-btn:hover {
+    background: #43a047;
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #d32f2f;
+}
+
+.cancel-btn {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background: #bdbdbd;
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Delete Modal Specific Styles */
+.delete-modal .delete-message {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.delete-modal .delete-warning {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    padding: 1rem;
+    background: #ffebee;
+    border-radius: 8px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .distribution-center-modal {
+        padding: 1.5rem;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .submit-btn,
+    .delete-btn,
+    .cancel-btn {
+        width: 100%;
+    }
+} 

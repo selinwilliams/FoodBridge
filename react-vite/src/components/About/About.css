@@ -1,0 +1,236 @@
+.about-container {
+    max-width: 1200px;
+    margin: 80px auto 0;
+    padding: 2rem;
+    min-height: calc(100vh - 80px);
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem;
+    background: linear-gradient(145deg, #395144 0%, #4E6C50 100%);
+    border-radius: 35px;
+    color: #F0EBCE;
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+}
+
+.about-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.about-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.about-header i {
+    margin-right: 0.5rem;
+    color: #AA8B56;
+}
+
+.about-content {
+    display: grid;
+    gap: 3rem;
+}
+
+.mission-section,
+.developer-section,
+.tech-stack-section,
+.contact-section {
+    background: #4E6C50;
+    padding: 2rem;
+    border-radius: 35px;
+    color: #F0EBCE;
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+}
+
+.mission-section h2,
+.developer-section h2,
+.tech-stack-section h2,
+.contact-section h2 {
+    color: #AA8B56;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.mission-section h2 i,
+.developer-section h2 i,
+.tech-stack-section h2 i,
+.contact-section h2 i {
+    margin-right: 0.5rem;
+}
+
+.mission-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.mission-section p i {
+    margin-right: 0.5rem;
+    color: #AA8B56;
+}
+
+.developer-card {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    background: rgba(240, 235, 206, 0.1);
+    padding: 2rem;
+    border-radius: 25px;
+}
+
+.developer-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #AA8B56;
+}
+
+.developer-info {
+    flex: 1;
+}
+
+.developer-info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: #F0EBCE;
+}
+
+.developer-info h3 i {
+    margin-right: 0.5rem;
+    color: #AA8B56;
+}
+
+.developer-info p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.developer-info p i {
+    margin-right: 0.5rem;
+    color: #AA8B56;
+}
+
+.developer-bio {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.2rem;
+    background: #AA8B56;
+    color: #F0EBCE;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: #917547;
+    transform: translateY(-2px);
+}
+
+.social-link i {
+    font-size: 1.2rem;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: rgba(240, 235, 206, 0.1);
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+}
+
+.tech-item:hover {
+    transform: translateY(-5px);
+    background: rgba(240, 235, 206, 0.15);
+}
+
+.tech-item i {
+    font-size: 2.5rem;
+    color: #AA8B56;
+}
+
+.tech-item span {
+    font-size: 1rem;
+    color: #F0EBCE;
+}
+
+.contact-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.contact-section p i {
+    margin-right: 0.5rem;
+    color: #AA8B56;
+}
+
+.bridge-icon {
+    color: #AA8B56;
+    margin-right: 1rem;
+    font-size: 3rem;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+}
+
+.bridge-icon:hover {
+    transform: scale(1.1);
+    color: #917547;
+}
+
+@media (max-width: 768px) {
+    .about-container {
+        padding: 1rem;
+    }
+
+    .about-header {
+        padding: 2rem;
+    }
+
+    .about-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .developer-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .developer-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    .tech-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+} 

@@ -7,6 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 #modal-background {
@@ -16,9 +17,29 @@
   left: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
 }
 
 #modal-content {
-  position: absolute;
-  background-color:white;
+  position: relative;
+  background-color: white;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1001;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

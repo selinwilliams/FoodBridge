@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template, request, session, redirect, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -10,6 +9,10 @@ from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .seeds import seed_commands
 from .config import Config
+from .api.food_listing_routes import food_listing_routes
+from .api.provider_routes import provider_routes
+from .api.distribution_center_routes import dc_routes
+from .api.admin_routes import admin_routes
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
@@ -29,11 +32,15 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(food_listing_routes, url_prefix='/api/food-listings')
+app.register_blueprint(provider_routes, url_prefix='/api/providers')
+app.register_blueprint(dc_routes, url_prefix='/api/distribution-centers')
+app.register_blueprint(admin_routes, url_prefix='/api/admin')
 db.init_app(app)
 Migrate(app, db)
 
 # Application Security
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app)
 
 
 # Since we are deploying with Docker and Flask,
@@ -92,17 +99,11 @@ def not_found(e):
     return app.send_static_file('index.html')
 
 
-@app.route('/api/debug/routes')
-def list_routes():
-    routes = []
-    for rule in app.url_map.iter_rules():
-        routes.append({
-            'endpoint': rule.endpoint,
-            'methods': list(rule.methods),
-            'path': str(rule)
-        })
-    return jsonify(routes)
+@app.route('/api/csrf/restore')
+def csrf_restore():
+    return {'csrf_token': generate_csrf()}
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+@app.route('/api/health')
+def health_check():
+    return jsonify({'status': 'healthy'}), 200

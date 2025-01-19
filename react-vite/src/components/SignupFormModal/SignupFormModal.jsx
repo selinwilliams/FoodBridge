@@ -10,31 +10,40 @@ function SignupFormModal() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [userType, setUserType] = useState("RECIPIENT");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({}); // Clear previous errors
 
     if (password !== confirmPassword) {
-      return setErrors({
-        confirmPassword:
-          "Confirm Password field must be the same as the Password field",
+      setErrors({
+        confirmPassword: "Confirm Password field must be the same as the Password field",
       });
+      return;
     }
 
-    const serverResponse = await dispatch(
-      thunkSignup({
-        email,
-        username,
-        password,
-      })
-    );
+    try {
+      const serverResponse = await dispatch(
+        thunkSignup({
+          email,
+          username,
+          password,
+          user_type: userType
+        })
+      );
 
-    if (serverResponse) {
-      setErrors(serverResponse);
-    } else {
-      closeModal();
+      if (serverResponse === null) {
+        // Signup successful
+        closeModal();
+      } else {
+        // Server returned errors
+        setErrors(serverResponse);
+      }
+    } catch (error) {
+      setErrors({ server: "An unexpected error occurred. Please try again." });
     }
   };
 
@@ -83,6 +92,20 @@ function SignupFormModal() {
           />
         </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        
+        <label>
+          I want to
+          <select
+            value={userType}
+            onChange={(e) => setUserType(e.target.value)}
+            required
+          >
+            <option value="RECIPIENT">Receive Food</option>
+            <option value="PROVIDER">Provide Food</option>
+          </select>
+        </label>
+        {errors.user_type && <p>{errors.user_type}</p>}
+        
         <button type="submit">Sign Up</button>
       </form>
     </>

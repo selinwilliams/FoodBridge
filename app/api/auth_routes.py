@@ -1,7 +1,6 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app.models import User, db
-from app.forms import LoginForm
-from app.forms import SignUpForm
+from app.forms import LoginForm, SignUpForm
 from flask_login import current_user, login_user, logout_user, login_required
 
 auth_routes = Blueprint('auth', __name__)
@@ -12,9 +11,13 @@ def authenticate():
     """
     Authenticates a user.
     """
-    if current_user.is_authenticated:
-        return current_user.to_dict()
-    return {'errors': {'message': 'Unauthorized'}}, 401
+    try:
+        if current_user.is_authenticated:
+            return current_user.to_dict()
+        return {'errors': {'message': 'Unauthorized'}}, 401
+    except Exception as e:
+        print("Auth Error:", str(e))
+        return {'errors': {'server': str(e)}}, 500
 
 
 @auth_routes.route('/login', methods=['POST'])
@@ -48,19 +51,33 @@ def sign_up():
     """
     Creates a new user and logs them in
     """
-    form = SignUpForm()
-    form['csrf_token'].data = request.cookies['csrf_token']
-    if form.validate_on_submit():
-        user = User(
-            username=form.data['username'],
-            email=form.data['email'],
-            password=form.data['password']
-        )
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return user.to_dict()
-    return form.errors, 401
+    try:
+        form = SignUpForm()
+        form['csrf_token'].data = request.cookies['csrf_token']
+        
+        # Debug prints
+        print("Form Data:", form.data)
+        print("Form Errors:", form.errors)
+        
+        if form.validate_on_submit():
+            user = User(
+                username=form.data['username'],
+                email=form.data['email'],
+                password=form.data['password'],
+                user_type=form.data['user_type']
+            )
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return user.to_dict()
+            
+        return {'errors': form.errors}, 400
+        
+    except Exception as e:
+        # Log the actual error
+        print("Signup Error:", str(e))
+        db.session.rollback()  # Rollback any failed transaction
+        return {'errors': {'server': str(e)}}, 500
 
 
 @auth_routes.route('/unauthorized')

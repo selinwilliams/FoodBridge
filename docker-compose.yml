@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: foodbridge-backend
     build: 
       context: ./app
       dockerfile: Dockerfile
@@ -11,12 +12,37 @@ services:
       - DATABASE_URL=postgresql://postgres:password@db:5432/postgres
       - SCHEMA=food_bridge_schema
       - SECRET_KEY=dev
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
     volumes:
       - ./app:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  
+  frontend:
+    container_name: foodbridge-frontend
+    build:
+      context: ./react-vite
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./react-vite:/app
+      - /app/node_modules
+    depends_on:
+      - backend
 
   db:
+    container_name: foodbridge-db
     image: postgres:14
     environment:
       - POSTGRES_USER=postgres
@@ -26,6 +52,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
   postgres_data:

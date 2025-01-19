@@ -1,0 +1,74 @@
+.login-form-modal {
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+}
+
+.login-form-modal h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.75rem;
+}
+
+.login-form-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.login-form-modal label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.login-form-modal input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.login-form-modal input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.login-form-modal button[type="submit"] {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-form-modal button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.login-form-modal p {
+    color: #ff4444;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Ensure modal is above other content */
+#modal-content {
+    z-index: 1001;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#modal-background {
+    z-index: 1000;
+}
