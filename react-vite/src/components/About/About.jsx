@@ -33,17 +33,14 @@ const About = () => {
                                 with React, Python, and Node.js.
                             </p>
                             <div className="social-links">
-                                <a href="https://selinwilliams.github.io/" target="_blank" rel="noopener noreferrer" className="social-link">
-                                    <i className="fas fa-briefcase"></i>
-                                    Portfolio
-                                </a>
-                                <a href="https://www.linkedin.com/in/selinwilliams/" target="_blank" rel="noopener noreferrer" className="social-link">
-                                    <i className="fab fa-linkedin"></i>
-                                    LinkedIn
-                                </a>
-                                <a href="https://github.com/selinwilliams" target="_blank" rel="noopener noreferrer" className="social-link">
+                                <a href="https://github.com/selinwilliams" target="_blank" rel="noopener noreferrer" className="social-link" title="GitHub">
                                     <i className="fab fa-github"></i>
-                                    GitHub
+                                </a>
+                                <a href="https://linkedin.com/in/selinwilliams" target="_blank" rel="noopener noreferrer" className="social-link" title="LinkedIn">
+                                    <i className="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://selinwilliams.github.io" target="_blank" rel="noopener noreferrer" className="social-link" title="Portfolio">
+                                    <i className="fas fa-globe"></i>
                                 </a>
                             </div>
                         </div>

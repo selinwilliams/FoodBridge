@@ -103,7 +103,6 @@ function EditDistributionCenterModal({ center }) {
                         value={formData.operating_hours}
                         onChange={handleChange}
                         placeholder="e.g., Mon-Fri 9AM-5PM"
-                        required
                     />
                     {errors.operating_hours && <span className="error">{errors.operating_hours}</span>}
                 </div>

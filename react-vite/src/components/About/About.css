@@ -7,6 +7,7 @@
     border: 2px solid #AA8B56;
     border-radius: 40px;
     padding: 2rem;
+    background: var(--beige-light);
 }
 
 .about-header {
@@ -66,6 +67,8 @@
 .tech-stack-section,
 .contact-section {
     background: linear-gradient(135deg, #4E6C50 0%, #395144 100%);
+    /* background: linear-gradient(135deg, var(--sage-dark) 0%, var(--sage) 100%); */
+    /* background: #566D5F; */
     padding: 2rem;
     border-radius: 35px;
     color: #F0EBCE;
@@ -191,25 +194,76 @@
 }
 
 .social-link {
-    display: inline-block;
-    padding: 0.8rem 1.2rem;
-    background: #AA8B56;
-    color: #F0EBCE;
-    text-decoration: none;
-    border-radius: 20px;
+    color: #AA8B56;
+    font-size: 1.2rem;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    background: rgba(240, 235, 206, 0.1);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #AA8B56;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
 }
 
-.social-link:hover {
-    background: transparent;
-    border-color: #AA8B56;
-    color: #AA8B56;
-    transform: translateY(-2px);
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #AA8B56;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 0;
+}
+
+.social-link:hover::before {
+    transform: translateY(0);
 }
 
 .social-link i {
-    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(170, 139, 86, 0.2);
+}
+
+.social-link:hover i {
+    color: #F0EBCE;
+}
+
+/* Add tooltips for social links */
+.social-link::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(170, 139, 86, 0.9);
+    color: #F0EBCE;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.social-link:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: -40px;
 }
 
 .tech-grid {

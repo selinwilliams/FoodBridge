@@ -1,6 +1,6 @@
 /* Color Variables */
 :root {
-    --beige: #E8D5C4;
+    --beige: var(--beige-light);;
     --beige-light: #F3E9E0;
     --beige-dark: #D4BBA3;
     --sage: #7C9885;
@@ -62,14 +62,55 @@ body {
 
 /* Page Container Styles */
 .page-container {
-    flex: 1;
+    flex: 1 0 auto;
     width: 100%;
     margin-top: 60px;
-    min-height: calc(100vh - 60px);
     position: relative;
     overflow-x: hidden;
     background-color: var(--bg-light);
     transition: all 0.3s ease;
+}
+
+/* Admin Dashboard Specific Styles */
+.admin-dashboard {
+    min-height: calc(100vh - 60px);
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--beige-light);
+}
+
+/* Provider Dashboard Specific Styles */
+.provider-dashboard {
+    min-height: calc(100vh - 60px);
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--beige-light);
+}
+
+/* Distribution Centers Specific Styles */
+.distribution-centers {
+    min-height: calc(100vh - 60px);
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--beige-light);
+}
+
+/* Food Listings Specific Styles */
+.food-listings-container {
+    min-height: calc(100vh - 60px);
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--beige-light);
+}
+
+/* Footer Specific Styles */
+.footer {
+    flex-shrink: 0;
+    width: 100%;
 }
 
 /* Landing Page Specific Styles */

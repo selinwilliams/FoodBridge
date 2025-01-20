@@ -47,11 +47,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: "listings",
-                element: <ProtectedRoute><FoodListing /></ProtectedRoute>,
+                element: <FoodListing />,
             },
             {
                 path: "centers",
-                element: <ProtectedRoute><DistributionCenters /></ProtectedRoute>,
+                element: <DistributionCenters />,
             },
             {
                 path: "providers",

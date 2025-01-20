@@ -1,5 +1,5 @@
 :root {
-    --beige: #E8D5C4;
+    --beige: var(--beige-light);;
     --beige-light: #F3E9E0;
     --beige-dark: #D4BBA3;
     --sage: #7C9885;
@@ -17,13 +17,13 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     padding: 2.5rem;
     position: relative;
-    margin-top: 60px;
+    /* margin-top: 60px; */
 }
 
 .landing-container {
     background: var(--white);
     border-radius: 48px;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 3.5rem;
     box-shadow: 0 30px 60px -15px rgba(92, 64, 51, 0.15);
@@ -35,11 +35,11 @@
 .hero-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    padding: 5rem;
+    gap: 3rem;
+    padding: 3rem;
     background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
     border-radius: 40px;
-    margin-bottom: 7rem;
+    margin-bottom: 4rem;
     position: relative;
     overflow: hidden;
 }
@@ -66,10 +66,10 @@
 }
 
 .hero-content h1 {
-    font-size: 4rem;
+    font-size: 3.2rem;
     font-weight: 800;
     line-height: 1.1;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     letter-spacing: -1.5px;
     color: #98FF98;
     text-shadow: 
@@ -95,9 +95,9 @@
 }
 
 .hero-content p {
-    font-size: 1.35rem;
-    line-height: 1.6;
-    margin-bottom: 2.5rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
     opacity: 1;
     color: #FF9B8C;
     text-shadow: 
@@ -146,14 +146,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    gap: 2.5rem;
+    gap: 1.5rem;
     z-index: 2;
     transform: rotate(-3deg);
     width: 100%;
     height: 100%;
     align-items: start;
-    /* padding: 0 2rem; */
-    /* padding-right: 10rem; */
 }
 
 .food-illustration {
@@ -191,21 +189,21 @@
     width: 100%;
     aspect-ratio: 1;
     justify-self: start;
-    transform: translateX(-2rem);
+    transform: translateX(-1rem);
 }
 
 .fruits-bowl {
     width: 100%;
     aspect-ratio: 1;
-    margin-right: 60px;
+    margin-right: 40px;
     justify-self: end;
-    transform: translateX(2rem);
+    transform: translateX(1rem);
 }
 
 .veggies-crate {
     grid-column: 1 / -1;
     width: 100%;
-    height: 320px;
+    height: 250px;
     overflow: hidden;
     display: flex;
     align-items: center;

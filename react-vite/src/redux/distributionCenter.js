@@ -24,7 +24,6 @@ const updateCenter = (center) => ({
     payload: center
 });
 
-
 const setCurrentCenter = (center) => ({
     type: SET_CURRENT_CENTER,
     payload: center
@@ -46,26 +45,40 @@ export const thunkGetCenters = () => async (dispatch) => {
         const response = await csrfFetch('/api/distribution-centers');
         if (!response.ok) {
             const error = await response.json();
-            return { errors: error.errors || 'Failed to load centers' };
+            dispatch(setErrors(error.errors || ['Failed to load centers']));
+            return null;
         }
 
-        const centers = await response.json();
-        // Ensure we're handling the data correctly
-        const centersData = centers.distribution_centers || centers;
-        
-        // Normalize the data into an object with IDs as keys
-        const normalizedCenters = Array.isArray(centersData) 
-            ? centersData.reduce((obj, center) => {
-                obj[center.id] = center;
-                return obj;
-              }, {})
-            : centersData;
+        const data = await response.json();
+        console.log('API Response:', data); // Debug log
 
+        // Ensure we're handling both array and object responses
+        const centersArray = Array.isArray(data) ? data : 
+                           data.distribution_centers ? data.distribution_centers : 
+                           Object.values(data);
+
+        // Normalize the data into an object with IDs as keys
+        const normalizedCenters = centersArray.reduce((acc, center) => {
+            if (center && center.id) {
+                acc[center.id] = {
+                    ...center,
+                    // Ensure required fields have default values
+                    status: center.status || 'available',
+                    food_types: center.food_types || '',
+                    capacity: center.capacity || '0',
+                    hours: center.hours || 'Not specified'
+                };
+            }
+            return acc;
+        }, {});
+
+        console.log('Normalized Centers:', normalizedCenters); // Debug log
         dispatch(loadCenters(normalizedCenters));
         return normalizedCenters;
     } catch (error) {
-        dispatch(setErrors(error.message));
-        return { errors: error.message || 'Failed to load centers' };
+        console.error('Error in thunkGetCenters:', error);
+        dispatch(setErrors([error.message || 'Failed to load centers']));
+        return null;
     }
 };
 
@@ -130,20 +143,39 @@ export const thunkCreateCenter = (centerData) => async (dispatch) => {
 
 export const thunkUpdateCenter = (centerId, updates) => async (dispatch) => {
     try {
+        const formattedData = {
+            name: updates.name?.trim(),
+            address: updates.address?.trim(),
+            phone: updates.phone?.trim() || null,
+            status: updates.status || 'OPEN',
+            capacity: parseInt(updates.capacity) || 100,
+            image_url: updates.image || null
+        };
+
+        console.log('Sending formatted data to server:', formattedData);
+
         const response = await csrfFetch(`/api/distribution-centers/${centerId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
+            body: JSON.stringify(formattedData)
         });
 
-        if (response.ok) {
-            const updatedCenter = await response.json();
-            dispatch(updateCenter(updatedCenter));
-            return updatedCenter;
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server error response:', errorData);
+            return { errors: errorData.errors || { server: 'Failed to update center' } };
         }
+
+        const updatedCenter = await response.json();
+        dispatch(updateCenter(updatedCenter));
+        return updatedCenter;
     } catch (error) {
-        dispatch(setErrors(error.message));
-        return error;
+        console.error("Error in thunkUpdateCenter:", error);
+        return { 
+            errors: { 
+                server: error.message || 'An error occurred while updating the center' 
+            } 
+        };
     }
 };
 
@@ -177,20 +209,21 @@ const initialState = {
 const distributionCenterReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_CENTERS:
-            console.log('LOAD_CENTERS action payload:', action.payload); // Debug log
+            console.log('LOAD_CENTERS action:', action); // Debug log
             return {
                 ...state,
-                allCenters: action.payload,
+                allCenters: action.payload || {},
                 errors: null
             };
-        
+            
         case ADD_CENTER:
             return {
                 ...state,
                 allCenters: {
                     ...state.allCenters,
                     [action.payload.id]: action.payload
-                }
+                },
+                errors: null
             };
             
         case UPDATE_CENTER:
@@ -199,7 +232,8 @@ const distributionCenterReducer = (state = initialState, action) => {
                 allCenters: {
                     ...state.allCenters,
                     [action.payload.id]: action.payload
-                }
+                },
+                errors: null
             };
             
         case DELETE_CENTER: {
@@ -207,10 +241,18 @@ const distributionCenterReducer = (state = initialState, action) => {
             delete newCenters[action.payload];
             return {
                 ...state,
-                allCenters: newCenters
+                allCenters: newCenters,
+                errors: null
             };
         }
         
+        case SET_CURRENT_CENTER:
+            return {
+                ...state,
+                currentCenter: action.payload,
+                errors: null
+            };
+            
         case SET_ERRORS:
             return {
                 ...state,

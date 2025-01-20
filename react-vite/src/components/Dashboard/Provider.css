@@ -1,14 +1,15 @@
 .provider-dashboard {
     padding: 2rem;
     max-width: 1200px;
-    margin: 80px auto 0;
+    margin: 0px auto 0;
     min-height: calc(100vh - 80px);
-    background-color: #f8f9fa;
+    background-color: var(--beige-light);
 }
 
 .dashboard-header {
+    margin-top: 0px;
     margin-bottom: 2rem;
-    background: linear-gradient(145deg, #395144 0%, #4E6C50 100%);
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
     padding: 2rem;
     border-radius: 35px;
     box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
@@ -87,8 +88,9 @@
 
 .card.food-donations {
     grid-column: span 1;
-    background-color: #4E6C50;
+    background-color: var(--sage-dark);
 }
+/* linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%); */
 
 .card.food-listings {
     grid-column: span 1;
@@ -111,7 +113,7 @@
 .metric {
     text-align: left;
     padding: 1rem;
-    background: #4E6C50;
+    background: var(--sage);
     border-radius: 20px;
     transition: transform 0.3s ease;
 }
@@ -427,7 +429,7 @@
 }
 
 .chart-container {
-    background: #4E6C50;
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
     border-radius: 20px;
     padding: 1.5rem;
     height: 300px;
@@ -506,23 +508,28 @@
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    border-radius: 12px;
 }
 
 .food-info h3 {
     font-size: 1.1rem;
     color: #F0EBCE;
     margin-bottom: 0.3rem;
+
 }
 
 .food-info p {
-    color: #F0EBCE;
+    color: #cac188;
     font-size: 0.9rem;
     margin-bottom: 0.8rem;
+    margin-left: 5px;
 }
 
 .listing-details {
     color: #F0EBCE;
     font-size: 0.85rem;
+    margin: 6px;
 }
 
 .listing-actions {
