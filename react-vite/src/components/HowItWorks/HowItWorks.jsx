@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './HowItWorks.css';
 import { GiSuspensionBridge } from "react-icons/gi";
 
 const HowItWorks = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="how-it-works-container">
             <div className="how-it-works-header">

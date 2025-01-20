@@ -16,6 +16,11 @@ function LandingPage() {
         navigate('/signup');
     };
 
+    const handleHowItWorks = () => {
+        navigate('/how-it-works');
+        window.scrollTo(0, 0);
+    };
+
     return (
         <div className="landing-page">
             <div className="landing-container">
@@ -93,7 +98,7 @@ function LandingPage() {
                         </div>
                         <h3>How it Works</h3>
                         <p>Simple steps to connect and distribute food</p>
-                        <button onClick={() => navigate('/how-it-works')} className="section-button">
+                        <button onClick={handleHowItWorks} className="section-button">
                             See More
                         </button>
                     </section>
