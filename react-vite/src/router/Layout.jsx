@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { ModalProvider, Modal } from "../context/Modal";
 import { thunkAuthenticate } from "../redux/session";
@@ -7,16 +7,23 @@ import Navigation from "../components/Navigation/Navigation";
 
 export default function Layout() {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(thunkAuthenticate());
   }, [dispatch]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <>
       <ModalProvider>
         <Navigation />
-        <Outlet />
+        <div className="page-container">
+          <Outlet />
+        </div>
         <Modal />
       </ModalProvider>
     </>

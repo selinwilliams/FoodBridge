@@ -46,7 +46,7 @@ const Recipient = () => {
         <div className="recipient-dashboard">
             <div className="recipient-header">
                 <div className="recipient-profile">
-                    <img src={sessionUser?.profile_image || '/default-avatar.png'} alt="Recipient" />
+                    <img src={sessionUser?.profile_image || '/recipient.jpg'} alt="Recipient" />
                     <div className="recipient-info">
                         <h2>Welcome, {sessionUser?.username || 'Recipient'}</h2>
                         <span className="version">v{version}</span>

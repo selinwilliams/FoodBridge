@@ -1,1 +1,299 @@
+/* Color Variables */
+:root {
+    --beige: #E8D5C4;
+    --beige-light: #F3E9E0;
+    --beige-dark: #D4BBA3;
+    --sage: #7C9885;
+    --sage-light: #9FB8A8;
+    --sage-dark: #566D5F;
+    --brown: #5C4033;
+    --brown-light: #8B6B5D;
+    --cream: #FAF6F1;
+    --white: #FFFFFF;
+    --bg-light: #FDFDFD;
+    
+    /* Additional Colors for Enhanced UI */
+    --success: #4CAF50;
+    --warning: #FFA726;
+    --error: #EF5350;
+    --info: #42A5F5;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(92, 64, 51, 0.08);
+    --shadow-md: 0 4px 8px rgba(92, 64, 51, 0.12);
+    --shadow-lg: 0 8px 16px rgba(92, 64, 51, 0.16);
+    --shadow-xl: 0 30px 60px -15px rgba(92, 64, 51, 0.25);
+}
+
 /* TODO: Add sitewide styles */
+
+/* Global Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--bg-light);
+    color: var(--brown);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-light);
+}
+
+/* Page Container Styles */
+.page-container {
+    flex: 1;
+    width: 100%;
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+    position: relative;
+    overflow-x: hidden;
+    background-color: var(--bg-light);
+    transition: all 0.3s ease;
+}
+
+/* Landing Page Specific Styles */
+.landing-page {
+    background-color: var(--beige) !important;
+}
+
+.landing-page .page-container {
+    background-color: var(--beige) !important;
+}
+
+/* Utility Classes */
+.content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    width: 100%;
+    background-color: var(--white);
+    border-radius: 48px;
+    box-shadow: var(--shadow-xl);
+    transition: all 0.3s ease;
+}
+
+.content-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 35px 70px -20px rgba(92, 64, 51, 0.3);
+}
+
+/* Button Styles */
+.primary-button {
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    color: var(--white);
+    border: none;
+    padding: 0.875rem 1.75rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+.primary-button:hover {
+    background: linear-gradient(135deg, var(--sage-dark) 0%, var(--sage) 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.secondary-button {
+    background: transparent;
+    color: var(--sage-dark);
+    border: 2.5px solid var(--sage);
+    padding: 0.75rem 1.75rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.secondary-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: var(--sage);
+    transition: all 0.3s ease;
+    z-index: -1;
+}
+
+.secondary-button:hover {
+    color: var(--white);
+}
+
+.secondary-button:hover::before {
+    width: 100%;
+}
+
+/* Card Styles */
+.card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(92, 64, 51, 0.08);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+}
+
+/* Form Styles */
+input, textarea, select {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--beige-light);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--brown);
+    transition: all 0.3s ease;
+    background-color: var(--white);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--sage);
+    box-shadow: 0 0 0 4px rgba(124, 152, 133, 0.1);
+}
+
+/* Text Styles */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--brown);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+h1 { font-size: 3rem; }
+h2 { font-size: 2.5rem; }
+h3 { font-size: 2rem; }
+h4 { font-size: 1.75rem; }
+h5 { font-size: 1.5rem; }
+h6 { font-size: 1.25rem; }
+
+p {
+    color: var(--brown-light);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    .content-wrapper {
+        padding: 1.5rem;
+        border-radius: 32px;
+        margin: 1rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.75rem; }
+    h4 { font-size: 1.5rem; }
+    h5 { font-size: 1.25rem; }
+    h6 { font-size: 1.1rem; }
+}
+
+/* Smooth Scrolling */
+* {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Status Colors */
+.success { color: var(--success); }
+.warning { color: var(--warning); }
+.error { color: var(--error); }
+.info { color: var(--info); }
+
+/* Loading States */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
