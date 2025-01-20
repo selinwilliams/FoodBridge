@@ -1,0 +1,133 @@
+.privacy-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: calc(100vh - 60px);
+    background-color: var(--beige-light);
+    font-family: "Times New Roman", serif;
+}
+
+.privacy-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    border-radius: 35px;
+    color: #F0EBCE;
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+}
+
+.privacy-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.privacy-header i {
+    color: #AA8B56;
+}
+
+.privacy-header p {
+    color: #e4d99f;
+    font-size: 1.1rem;
+}
+
+.privacy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.policy-section {
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    padding: 2rem;
+    border-radius: 25px;
+    color: #F0EBCE;
+    box-shadow: 0 4px 12px rgba(57, 81, 68, 0.15);
+    border: 1px solid #AA8B56;
+}
+
+.policy-section h2 {
+    color: #F0EBCE;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.policy-section h2 i {
+    color: #AA8B56;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.policy-section p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #e4d99f;
+}
+
+.policy-section ul {
+    list-style: none;
+    padding-left: 1.5rem;
+}
+
+.policy-section li {
+    margin-bottom: 0.8rem;
+    color: #e4d99f;
+    position: relative;
+}
+
+.policy-section li::before {
+    content: '•';
+    color: #AA8B56;
+    position: absolute;
+    left: -1.5rem;
+    font-size: 1.2rem;
+}
+
+.contact-info {
+    background: rgba(240, 235, 206, 0.1);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-top: 1rem;
+    border: 1px solid #AA8B56;
+}
+
+.contact-info p {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.contact-info i {
+    color: #AA8B56;
+}
+
+@media (max-width: 768px) {
+    .privacy-container {
+        padding: 1rem;
+    }
+
+    .privacy-header {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .privacy-header h1 {
+        font-size: 2rem;
+    }
+
+    .policy-section {
+        padding: 1.5rem;
+    }
+
+    .policy-section h2 {
+        font-size: 1.5rem;
+    }
+} 

@@ -11,6 +11,8 @@ import NearbyProviders from '../components/NearbyProviders/NearbyProviders';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 import About from '../components/About/About';
 import HowItWorks from '../components/HowItWorks/HowItWorks';
+import Privacy from '../components/Privacy/Privacy';
+import Terms from '../components/Terms/Terms';
 
 // Dashboard wrapper component to handle the default route
 const Dashboard = () => {
@@ -44,6 +46,14 @@ export const router = createBrowserRouter([
             {
                 path: "how-it-works",
                 element: <HowItWorks />,
+            },
+            {
+                path: "privacy",
+                element: <Privacy />,
+            },
+            {
+                path: "terms",
+                element: <Terms />,
             },
             {
                 path: "listings",
