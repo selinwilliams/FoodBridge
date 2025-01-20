@@ -1,19 +1,18 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app.models import User, Provider, FoodListing, Reservation, db
-from datetime import datetime
+from datetime import datetime, timedelta
+from functools import wraps
 
 admin_routes = Blueprint('admin', __name__)
 
-def admin_required(route_function):
-    """Decorator to require admin access"""
-    @login_required
-    def wrapped(*args, **kwargs):
-        if not current_user.is_admin():
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin():
             return {'errors': ['Unauthorized']}, 403
-        return route_function(*args, **kwargs)
-    wrapped.__name__ = route_function.__name__
-    return wrapped
+        return f(*args, **kwargs)
+    return decorated_function
 
 @admin_routes.route('/users')
 @admin_required
@@ -64,18 +63,45 @@ def manage_centers():
     centers = DistributionCenter.get_filtered_centers(status=status)
     return {'centers': [center.to_dict() for center in centers]}
 
-@admin_routes.route('/statistics')
+@admin_routes.route('/statistics', methods=['GET'])
+@login_required
 @admin_required
-def system_statistics():
-    """Get system-wide statistics"""
-    timeframe = request.args.get('timeframe', 'week')  # week, month, year
-    return {
-        'user_stats': User.get_system_stats(timeframe),
-        'provider_stats': Provider.get_system_stats(timeframe),
-        'listing_stats': FoodListing.get_system_stats(timeframe),
-        'reservation_stats': Reservation.get_system_stats(timeframe),
-        'center_stats': DistributionCenter.get_system_stats(timeframe)
-    }
+def get_admin_statistics():
+    """Get comprehensive admin dashboard statistics"""
+    try:
+        # Get provider count - check both user_type and is_provider
+        provider_count = User.query.filter(
+            (User.user_type == 'PROVIDER') | (User.is_provider == True)
+        ).count()
+        
+        # Get recipient count - exclude providers and admins
+        recipient_count = User.query.filter(
+            User.user_type == 'RECIPIENT',
+            User.is_provider == False,
+            User.is_admin == False
+        ).count()
+        
+        # Get listing counts
+        active_listings = FoodListing.query.filter_by(status='AVAILABLE').count()
+        total_listings = FoodListing.query.count()
+        
+        print(f"Debug - Counts: providers={provider_count}, recipients={recipient_count}, active_listings={active_listings}, total_listings={total_listings}")
+        
+        return jsonify({
+            'provider_stats': {
+                'total_providers': provider_count
+            },
+            'user_stats': {
+                'total_recipients': recipient_count
+            },
+            'listing_stats': {
+                'active_listings': active_listings,
+                'total_listings': total_listings
+            }
+        })
+    except Exception as e:
+        print(f"Error in get_admin_statistics: {str(e)}")
+        return {'errors': [str(e)]}, 500
 
 @admin_routes.route('/reports')
 @admin_required

@@ -19,12 +19,12 @@ const addTaxRecord = (record) => ({
     payload: record
 });
 
-const updateTaxRecord = (record) => ({
+export const updateTaxRecord = (record) => ({
     type: UPDATE_TAX_RECORD,
     payload: record
 });
 
-const setCurrentRecord = (record) => ({
+export const setCurrentRecord = (record) => ({
     type: SET_CURRENT_RECORD,
     payload: record
 });

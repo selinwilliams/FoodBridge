@@ -11,10 +11,15 @@ export default defineConfig((mode) => ({
       failOnError: mode === "production",
     }),
   ],
-  server: {
-    open: true,
+  server:{
+    host: "0.0.0.0",
+    port: 5173,
     proxy: {
-      "/api": "http://127.0.0.1:5000",
+      "/api": {
+        target: "http://foodbridge-backend:5000",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 }));

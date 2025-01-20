@@ -68,32 +68,45 @@ def get_current_provider_listings():
         return {'errors': [str(e)]}, 500
 
 @provider_routes.route('', methods=['POST'])
-@provider_required
+@login_required
 def create_provider():
     """Create a new provider profile"""
-    if current_user.provider:
-        return {'errors': ['Provider profile already exists']}, 400
-        
     try:
+        # Check if provider profile already exists
+        existing_provider = Provider.query.filter_by(user_id=current_user.id).first()
+        if existing_provider:
+            return {'errors': ['Provider profile already exists']}, 400
+        
         data = request.json
+        
+        # Create provider profile
         provider = Provider(
             user_id=current_user.id,
             business_name=data.get('business_name'),
-            business_type=BusinessType[data.get('business_type', '').upper()],
+            business_type=BusinessType[data.get('business_type', 'RESTAURANT')],
             address=data.get('address'),
-            city='Default City',  # Default values for required fields
-            state='CA',
-            zip_code='00000',
-            phone='000-000-0000'
+            city=data.get('city'),
+            state=data.get('state'),
+            zip_code=data.get('zip_code'),
+            phone=data.get('phone'),
+            website=data.get('website')
         )
         
         db.session.add(provider)
         db.session.commit()
-        return provider.to_dict(), 201
         
+        return {
+            'provider': provider.to_dict(),
+            'user': {
+                'id': current_user.id,
+                'email': current_user.email,
+                'user_type': current_user.user_type.value
+            }
+        }, 201
+            
     except Exception as e:
         db.session.rollback()
-        return {'errors': [str(e)]}, 400
+        return {'errors': [str(e)]}, 500
 
 @provider_routes.route('', methods=['GET'])
 def get_all_providers():
@@ -179,3 +192,33 @@ def delete_provider(id):
     except Exception as e:
         db.session.rollback()
         return {'errors': [str(e)]}, 400
+
+@provider_routes.route('/user/<int:user_id>', methods=['GET'])
+def get_provider_by_user_id(user_id):
+    """Get provider profile by user ID"""
+    try:
+        provider = Provider.query.filter_by(user_id=user_id).first()
+        if not provider:
+            return {'errors': ['Provider not found']}, 404
+            
+        return provider.to_dict()
+    except Exception as e:
+        return {'errors': [str(e)]}, 500
+
+@provider_routes.route('/<int:provider_id>/listings', methods=['GET'])
+@login_required
+def get_provider_listings(provider_id):
+    """
+    Get all food listings for a specific provider
+    """
+    provider = Provider.query.get_or_404(provider_id)
+    
+    # Add debug logging
+    print(f"Fetching listings for provider {provider_id}")
+    
+    listings = FoodListing.query.filter_by(provider_id=provider_id).all()
+    
+    # Add debug logging
+    print(f"Found {len(listings)} listings")
+    
+    return {'listings': [listing.to_dict() for listing in listings]}

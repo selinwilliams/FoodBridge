@@ -16,6 +16,9 @@ export async function csrfFetch(URL, options = {}) {
     throw res;
 }
 
+export function restoreCSRF() {
+    return csrfFetch('/api/csrf/restore');
+}
 
 //Adding Convenience methods
 export const csrfActions = {
