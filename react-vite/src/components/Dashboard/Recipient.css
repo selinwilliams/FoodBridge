@@ -1,20 +1,24 @@
 .recipient-dashboard {
-    padding: 2rem;
+    padding: 0 2rem 2rem;
     max-width: 1200px;
-    margin: 80px auto 0;
+    margin: 0px auto 0;
     min-height: calc(100vh - 80px);
-    background-color: #f5f5f5;
+    font-family: "Times New Roman", serif;
 }
 
+.benefits-content {
+    color: #AA8B56;    
+}
 .recipient-header {
     margin-bottom: 2rem;
-    background: white;
+   background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 2px solid #AA8B56;
 }
 
 .recipient-profile {
@@ -28,8 +32,8 @@
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #4CAF50;
-    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
+    border: 3px solid #AA8B56;
+    box-shadow: 0 4px 12px rgba(124, 152, 133, 0.2);
 }
 
 .recipient-info {
@@ -40,19 +44,33 @@
 
 .recipient-info h2 {
     margin: 0;
-    color: #333;
+    color: #F0EBCE;
     font-size: 2rem;
     font-weight: 600;
     line-height: 1.2;
+    font-family: "Times New Roman", serif;
 }
 
 .version {
-    color: #666;
+    color: #F0EBCE;
     font-size: 1rem;
-    background: #f5f5f5;
+    background: rgba(170, 139, 86, 0.2);
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
     display: inline-block;
+    font-family: "Times New Roman", serif;
+}
+
+.dashboard-cards .available-food h3 {
+    color: #AA8B56;
+}
+
+.dashboard-cards .allergy-filters h3 {
+    color: #AA8B56; 
+}
+
+.dashboard-cards .food-history h3 {
+    color: #AA8B56;
 }
 
 .dashboard-cards {
@@ -60,23 +78,38 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
+    background: var(--beige-light);;
+    /* background: linear-gradient(135deg, #4E6C50 0%, #395144 100%); */
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+    border: 2px solid #AA8B56;
 }
 
 .card {
-    background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #4E6C50 0%, #395144 100%);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
     height: 100%;
     display: flex;
     flex-direction: column;
+    border: 2px solid #AA8B56;
+    transition: all 0.3s ease;
+    color: #d3ba6f;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(170, 139, 86, 0.2);
 }
 
 .card h3 {
     margin: 0 0 1.5rem 0;
-    color: #333;
-    font-size: 1.2rem;
+    color: #F0EBCE;
+    font-size: 1.3rem;
     font-weight: 600;
+    font-family: "Times New Roman", serif;
 }
 
 .food-stats {
@@ -91,16 +124,19 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: #f5f5f5;
+    background: rgba(240, 235, 206, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 4px solid #4CAF50;
+    border: 4px solid #AA8B56;
     margin-right: 2rem;
+    box-shadow: 0 4px 12px rgba(57, 81, 68, 0.15);
+    color: #F0EBCE;
 }
 
 .stat-content {
     text-align: center;
+    color: #F0EBCE;
 }
 
 .listing-metrics {
@@ -115,117 +151,80 @@
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
-    background: #f5f5f5;
-    padding: 1rem;
-    border-radius: 10px;
+    background: rgba(240, 235, 206, 0.1);
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid #AA8B56;
+    transition: all 0.3s ease;
+    color: #F0EBCE;
+}
+
+.metric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
 }
 
 .value {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #4CAF50;
+    color: #AA8B56;
+    text-shadow: 0 2px 4px rgba(124, 152, 133, 0.1);
 }
 
 .label {
     font-size: 0.9rem;
-    color: #666;
+    color: #e4d99f;
+    font-weight: 500;
 }
 
 .actions {
     display: flex;
     gap: 1rem;
     margin-top: auto;
-    padding-top: 1rem;
+    padding-top: 1.5rem;
 }
 
 .actions button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 25px;
-    border: none;
-    font-weight: 500;
+    padding: 0.875rem 1.75rem;
+    border-radius: 100px;
+    border: 2px solid #AA8B56;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
+    font-family: "Times New Roman", serif;
+    background: #AA8B56;
+    color: #F0EBCE;
 }
 
-.view-btn, .add-btn {
-    background: #4CAF50;
-    color: white;
+.actions button:hover {
+    background: transparent;
+    color: #AA8B56;
+    transform: translateY(-2px);
 }
 
-.view-btn:hover, .add-btn:hover {
-    background: #45a049;
-}
-
-.filter-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    flex: 1;
-    margin-bottom: 1rem;
-}
-
-.filter-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
-    background: #f5f5f5;
-    border-radius: 10px;
-}
-
-.filter-name {
-    color: #333;
+.become-provider-btn {
+    padding: 0.75rem 1.5rem;
+    background: #AA8B56;
+    color: #F0EBCE;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    text-decoration: none;
     font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    font-family: "Times New Roman", serif;
 }
 
-.filter-count {
-    background: #4CAF50;
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.9rem;
+.become-provider-btn:hover {
+    background: transparent;
+    border-color: #AA8B56;
+    color: #AA8B56;
+    transform: translateY(-2px);
 }
 
-.history-list {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 300px;
-    margin-bottom: 1rem;
-}
-
-.provider-benefits {
-    background: #e8f5e9;
-    border: 1px solid #4CAF50;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.benefits-content {
-    flex: 1;
-}
-
-.benefits-content h4 {
-    color: #2e7d32;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-}
-
-.benefits-content ul {
-    margin: 0;
-    padding-left: 1.5rem;
-    color: #1b5e20;
-}
-
-.benefits-content li {
-    margin: 0.25rem 0;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .recipient-dashboard {
         padding: 1rem;
@@ -249,31 +248,4 @@
         margin-right: 0;
         margin-bottom: 1rem;
     }
-}
-
-.become-provider-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-block;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
-    white-space: nowrap;
-}
-
-.become-provider-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-}
-
-.become-provider-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 }

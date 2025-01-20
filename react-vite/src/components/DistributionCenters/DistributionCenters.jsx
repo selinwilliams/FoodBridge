@@ -1,219 +1,244 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { thunkGetCenters } from '../../redux/distributionCenter';
-import { useModal } from '../../context/Modal';
+import CreateDistributionCenterModal from './CreateDistributionCenterModal';
+import EditDistributionCenterModal from './EditDistributionCenterModal';
+import DeleteDistributionCenterModal from './DeleteDistributionCenterModal';
 import './DistributionCenters.css';
 
 const DistributionCenters = () => {
-    console.log('Component rendering');
-
     const dispatch = useDispatch();
-    const { setModalContent } = useModal();
-    
-    const sessionUser = useSelector(state => {
-        console.log('sessionUser selector running');
-        return state.session.user;
-    });
-    
     const centers = useSelector(state => {
-        console.log('centers selector running');
-        return Object.values(state.distributionCenters.allCenters);
+        console.log("Full Redux State:", state);
+        return state.distributionCenters?.allCenters || {};
     });
     
-    const [isLoading, setIsLoading] = useState(true);
+    console.log("Centers from Redux:", centers);
+    
+    const centersArray = Object.values(centers);
+    console.log("Centers Array:", centersArray);
+    
+    const user = useSelector(state => state.session.user);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeFilter, setActiveFilter] = useState('all');
+    const [filter, setFilter] = useState('all');
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedCenter, setSelectedCenter] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
     const centersPerPage = 6;
 
     useEffect(() => {
-        console.log('Loading centers effect running');
-        let mounted = true;
-
         const loadCenters = async () => {
+            setLoading(true);
             try {
-                await dispatch(thunkGetCenters());
-                if (mounted) {
-                    setIsLoading(false);
+                const response = await dispatch(thunkGetCenters());
+                console.log("Thunk Response:", response);
+                if (!response) {
+                    console.error("No centers data received");
                 }
             } catch (error) {
-                console.error('Error loading centers:', error);
-                if (mounted) {
-                    setIsLoading(false);
-                }
+                console.error("Error loading centers:", error);
+            } finally {
+                setTimeout(() => setLoading(false), 100);
             }
         };
-
         loadCenters();
-        
-        return () => {
-            mounted = false;
-        };
     }, [dispatch]);
 
-    const filteredCenters = useMemo(() => {
-        console.log('Calculating filtered centers');
-        let filtered = centers;
-        
-        if (searchTerm) {
-            filtered = filtered.filter(center => 
-                center.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                center.address?.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        if (activeFilter !== 'all') {
-            switch (activeFilter) {
-                case 'open':
-                    filtered = filtered.filter(center => center.status === 'OPEN');
-                    break;
-                case 'high-capacity':
-                    filtered = filtered.filter(center => center.capacity > 75);
-                    break;
-                case 'fresh-produce':
-                    filtered = filtered.filter(center => 
-                        center.food_types?.includes('Fresh Produce')
-                    );
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        return filtered;
-    }, [centers, searchTerm, activeFilter]);
-
-    const { currentCenters, totalPages } = useMemo(() => {
-        console.log('Calculating pagination');
-        const indexOfLastCenter = currentPage * centersPerPage;
-        const indexOfFirstCenter = indexOfLastCenter - centersPerPage;
-        return {
-            currentCenters: filteredCenters.slice(indexOfFirstCenter, indexOfLastCenter),
-            totalPages: Math.ceil(filteredCenters.length / centersPerPage)
-        };
-    }, [filteredCenters, currentPage, centersPerPage]);
-
-    const handlePageChange = useCallback((pageNumber) => {
-        console.log('Page change:', pageNumber);
-        setCurrentPage(pageNumber);
-    }, []);
-
-    const handleSearchChange = useCallback((e) => {
-        console.log('Search change:', e.target.value);
+    const handleSearch = (e) => {
         setSearchTerm(e.target.value);
-    }, []);
-
-    const handleFilterChange = useCallback((filter) => {
-        console.log('Filter change:', filter);
-        setActiveFilter(filter);
         setCurrentPage(1);
-    }, []);
+    };
 
-    console.log('Before render:', {
-        centersLength: centers.length,
-        filteredLength: filteredCenters.length,
-        currentPage,
-        totalPages
+    const handleFilter = (newFilter) => {
+        setFilter(newFilter);
+        setCurrentPage(1);
+    };
+
+    const filteredCenters = centersArray.filter(center => {
+        if (!center) return false;
+        const matchesSearch = center.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            center.address?.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        if (filter === 'all') return matchesSearch;
+        return matchesSearch && center.status?.toLowerCase() === filter;
     });
 
-    if (isLoading) {
-        return <div className="loading">Loading distribution centers...</div>;
+    console.log("Filtered Centers:", filteredCenters);
+
+    const indexOfLastCenter = currentPage * centersPerPage;
+    const indexOfFirstCenter = indexOfLastCenter - centersPerPage;
+    console.log("Pagination Indices:", { first: indexOfFirstCenter, last: indexOfLastCenter });
+    
+    const currentCenters = filteredCenters.slice(indexOfFirstCenter, indexOfLastCenter);
+    console.log("Current Centers:", currentCenters);
+    
+    const totalPages = Math.ceil(filteredCenters.length / centersPerPage);
+    console.log("Pagination Info:", { currentPage, totalPages, totalCenters: filteredCenters.length });
+
+    const handleEditClick = (center) => {
+        setSelectedCenter(center);
+        setShowEditModal(true);
+    };
+
+    const handleDeleteClick = (center) => {
+        setSelectedCenter(center);
+        setShowDeleteModal(true);
+    };
+
+    const getStatusBadgeClass = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'open': return 'open';
+            case 'high demand': return 'high-demand';
+            case 'available': return 'available';
+            case 'limited': return 'limited';
+            default: return 'closed';
+        }
+    };
+
+    const errors = useSelector(state => state.distributionCenters?.errors);
+
+    if (loading) {
+        return (
+            <div className="distribution-centers">
+                <div className="loading">Loading distribution centers...</div>
+            </div>
+        );
+    }
+
+    if (errors) {
+        return (
+            <div className="distribution-centers">
+                <div className="error">
+                    Error loading distribution centers: {Array.isArray(errors) ? errors.join(', ') : errors}
+                </div>
+            </div>
+        );
+    }
+
+    if (!centersArray.length) {
+        return (
+            <div className="distribution-centers">
+                <div className="centers-header">
+                    <h1>Distribution Centers</h1>
+                    {user?.is_admin && (
+                        <button 
+                            className="admin-create-btn"
+                            onClick={() => setShowCreateModal(true)}
+                        >
+                            Create New Center
+                        </button>
+                    )}
+                </div>
+                <div className="no-centers">
+                    No distribution centers available.
+                    {user?.is_admin && " Click 'Create New Center' to add one."}
+                </div>
+            </div>
+        );
     }
 
     return (
         <div className="distribution-centers">
             <div className="centers-header">
                 <h1>Distribution Centers</h1>
-                {sessionUser?.is_admin && (
+                {user?.is_admin && (
                     <button 
                         className="admin-create-btn"
-                        onClick={() => setModalContent(<CreateDistributionCenterModal />)}
+                        onClick={() => setShowCreateModal(true)}
                     >
                         Create New Center
                     </button>
                 )}
                 <div className="search-filters">
-                    <input 
-                        type="text" 
-                        placeholder="Search by location or name..."
+                    <input
+                        type="text"
+                        placeholder="Search centers by name or address..."
                         className="search-input"
                         value={searchTerm}
-                        onChange={handleSearchChange}
+                        onChange={handleSearch}
                     />
                     <div className="filter-buttons">
-                        <button 
-                            className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
-                            onClick={() => handleFilterChange('all')}
+                        <button
+                            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+                            onClick={() => handleFilter('all')}
                         >
                             All
                         </button>
-                        <button 
-                            className={`filter-btn ${activeFilter === 'open' ? 'active' : ''}`}
-                            onClick={() => handleFilterChange('open')}
+                        <button
+                            className={`filter-btn ${filter === 'open' ? 'active' : ''}`}
+                            onClick={() => handleFilter('open')}
                         >
-                            Open Now
+                            Open
                         </button>
-                        <button 
-                            className={`filter-btn ${activeFilter === 'high-capacity' ? 'active' : ''}`}
-                            onClick={() => handleFilterChange('high-capacity')}
+                        <button
+                            className={`filter-btn ${filter === 'high demand' ? 'active' : ''}`}
+                            onClick={() => handleFilter('high demand')}
                         >
-                            High Capacity
+                            High Demand
                         </button>
-                        <button 
-                            className={`filter-btn ${activeFilter === 'fresh-produce' ? 'active' : ''}`}
-                            onClick={() => handleFilterChange('fresh-produce')}
+                        <button
+                            className={`filter-btn ${filter === 'limited' ? 'active' : ''}`}
+                            onClick={() => handleFilter('limited')}
                         >
-                            Fresh Produce
+                            Limited
                         </button>
                     </div>
                 </div>
             </div>
 
             <div className="centers-grid">
-                {currentCenters.length > 0 ? (
+                {currentCenters.length === 0 ? (
+                    <div className="no-centers">
+                        No distribution centers found matching your criteria.
+                    </div>
+                ) : (
                     currentCenters.map(center => (
                         <div key={center.id} className="center-card">
                             <div className="center-image">
-                                <img src={center.image || '/center.webp'} alt={center.name} />
-                                <div className={`status-badge ${center.status.toLowerCase()}`}>
+                                <img 
+                                    src={center.image_url || '/center.webp'} 
+                                    alt={center.name}
+                                    onError={(e) => {
+                                        e.target.src = '/center.webp';
+                                    }}
+                                />
+                                <div className={`status-badge ${getStatusBadgeClass(center.status)}`}>
                                     {center.status}
                                 </div>
                             </div>
                             <div className="center-info">
                                 <h3>{center.name}</h3>
-                                <p className="address">{center.address}</p>
+                                <div className="address">
+                                    {center.address}
+                                </div>
                                 <div className="hours-capacity">
-                                    <span className="hours">{center.operating_hours}</span>
-                                    <span className="capacity">
-                                        Capacity: {center.capacity}%
-                                    </span>
+                                    <span>Hours: {center.hours}</span>
+                                    <span>Capacity: {center.capacity}</span>
                                 </div>
                                 <div className="food-types">
-                                    {center.food_types?.map((type, index) => (
+                                    {center.food_types?.split(',').map((type, index) => (
                                         <span key={index} className="food-type-tag">
-                                            {type}
+                                            {type.trim()}
                                         </span>
                                     ))}
                                 </div>
                                 <div className="contact-info">
-                                    <i className="phone-icon"></i>
-                                    {center.phone}
+                                    <span>📞 {center.phone}</span>
                                 </div>
-                                {sessionUser?.is_admin && (
+                                {user?.is_admin && (
                                     <div className="admin-actions">
-                                        <button 
+                                        <button
                                             className="edit-btn"
-                                            onClick={() => setModalContent(
-                                                <EditDistributionCenterModal center={center} />
-                                            )}
+                                            onClick={() => handleEditClick(center)}
                                         >
                                             Edit
                                         </button>
-                                        <button 
+                                        <button
                                             className="delete-btn"
-                                            onClick={() => setModalContent(
-                                                <DeleteDistributionCenterModal center={center} />
-                                            )}
+                                            onClick={() => handleDeleteClick(center)}
                                         >
                                             Delete
                                         </button>
@@ -225,41 +250,61 @@ const DistributionCenters = () => {
                             </div>
                         </div>
                     ))
-                ) : (
-                    <div className="no-centers">
-                        <p>No distribution centers found.</p>
-                    </div>
                 )}
             </div>
 
             {filteredCenters.length > centersPerPage && (
                 <div className="centers-footer">
                     <div className="pagination">
-                        <button 
+                        <button
                             className="page-btn"
-                            onClick={() => handlePageChange(currentPage - 1)}
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
                         >
                             Previous
                         </button>
-                        {[...Array(totalPages)].map((_, i) => (
-                            <span 
-                                key={i + 1}
-                                className={`page-number ${currentPage === i + 1 ? 'active' : ''}`}
-                                onClick={() => handlePageChange(i + 1)}
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button
+                                key={index + 1}
+                                className={`page-number ${currentPage === index + 1 ? 'active' : ''}`}
+                                onClick={() => setCurrentPage(index + 1)}
                             >
-                                {i + 1}
-                            </span>
+                                {index + 1}
+                            </button>
                         ))}
-                        <button 
+                        <button
                             className="page-btn"
-                            onClick={() => handlePageChange(currentPage + 1)}
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
                         >
                             Next
                         </button>
                     </div>
                 </div>
+            )}
+
+            {showCreateModal && (
+                <CreateDistributionCenterModal
+                    onClose={() => setShowCreateModal(false)}
+                />
+            )}
+            {showEditModal && selectedCenter && (
+                <EditDistributionCenterModal
+                    center={selectedCenter}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedCenter(null);
+                    }}
+                />
+            )}
+            {showDeleteModal && selectedCenter && (
+                <DeleteDistributionCenterModal
+                    center={selectedCenter}
+                    onClose={() => {
+                        setShowDeleteModal(false);
+                        setSelectedCenter(null);
+                    }}
+                />
             )}
         </div>
     );

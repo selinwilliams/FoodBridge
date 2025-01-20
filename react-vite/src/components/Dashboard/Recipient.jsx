@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './Recipient.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { thunkGetProviderById } from '../../redux/provider';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Recipient = () => {
+    const navigate = useNavigate();
     const [version] = useState('0.2.16');
     const [foodListings, setFoodListings] = useState([]);
     const [allergyFilters, setAllergyFilters] = useState([
@@ -42,11 +43,15 @@ const Recipient = () => {
         checkProviderStatus();
     }, [dispatch, sessionUser]);
 
+    const handleViewAllListings = () => {
+        navigate('/listings');
+    };
+
     return (
         <div className="recipient-dashboard">
             <div className="recipient-header">
                 <div className="recipient-profile">
-                    <img src={sessionUser?.profile_image || '/default-avatar.png'} alt="Recipient" />
+                    <img src={sessionUser?.profile_image || '/recipient.jpg'} alt="Recipient" />
                     <div className="recipient-info">
                         <h2>Welcome, {sessionUser?.username || 'Recipient'}</h2>
                         <span className="version">v{version}</span>
@@ -94,7 +99,7 @@ const Recipient = () => {
                         </div>
                     </div>
                     <div className="actions">
-                        <button className="view-btn">View All Listings</button>
+                        <button className="view-btn" onClick={handleViewAllListings}>View All Listings</button>
                     </div>
                 </div>
 

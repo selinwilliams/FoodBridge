@@ -3,13 +3,15 @@
     width: 100%;
     max-width: 400px;
     border-radius: 15px;
+    background: var(--white);
 }
 
 .login-form-modal h1 {
-    color: #333;
+    color: var(--brown);
     margin-bottom: 1.5rem;
     text-align: center;
     font-size: 1.75rem;
+    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal form {
@@ -22,44 +24,118 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    color: #666;
+    color: var(--brown-light);
     font-size: 0.9rem;
+    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal input {
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 2px solid var(--beige-light);
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal input:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: var(--sage);
+    box-shadow: 0 0 0 4px rgba(124, 152, 133, 0.1);
 }
 
 .login-form-modal button[type="submit"] {
     margin-top: 1rem;
     padding: 0.75rem;
-    background-color: #4CAF50;
-    color: white;
+    background: var(--sage);
+    color: var(--white);
     border: none;
     border-radius: 8px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal button[type="submit"]:hover {
-    background-color: #45a049;
+    background: var(--sage-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .login-form-modal p {
     color: #ff4444;
     font-size: 0.85rem;
     margin-top: 0.25rem;
+}
+
+.demo-login-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--beige-light);
+    text-align: center;
+}
+
+.demo-login-section p {
+    color: var(--brown);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.demo-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.demo-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Times New Roman", serif;
+    font-size: 0.9rem;
+}
+
+.demo-btn.provider {
+    background: var(--beige);
+    color: var(--brown);
+    border: 2px solid var(--beige-dark);
+}
+
+.demo-btn.admin {
+    background: var(--sage);
+    color: var(--white);
+    border: 2px solid var(--sage-dark);
+}
+
+.demo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.demo-btn.provider:hover {
+    background: var(--beige-dark);
+    color: var(--white);
+}
+
+.demo-btn.admin:hover {
+    background: var(--sage-dark);
+}
+
+@media (max-width: 768px) {
+    .demo-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .demo-btn {
+        width: 100%;
+    }
 }
 
 /* Ensure modal is above other content */
