@@ -47,82 +47,30 @@ const Provider = () => {
         plugins: {
             legend: {
                 position: 'top',
-                align: 'end',
                 labels: {
-                    color: '#F0EBCE',
-                    font: {
-                        family: '"Times New Roman", serif',
-                        size: 12
-                    },
-                    usePointStyle: true,
-                    padding: 20
+                    color: '#F0EBCE'
                 }
             },
-            tooltip: {
-                backgroundColor: 'rgba(78, 108, 80, 0.9)',
-                titleColor: '#F0EBCE',
-                bodyColor: '#F0EBCE',
-                borderColor: '#AA8B56',
-                borderWidth: 1,
-                padding: 12,
-                displayColors: false,
-                titleFont: {
-                    family: '"Times New Roman", serif',
-                    size: 14
-                },
-                bodyFont: {
-                    family: '"Times New Roman", serif',
-                    size: 13
-                }
+            title: {
+                display: false
             }
         },
         scales: {
             y: {
-                beginAtZero: true,
                 grid: {
-                    color: 'rgba(240, 235, 206, 0.1)',
-                    drawBorder: false
+                    color: 'rgba(240, 235, 206, 0.1)'
                 },
                 ticks: {
-                    color: '#F0EBCE',
-                    font: {
-                        family: '"Times New Roman", serif',
-                        size: 12
-                    },
-                    padding: 10
-                },
-                border: {
-                    display: false
+                    color: '#F0EBCE'
                 }
             },
             x: {
                 grid: {
-                    color: 'rgba(240, 235, 206, 0.1)',
-                    drawBorder: false
+                    color: 'rgba(240, 235, 206, 0.1)'
                 },
                 ticks: {
-                    color: '#F0EBCE',
-                    font: {
-                        family: '"Times New Roman", serif',
-                        size: 12
-                    },
-                    padding: 10
-                },
-                border: {
-                    display: false
+                    color: '#F0EBCE'
                 }
-            }
-        },
-        elements: {
-            line: {
-                tension: 0.4,
-                borderWidth: 2,
-                fill: false
-            },
-            point: {
-                radius: 4,
-                borderWidth: 2,
-                hoverRadius: 6
             }
         }
     };
@@ -135,16 +83,14 @@ const Provider = () => {
                 data: [12, 19, 3, 5, 2, 3, 7],
                 borderColor: '#AA8B56',
                 backgroundColor: '#AA8B56',
-                pointBackgroundColor: '#F0EBCE',
-                pointBorderColor: '#AA8B56'
+                tension: 0.4
             },
             {
                 label: 'Claims',
                 data: [8, 15, 2, 3, 1, 2, 5],
                 borderColor: '#F0EBCE',
                 backgroundColor: '#F0EBCE',
-                pointBackgroundColor: '#F0EBCE',
-                pointBorderColor: '#F0EBCE'
+                tension: 0.4
             }
         ]
     };
