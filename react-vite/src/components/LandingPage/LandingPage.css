@@ -241,6 +241,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
+    min-height: 450px;
+}
+
+.info-section .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
 }
 
 .info-section:hover {
@@ -305,6 +314,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1.05rem;
+    margin-top: auto;
 }
 
 .section-button:hover {
