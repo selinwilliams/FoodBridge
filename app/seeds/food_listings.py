@@ -35,7 +35,7 @@ def seed_food_listings():
                 storage_instructions="Keep refrigerated",
                 handling_instructions="Handle with care, wash before use",
                 temperature_requirements="34-40°F",
-                image_url="/produce-mix.jpg",
+                image_url="/veggie.jpg",
                 status=FoodStatus.AVAILABLE
             ),
             FoodListing(
@@ -56,7 +56,7 @@ def seed_food_listings():
                 storage_instructions="Keep frozen or refrigerated",
                 handling_instructions="Keep at safe temperature",
                 temperature_requirements="Below 40°F",
-                image_url="/meat-chicken.jpg",
+                image_url="/chicken.jpg",
                 status=FoodStatus.AVAILABLE
             ),
             FoodListing(
@@ -77,7 +77,7 @@ def seed_food_listings():
                 storage_instructions="Keep refrigerated",
                 handling_instructions="Handle with care",
                 temperature_requirements="Below 40°F",
-                image_url="/dairy-milk.jpg",
+                image_url="/milk.avif",
                 status=FoodStatus.AVAILABLE
             ),
             FoodListing(
@@ -98,7 +98,7 @@ def seed_food_listings():
                 storage_instructions="Store in a cool, dry place",
                 handling_instructions="Handle with care",
                 temperature_requirements="Room temperature",
-                image_url="/pastries.jpg",
+                image_url="/pastry.png",
                 status=FoodStatus.AVAILABLE
             ),
             FoodListing(
@@ -119,7 +119,7 @@ def seed_food_listings():
                 storage_instructions="Store in a cool, dry place",
                 handling_instructions="Check cans for dents or damage",
                 temperature_requirements="Room temperature",
-                image_url="/pantry-items.jpg",
+                image_url="/canned.jpg",
                 status=FoodStatus.AVAILABLE
             ),
             FoodListing(
@@ -140,7 +140,7 @@ def seed_food_listings():
                 storage_instructions="Keep refrigerated",
                 handling_instructions="Reheat thoroughly before consuming",
                 temperature_requirements="Below 40°F",
-                image_url="/prepared-meals.jpg",
+                image_url="/meal-box.jpg",
                 status=FoodStatus.AVAILABLE
             ),
             FoodListing(
@@ -161,7 +161,7 @@ def seed_food_listings():
                 storage_instructions="Store in a cool, dry place",
                 handling_instructions="Check package integrity",
                 temperature_requirements="Room temperature",
-                image_url="/default-food.jpg",
+                image_url="/snck.jpg",
                 status=FoodStatus.AVAILABLE
             )
         ])
