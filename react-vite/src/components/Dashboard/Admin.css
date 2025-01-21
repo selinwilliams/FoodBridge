@@ -84,7 +84,7 @@
 
 .card.user-stats,
 .card.food-listings {
-    aspect-ratio: 1;
+    /* aspect-ratio: 1; */
     height: auto;
 }
 

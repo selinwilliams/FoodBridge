@@ -179,24 +179,37 @@ export const thunkUpdateCenter = (centerId, updates) => async (dispatch) => {
     }
 };
 
+// In your thunkDeleteCenter.js
 export const thunkDeleteCenter = (centerId) => async (dispatch) => {
     try {
         const response = await csrfFetch(`/api/distribution-centers/${centerId}`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            return { errors: error.errors || ['Failed to delete center'] };
+            const errorData = await response.json();
+            return {
+                errors: errorData.errors || ['Failed to delete center'],
+                status: response.status
+            };
         }
 
+        // Handle successful deletion
         dispatch(deleteCenter(centerId));
         return { success: true };
+
     } catch (error) {
-        console.error('Error deleting center:', error);
-        return { errors: ['An error occurred while deleting the center'] };
+        console.error('Thunk error:', error); // Debug log
+        return {
+            errors: ['Network error while deleting the center'],
+            status: 500
+        };
     }
 };
+
 
 // Initial State
 const initialState = {
