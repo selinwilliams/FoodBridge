@@ -83,8 +83,8 @@ function LandingPage() {
                         </div>
                         <h3>Join Us</h3>
                         <p>Make a difference in your local community today</p>
-                        <button onClick={handleGetStarted} className="section-button">
-                            Get Started
+                        <button onClick={user ? () => navigate('/listings') : handleGetStarted} className="section-button">
+                            {user ? 'View Listings' : 'Get Started'}
                         </button>
                     </section>
 

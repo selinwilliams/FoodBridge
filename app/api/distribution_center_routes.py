@@ -84,13 +84,23 @@ def delete_distribution_center(id):
     """Delete a distribution center"""
     try:
         center = DistributionCenter.query.get_or_404(id)
+        
+        # Check for associated food listings
+        if center.food_listings:
+            return {
+                'errors': ['Cannot delete distribution center with associated food listings. Please delete or reassign all food listings first.']
+            }, 400
+            
         db.session.delete(center)
         db.session.commit()
-        return {'message': 'Successfully deleted'}, 200
+        return {'success': True, 'message': 'Successfully deleted'}, 200
         
     except Exception as e:
         db.session.rollback()
-        return {'errors': ['An error occurred while deleting the center']}, 500
+        print(f"Error deleting distribution center: {str(e)}")  # Log the actual error
+        return {
+            'errors': ['An error occurred while deleting the center. Please ensure all associated records are removed first.']
+        }, 500
 
 @dc_routes.route('/nearby', methods=['GET'])
 def get_nearby_centers():

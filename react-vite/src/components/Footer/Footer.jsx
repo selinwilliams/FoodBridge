@@ -37,10 +37,10 @@ const Footer = () => {
                 <div className="footer-section">
                     <h4>For Users</h4>
                     <nav className="footer-nav">
-                        <Link to="/providers">Food Providers</Link>
-                        <Link to="/recipients">Food Recipients</Link>
+                        {/* <Link to="/providers">Food Providers</Link>
+                        <Link to="/recipients">Food Recipients</Link> */}
                         <Link to="/listings">Available Food</Link>
-                        <Link to="/contact">Contact Support</Link>
+
                     </nav>
                 </div>
 

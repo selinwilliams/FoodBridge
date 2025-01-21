@@ -4,6 +4,7 @@ import { thunkGetCenters, thunkDeleteCenter } from '../../redux/distributionCent
 import { useModal } from '../../context/Modal';
 import CreateDistributionCenterModal from '../DistributionCenters/CreateDistributionCenterModal';
 import EditDistributionCenterModal from '../DistributionCenters/EditDistributionCenterModal';
+import DeleteDistributionCenterModal from '../DistributionCenters/DeleteDistributionCenterModal';
 import './Admin.css';
 import { Line } from 'react-chartjs-2';
 import {
@@ -61,6 +62,8 @@ const Admin = () => {
             },
         ],
     });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedCenter, setSelectedCenter] = useState(null);
 
     // Clear errors when component unmounts or when starting new operations
     useEffect(() => {
@@ -186,15 +189,22 @@ const Admin = () => {
     };
 
     // Handle delete center
-    const handleDeleteCenter = async (centerId) => {
+    const handleDeleteCenter = (center) => {
+        setSelectedCenter(center);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
         try {
-            if (window.confirm('Are you sure you want to delete this center?')) {
-                setIsLoading(true);
-                setError(null); // Clear any previous errors
-                const response = await dispatch(thunkDeleteCenter(centerId));
-                if (response?.errors) {
-                    setError(response.errors);
-                }
+            setIsLoading(true);
+            setError(null); // Clear any previous errors
+            const response = await dispatch(thunkDeleteCenter(selectedCenter.id));
+            if (response?.errors) {
+                setError(response.errors);
+            } else {
+                await dispatch(thunkGetCenters()); // Refresh the list
+                setShowDeleteModal(false);
+                setSelectedCenter(null);
             }
         } catch (err) {
             console.error('Error deleting center:', err);
@@ -202,6 +212,11 @@ const Admin = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteModal(false);
+        setSelectedCenter(null);
     };
 
     return (
@@ -313,7 +328,7 @@ const Admin = () => {
                                         </button>
                                         <button 
                                             className="action-btn delete"
-                                            onClick={() => handleDeleteCenter(center.id)}
+                                            onClick={() => handleDeleteCenter(center)}
                                             disabled={isLoading}
                                         >
                                             <i className="fas fa-trash"></i>
@@ -326,6 +341,15 @@ const Admin = () => {
                     )}
                 </div>
             </div>
+
+            {showDeleteModal && selectedCenter && (
+                <DeleteDistributionCenterModal
+                    center={selectedCenter}
+                    isOpen={showDeleteModal}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                />
+            )}
         </div>
     );
 };
