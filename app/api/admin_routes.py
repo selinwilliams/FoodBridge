@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models import User, Provider, FoodListing, Reservation, db, UserType, DistributionCenter
+from app.models import User, Provider, FoodListing, Reservation, db
 from datetime import datetime, timedelta
 from functools import wraps
 from sqlalchemy.sql import func
@@ -70,14 +70,16 @@ def manage_centers():
 def get_admin_statistics():
     """Get comprehensive admin dashboard statistics"""
     try:
-        # Get provider count
+        # Get provider count - check both user_type and is_provider
         provider_count = User.query.filter(
-            User.user_type == UserType.PROVIDER
+            (User.user_type == 'PROVIDER') | (User.is_provider == True)
         ).count()
         
-        # Get recipient count
+        # Get recipient count - exclude providers and admins
         recipient_count = User.query.filter(
-            User.user_type == UserType.RECIPIENT
+            User.user_type == 'RECIPIENT',
+            User.is_provider == False,
+            User.is_admin == False
         ).count()
         
         # Get listing counts

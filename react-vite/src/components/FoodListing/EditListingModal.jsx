@@ -128,7 +128,7 @@ function EditListingModal({ listing }) {  // Accept listing as prop
                     >
                         <option value="PENDING">Pending</option>
                         <option value="AVAILABLE">Available</option>
-                        <option value="CLAIMED">Claimed</option>
+                        {/* <option value="CLAIMED">Claimed</option> */}
                     </select>
                 </div>
 
