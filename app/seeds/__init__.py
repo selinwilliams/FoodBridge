@@ -2,6 +2,7 @@ from flask.cli import AppGroup
 from .users import seed_users, undo_users
 from .providers import seed_providers, undo_providers
 from .food_listings import seed_food_listings, undo_food_listings
+from .distribution_centers import seed_distribution_centers, undo_distribution_centers
 from app.models.db import db, environment, SCHEMA
 
 # Creates a seed group to hold our commands
@@ -16,8 +17,10 @@ def seed():
     if environment == 'production':
         undo_food_listings()
         undo_providers()
+        undo_distribution_centers()
         undo_users()
     seed_users()
+    seed_distribution_centers()
     seed_providers()
     seed_food_listings()
 
@@ -28,4 +31,5 @@ def undo():
     """Undo all seeds"""
     undo_food_listings()
     undo_providers()
+    undo_distribution_centers()
     undo_users()
