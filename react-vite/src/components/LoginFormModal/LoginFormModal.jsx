@@ -3,6 +3,7 @@ import { thunkLogin } from "../../redux/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
+import { Navigate } from "react-router-dom";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -24,6 +25,26 @@ function LoginFormModal() {
     if (serverResponse) {
       setErrors(serverResponse);
     } else {
+      closeModal();
+    }
+  };
+
+  const handleDemoLogin = async (role) => {
+    let credentials;
+    if (role === 'provider') {
+      credentials = {
+        email: 'provider@foodbridge.com',
+        password: 'password'
+      };
+    } else if (role === 'admin') {
+      credentials = {
+        email: 'admin@foodbridge.com',
+        password: 'password'
+      };
+    }
+
+    const serverResponse = await dispatch(thunkLogin(credentials));
+    if (!serverResponse) {
       closeModal();
     }
   };
@@ -56,6 +77,24 @@ function LoginFormModal() {
         </label>
         <button type="submit">Log In</button>
       </form>
+      
+      <div className="demo-login-section">
+        <p>Or try our demo accounts:</p>
+        <div className="demo-buttons">
+          <button 
+            className="demo-btn provider"
+            onClick={() => handleDemoLogin('provider')}
+          >
+            Demo Provider Login
+          </button>
+          <button 
+            className="demo-btn admin"
+            onClick={() => handleDemoLogin('admin')}
+          >
+            Demo Admin Login
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

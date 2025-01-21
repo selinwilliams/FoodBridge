@@ -2,7 +2,7 @@
     min-height: calc(100vh - 60px);
     background: var(--beige);
     padding: 4rem 2rem;
-    margin-top: 60px;
+    /* margin-top: 60px; */
 }
 
 .how-it-works-header {
@@ -31,7 +31,7 @@
 }
 
 .steps-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

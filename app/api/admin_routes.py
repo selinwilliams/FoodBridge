@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app.models import User, Provider, FoodListing, Reservation, db
 from datetime import datetime, timedelta
 from functools import wraps
+from sqlalchemy.sql import func
 
 admin_routes = Blueprint('admin', __name__)
 
@@ -101,6 +102,52 @@ def get_admin_statistics():
         })
     except Exception as e:
         print(f"Error in get_admin_statistics: {str(e)}")
+        return {'errors': [str(e)]}, 500
+
+@admin_routes.route('/user-activity', methods=['GET'])
+@login_required
+@admin_required
+def get_user_activity():
+    """Get user activity data for the last 6 months"""
+    try:
+        # Calculate date range for last 6 months
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=180)  # approximately 6 months
+        
+        # Initialize results dictionary with all months
+        results = {}
+        current_date = start_date
+        while current_date <= end_date:
+            month_key = current_date.strftime('%b')  # Get abbreviated month name
+            results[month_key] = 0
+            current_date += timedelta(days=30)  # Approximate month increment
+        
+        # Query for user activity (using updated_at as activity indicator)
+        active_users = db.session.query(
+            func.date_trunc('month', User.updated_at).label('month'),
+            func.count(User.id).label('count')
+        ).filter(
+            User.updated_at.between(start_date, end_date)
+        ).group_by(
+            func.date_trunc('month', User.updated_at)
+        ).all()
+        
+        # Update results with actual data
+        for month_data in active_users:
+            month_key = month_data[0].strftime('%b')
+            if month_key in results:
+                results[month_key] = month_data[1]
+        
+        # Convert to sorted lists for the chart
+        months = list(results.keys())
+        counts = list(results.values())
+        
+        return jsonify({
+            'labels': months,
+            'data': counts
+        })
+    except Exception as e:
+        print(f"Error in get_user_activity: {str(e)}")
         return {'errors': [str(e)]}, 500
 
 @admin_routes.route('/reports')
