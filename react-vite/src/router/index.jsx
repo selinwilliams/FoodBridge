@@ -13,6 +13,7 @@ import About from '../components/About/About';
 import HowItWorks from '../components/HowItWorks/HowItWorks';
 import Privacy from '../components/Privacy/Privacy';
 import Terms from '../components/Terms/Terms';
+import FAQ from '../components/FAQ/FAQ';
 
 // Dashboard wrapper component to handle the default route
 const Dashboard = () => {
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
             {
                 path: "terms",
                 element: <Terms />,
+            },
+            {
+                path: "faq",
+                element: <FAQ />,
             },
             {
                 path: "listings",

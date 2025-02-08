@@ -35,7 +35,7 @@ function SignupFormModal() {
         })
       );
 
-      if (serverResponse === null) {
+      if (serverResponse?.success) {
         // Signup successful
         closeModal();
       } else {

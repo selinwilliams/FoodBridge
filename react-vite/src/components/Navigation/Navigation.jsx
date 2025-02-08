@@ -26,10 +26,10 @@ function Navigation() {
   const dashboardUrl = getDashboardUrl();
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <NavLink to="/" className="navbar-logo" style={{ color: "#4A3427" }}>
-          FoodBridge
+    <nav className="navigation">
+      <div className="nav-container">
+        <NavLink to="/" className="logo-container">
+          <span className="logo-text">FoodBridge</span>
         </NavLink>
 
         <button 
@@ -39,38 +39,44 @@ function Navigation() {
           <span className="hamburger-icon"></span>
         </button>
 
-        <div className={`navbar-links ${isOpen ? 'active' : ''}`}>
+        <ul className={`nav-menu ${isOpen ? 'active' : ''}`}>
           {user && dashboardUrl && (
+            <li className="nav-item">
+              <NavLink 
+                to={dashboardUrl}
+                className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          )}
+          <li className="nav-item">
             <NavLink 
-              to={dashboardUrl}
+              to="/listings" 
               className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
             >
-              Dashboard
+              Food Listings
             </NavLink>
-          )}
-          <NavLink 
-            to="/listings" 
-            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-          >
-            Food Listings
-          </NavLink>
-          <NavLink 
-            to="/centers" 
-            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-          >
-            Distribution Centers
-          </NavLink>
-          <NavLink 
-            to="/about" 
-            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-          >
-            About
-          </NavLink>
-        </div>
+          </li>
+          <li className="nav-item">
+            <NavLink 
+              to="/centers" 
+              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+            >
+              Distribution Centers
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink 
+              to="/about" 
+              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+            >
+              About
+            </NavLink>
+          </li>
+        </ul>
 
-        <div className="navbar-profile">
-          <ProfileButton />
-        </div>
+        <ProfileButton />
       </div>
     </nav>
   );

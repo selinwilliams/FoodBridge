@@ -33,25 +33,10 @@ function LandingPage() {
                         </button>
                     </div>
                     <div className="hero-illustrations">
-                        <div className="food-illustration bread-basket">
+                        <div className="food-illustration main-image">
                             <img 
-                                src="/anime-food.jpg" 
-                                alt="Anime style food illustration"
-                                className="food-image"
-                            />
-                        </div>
-                        <div className="food-illustration fruits-bowl">
-                            <img 
-                                src="/japan.avif" 
-                                alt="Various delicious foods"
-                                className="food-image"
-                            />
-                        </div>
-                        <div className="food-illustration veggies-crate">
-                            <img 
-                                src="/anime-girls.avif" 
-                                alt="Anime girl with food"
-                                className="food-image"
+                                src="/steven.webp" 
+                                alt="Food sharing illustration"
                             />
                         </div>
                     </div>

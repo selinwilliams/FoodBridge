@@ -1,14 +1,30 @@
+/* Root Variables - matching the dark theme */
+:root {
+    --primary-color: #00ff9d;
+    --primary-glow: rgba(0, 255, 157, 0.3);
+    --secondary-color: #1a1a1a;
+    --background-dark: #141921;
+    --card-background: rgba(255, 255, 255, 0.1);
+    --text-light: #ffffff;
+    --text-gray: #d1d5db;
+    --neon-glow: 0 0 10px var(--primary-glow);
+    --card-border: 1px solid rgba(255, 255, 255, 0.2);
+    --glass-background: rgba(255, 255, 255, 0.1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
 .how-it-works-container {
-    min-height: calc(100vh - 60px);
-    background: var(--beige);
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--background-dark) 0%, #001a0f 100%);
     padding: 4rem 2rem;
-    /* margin-top: 60px; */
+    color: var(--text-light);
 }
 
 .how-it-works-header {
     text-align: center;
     margin-bottom: 4rem;
-    color: var(--brown);
+    color: var(--text-light);
 }
 
 .how-it-works-header h1 {
@@ -18,20 +34,26 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
+    background: linear-gradient(to right, #ffeb3b, var(--primary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(255, 235, 59, 0.3);
 }
 
 .bridge-icon {
-    color: var(--sage);
+    color: var(--primary-color);
     font-size: 3rem;
+    filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 .how-it-works-header p {
     font-size: 1.2rem;
-    color: var(--brown-light);
+    color: var(--text-gray);
 }
 
 .steps-container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -40,17 +62,23 @@
 }
 
 .step {
-    background: var(--white);
+    background: var(--card-background);
     padding: 2rem;
     border-radius: 24px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    border: var(--card-border);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .step:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
 }
 
 .step-number {
@@ -59,39 +87,51 @@
     left: -20px;
     width: 50px;
     height: 50px;
-    background: var(--sage);
-    color: var(--white);
+    background: var(--primary-color);
+    color: var(--secondary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     font-weight: bold;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 20px var(--primary-glow);
+    transition: var(--transition-smooth);
+}
+
+.step:hover .step-number {
+    box-shadow: 0 0 30px var(--primary-glow);
+    transform: scale(1.1);
 }
 
 .step h2 {
-    color: var(--brown);
+    color: var(--primary-color);
     margin-bottom: 1rem;
     font-size: 1.5rem;
 }
 
 .step p {
-    color: var(--brown-light);
+    color: var(--text-gray);
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
 
 .step-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 12px;
-    transition: all 0.3s ease;
+    height: 250px;
+    object-fit: contain;
+    border-radius: 16px;
+    transition: var(--transition-smooth);
+    border: var(--card-border);
+    margin-top: auto;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
 }
 
 .step:hover .step-image {
     transform: scale(1.05);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
 }
 
 .benefits-section {
@@ -102,9 +142,10 @@
 
 .benefits-section h2 {
     text-align: center;
-    color: var(--brown);
+    color: var(--primary-color);
     font-size: 2rem;
     margin-bottom: 3rem;
+    text-shadow: 0 0 20px var(--primary-glow);
 }
 
 .benefits-grid {
@@ -114,34 +155,70 @@
 }
 
 .benefit {
-    background: var(--white);
+    background: var(--card-background);
     padding: 2rem;
     border-radius: 20px;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: var(--transition-smooth);
+    border: var(--card-border);
+    backdrop-filter: blur(10px);
 }
 
 .benefit:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
 }
 
 .benefit i {
     font-size: 2.5rem;
-    color: var(--sage);
+    color: var(--primary-color);
     margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 .benefit h3 {
-    color: var(--brown);
+    color: var(--text-light);
     margin-bottom: 1rem;
     font-size: 1.3rem;
 }
 
 .benefit p {
-    color: var(--brown-light);
+    color: var(--text-gray);
     line-height: 1.6;
 }
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step {
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-fill-mode: both;
+}
+
+.step:nth-child(1) { animation-delay: 0.2s; }
+.step:nth-child(2) { animation-delay: 0.4s; }
+.step:nth-child(3) { animation-delay: 0.6s; }
+.step:nth-child(4) { animation-delay: 0.8s; }
+
+.benefit {
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-fill-mode: both;
+}
+
+.benefit:nth-child(1) { animation-delay: 1s; }
+.benefit:nth-child(2) { animation-delay: 1.2s; }
+.benefit:nth-child(3) { animation-delay: 1.4s; }
+.benefit:nth-child(4) { animation-delay: 1.6s; }
 
 @media (max-width: 768px) {
     .how-it-works-container {
@@ -154,6 +231,7 @@
 
     .steps-container {
         grid-template-columns: 1fr;
+        padding: 1rem;
     }
 
     .step {
