@@ -174,89 +174,86 @@ const handleAddListing = () => {
     
     return (
         <div className="provider-dashboard">
-            <div className="dashboard-header">
-                <div className="profile-section">
-                    <img 
-                        src={currentProvider.image_url || "/prvd.png"} 
-                        alt="Profile" 
-                        className="profile-image" 
-                    />
-                    <div className="profile-info">
-                        <h2>Provider</h2>
-                        <div className="profile-status">
-                            <span className="status-dot"></span>
-                            <span className="status-text">Online</span>
-                        </div>
+            <div className="provider-container">
+                <header className="provider-header">
+                    <div className="provider-profile">
+                        <img 
+                            src={currentProvider.image_url || "/prvd.png"} 
+                            alt="Profile" 
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "/prvd.png";
+                            }}
+                        />
+                        <h2>Provider Dashboard</h2>
                     </div>
-                </div>
-            </div>
+                </header>
 
-            <div className="dashboard-grid">
-                <div className="card food-donations">
-                    <div className="header-actions">
-                        <h3>Food Donations</h3>
-                        <button className="add-btn" onClick={handleAddListing}>
-                            Add Listing
-                        </button>
-                    </div>
-                    <div className="metrics">
-                        <div className="metric">
-                            <span className="value">{metrics.total || 0}</span>
-                            <span className="label">Total Listings</span>
+                <main className="dashboard-content">
+                    <div className="top-cards">
+                        <div className="dashboard-card">
+                            <h3>Metrics</h3>
+                            <div className="metrics-grid">
+                                <div className="metric-item">
+                                    <span className="metric-value">{metrics.total || 0}</span>
+                                    <span className="metric-label">Total Listings</span>
+                                </div>
+                                <div className="metric-item">
+                                    <span className="metric-value">{metrics.pending || 0}</span>
+                                    <span className="metric-label">Pending</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="metric">
-                            <span className="value">{metrics.pending || 0}</span>
-                            <span className="label">Pending</span>
-                        </div>
-                        <div className="metric">
-                            <span className="value">{metrics.completed || 0}</span>
-                            <span className="label">Completed</span>
-                        </div>
-                        <div className="metric">
-                            <span className="value">${(metrics.completed * 25).toFixed(2)}</span>
-                            <span className="label">Deductions</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="card food-listings">
-                    <h3>Your Listings</h3>
-                    <div className="listings-scroll">
-                        {Array.isArray(providerListings) && providerListings.length > 0 ? (
-                            providerListings.map(listing => (
-                                <div key={listing.id} className="food-card">
-                                    <div className="food-card-content">
-                                        <div className="food-info">
-                                            <h3>{listing.title}</h3>
+                        <div className="dashboard-card">
+                            <h3>Activity</h3>
+                            <div className="metrics-grid">
+                                <div className="metric-item">
+                                    <span className="metric-value">{metrics.completed || 0}</span>
+                                    <span className="metric-label">Completed</span>
+                                </div>
+                                <div className="metric-item">
+                                    <span className="metric-value">${(metrics.completed * 25).toFixed(2)}</span>
+                                    <span className="metric-label">Deductions</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <div className="listings-header">
+                                <h3>Food Listings</h3>
+                                <button className="add-btn" onClick={handleAddListing}>
+                                    Add Listing
+                                </button>
+                            </div>
+                            <div className="listings-scroll">
+                                {Array.isArray(providerListings) && providerListings.length > 0 ? (
+                                    providerListings.map(listing => (
+                                        <div key={listing.id} className="food-card">
+                                            <h4>{listing.title}</h4>
                                             <p>{listing.description}</p>
-                                            <div className="listing-details">
-                                                <span>Quantity: {listing.quantity} {listing.unit}</span>
-                                                <span>Status: {listing.status}</span>
-                                                <span>Type: {listing.food_type}</span>
-                                                <span>Expires: {new Date(listing.expiration_date).toLocaleDateString()}</span>
+                                            <div className="food-actions">
+                                                <button onClick={() => handleEdit(listing)}>Edit</button>
+                                                <button onClick={() => handleDelete(listing)}>Delete</button>
                                             </div>
                                         </div>
+                                    ))
+                                ) : (
+                                    <div className="no-listings">
+                                        <p>No listings found. Create your first listing!</p>
                                     </div>
-                                    <div className="listing-actions">
-                                        <button className="edit-btn" onClick={() => handleEdit(listing)}>Edit</button>
-                                        <button className="delete-btn" onClick={() => handleDelete(listing)}>Delete</button>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="no-listings">
-                                <p>No listings found. Create your first listing!</p>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
-                </div>
 
-                <div className="card analytics">
-                    <h3>Monthly Analytics</h3>
-                    <div className="chart-container">
-                        <Line options={chartOptions} data={chartData} />
+                    <div className="analytics-card">
+                        <h3>Monthly Analytics</h3>
+                        <div className="chart-container">
+                            <Line options={chartOptions} data={chartData} />
+                        </div>
                     </div>
-                </div>
+                </main>
             </div>
         </div>
     );

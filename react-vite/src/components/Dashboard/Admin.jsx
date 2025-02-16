@@ -49,18 +49,16 @@ const Admin = () => {
         totalListings: 0
     });
     const [chartData, setChartData] = useState({
-        labels: [],
-        datasets: [
-            {
-                fill: true,
-                label: 'User Activity',
-                data: [],
-                borderColor: '#AA8B56',
-                backgroundColor: 'rgba(170, 139, 86, 0.2)',
-                tension: 0.4,
-                borderWidth: 2,
-            },
-        ],
+        labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+        datasets: [{
+            label: 'User Activity',
+            data: [0, 0, 0, 0, 0, 0, 25],
+            fill: true,
+            borderColor: '#6ee7b7',
+            backgroundColor: 'rgba(110, 231, 183, 0.1)',
+            tension: 0.4,
+            borderWidth: 2,
+        }]
     });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedCenter, setSelectedCenter] = useState(null);
@@ -144,13 +142,13 @@ const Admin = () => {
             y: {
                 beginAtZero: true,
                 grid: {
-                    color: 'rgba(240, 235, 206, 0.1)',
+                    color: 'rgba(148, 163, 184, 0.1)',
                     drawBorder: false,
                 },
                 ticks: {
-                    color: '#F0EBCE',
+                    color: '#94a3b8',
                     font: {
-                        family: '"Times New Roman", serif',
+                        family: '"SF Mono", "Fira Code", monospace',
                     }
                 }
             },
@@ -160,9 +158,9 @@ const Admin = () => {
                     drawBorder: false,
                 },
                 ticks: {
-                    color: '#F0EBCE',
+                    color: '#94a3b8',
                     font: {
-                        family: '"Times New Roman", serif',
+                        family: '"SF Mono", "Fira Code", monospace',
                     }
                 }
             },
@@ -221,125 +219,90 @@ const Admin = () => {
 
     return (
         <div className="admin-dashboard">
-            <div className="admin-header">
-                <div className="admin-profile">
-                    <img 
-                        src={sessionUser?.profile_image || defaultAvatar} 
-                        alt="Admin Profile"
-                        onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = defaultAvatar;
-                        }}
-                    />
-                    <div className="admin-info">
-                        <h2>Admin</h2>
-                        <span className="version">v 0.2.18</span>
+            <div className="admin-container">
+                <header className="admin-header">
+                    <div className="admin-profile">
+                        <img 
+                            src={sessionUser?.profile_image || defaultAvatar} 
+                            alt="Admin Profile"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = defaultAvatar;
+                            }}
+                        />
+                        <h2>Admin Dashboard</h2>
                     </div>
-                </div>
-            </div>
+                </header>
 
-            <div className="dashboard-cards">
-                {/* Combined User Stats and Analytics Column */}
-                <div className="stats-analytics-column">
-                    <div className="card user-stats">
-                        <h3>User Statistics</h3>
-                        <div className="metrics">
-                            <div className="metric">
-                                <span className="value">{stats.providers}</span>
-                                <span className="label">Providers</span>
+                <main className="dashboard-content">
+                    <div className="top-cards">
+                        <div className="dashboard-card">
+                            <h3>User Statistics</h3>
+                            <div className="metrics-grid">
+                                <div className="metric-item">
+                                    <span className="metric-value">{stats.providers || 0}</span>
+                                    <span className="metric-label">Providers</span>
+                                </div>
+                                <div className="metric-item">
+                                    <span className="metric-value">{stats.recipients || 0}</span>
+                                    <span className="metric-label">Recipients</span>
+                                </div>
                             </div>
-                            <div className="metric">
-                                <span className="value">{stats.recipients}</span>
-                                <span className="label">Recipients</span>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <h3>Food Listings</h3>
+                            <div className="metrics-grid">
+                                <div className="metric-item">
+                                    <span className="metric-value">{stats.activeListings || 0}</span>
+                                    <span className="metric-label">Active Listings</span>
+                                </div>
+                                <div className="metric-item">
+                                    <span className="metric-value">{stats.totalListings || 0}</span>
+                                    <span className="metric-label">Total Listings</span>
+                                </div>
                             </div>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <h3>Distribution Centers ({centers.length})</h3>
+                            <button 
+                                className="admin-btn secondary"
+                                onClick={() => setModalContent(
+                                    <CreateDistributionCenterModal />
+                                )}
+                                disabled={isLoading}
+                            >
+                                Add New Center
+                            </button>
+                            {isLoading ? (
+                                <div className="loading">Loading centers...</div>
+                            ) : error || editError ? (
+                                <div className="error-message">{error || editError}</div>
+                            ) : (
+                                <div className="centers-list">
+                                    {centers.map(center => (
+                                        <div key={center.id} className="center-item">
+                                            <h4>{center.name}</h4>
+                                            <p>{center.address}</p>
+                                            <div className="center-actions">
+                                                <button onClick={() => handleEditCenter(center)}>Edit</button>
+                                                <button onClick={() => handleDeleteCenter(center)}>Delete</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    <div className="card analytics">
+                    <div className="analytics-card">
                         <h3>User Analytics</h3>
                         <div className="chart-container">
                             <Line data={chartData} options={chartOptions} />
                         </div>
                     </div>
-                </div>
-
-                {/* Food Listings Card */}
-                <div className="card food-listings">
-                    <h3>Food Listings</h3>
-                    <div className="metrics">
-                        <div className="metric">
-                            <span className="value">{stats.activeListings}</span>
-                            <span className="label">Active</span>
-                        </div>
-                        <div className="metric">
-                            <span className="value">{stats.totalListings}</span>
-                            <span className="label">Total</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Distribution Centers Card */}
-                <div className="card distribution-centers">
-                    <div className="card-header">
-                        <h3>Distribution Centers ({centers.length})</h3>
-                        <button 
-                            className="action-btn add"
-                            onClick={() => setModalContent(
-                                <CreateDistributionCenterModal />
-                            )}
-                            disabled={isLoading}
-                        >
-                            <i className="fas fa-plus"></i>
-                            Add New Center
-                        </button>
-                    </div>
-                    
-                    {isLoading ? (
-                        <div className="loading">
-                            <div className="loading-spinner"></div>
-                            <p>Loading centers...</p>
-                        </div>
-                    ) : error || editError ? (
-                        <div className="error-message">
-                            <i className="fas fa-exclamation-circle"></i>
-                            <p>{error || editError}</p>
-                        </div>
-                    ) : (
-                        <div className="centers-list">
-                            {centers.map(center => (
-                                <div key={center.id} className="center-item">
-                                    <div className="center-info">
-                                        <h4>{center.name}</h4>
-                                        <div className="center-details">
-                                            <p>{center.address}</p>
-                                            <span className={`status ${center.status?.toLowerCase()}`}>
-                                                {center.status}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="center-actions">
-                                        <button 
-                                            className="action-btn edit"
-                                            onClick={() => handleEditCenter(center)}
-                                            disabled={isLoading}
-                                        >
-                                            <i className="fas fa-edit"></i>
-                                            Edit
-                                        </button>
-                                        <button 
-                                            className="action-btn delete"
-                                            onClick={() => handleDeleteCenter(center)}
-                                            disabled={isLoading}
-                                        >
-                                            <i className="fas fa-trash"></i>
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                </main>
             </div>
 
             {showDeleteModal && selectedCenter && (
@@ -355,3 +318,4 @@ const Admin = () => {
 };
 
 export default Admin;
+

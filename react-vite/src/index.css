@@ -1,28 +1,54 @@
 /* Color Variables */
 :root {
-    --beige: var(--beige-light);;
-    --beige-light: #F3E9E0;
-    --beige-dark: #D4BBA3;
-    --sage: #7C9885;
-    --sage-light: #9FB8A8;
-    --sage-dark: #566D5F;
-    --brown: #5C4033;
-    --brown-light: #8B6B5D;
-    --cream: #FAF6F1;
-    --white: #FFFFFF;
-    --bg-light: #FDFDFD;
+    --primary: #6ee7b7;
+    --primary-light: #a7f3d0;
+    --primary-dark: #059669;
+    --background: #0f172a;
+    --background-light: #1e293b;
+    --background-dark: #0a192f;
+    --text: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #6ee7b7;
+    --white: #ffffff;
+    --bg-dark: #0f172a;
     
-    /* Additional Colors for Enhanced UI */
-    --success: #4CAF50;
-    --warning: #FFA726;
-    --error: #EF5350;
-    --info: #42A5F5;
+    /* Size Variables for Better Scaling */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Container Sizes */
+    --container-max-width: 1200px;
+    --card-max-width: 300px;
+    
+    /* Component Sizes */
+    --header-height: 60px;
+    --card-padding: var(--spacing-md);
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    
+    /* Additional Colors */
+    --success: #6ee7b7;
+    --warning: #fbbf24;
+    --error: #f43f5e;
+    --info: #38bdf8;
     
     /* Shadows */
-    --shadow-sm: 0 2px 4px rgba(92, 64, 51, 0.08);
-    --shadow-md: 0 4px 8px rgba(92, 64, 51, 0.12);
-    --shadow-lg: 0 8px 16px rgba(92, 64, 51, 0.16);
-    --shadow-xl: 0 30px 60px -15px rgba(92, 64, 51, 0.25);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
 }
 
 /* TODO: Add sitewide styles */
@@ -42,69 +68,67 @@ html {
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background-color: var(--bg-light);
-    color: var(--brown);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.6;
+    box-sizing: border-box;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    font-family: "Inter", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 #root {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-light);
+    background-color: var(--background);
 }
 
 /* Page Container Styles */
 .page-container {
     flex: 1 0 auto;
     width: 100%;
-    margin-top: 60px;
+    margin-top: var(--header-height);
     position: relative;
     overflow-x: hidden;
-    background-color: var(--bg-light);
+    background-color: var(--background);
     transition: all 0.3s ease;
 }
 
 /* Admin Dashboard Specific Styles */
 .admin-dashboard {
-    min-height: calc(100vh - 60px);
-    padding: 2rem;
-    max-width: 1200px;
+    min-height: calc(100vh - var(--header-height));
+    padding: var(--spacing-lg);
+    max-width: var(--container-max-width);
     margin: 0 auto;
-    background-color: var(--beige-light);
+    background-color: var(--background);
 }
 
 /* Provider Dashboard Specific Styles */
 .provider-dashboard {
-    min-height: calc(100vh - 60px);
-    padding: 2rem;
-    max-width: 1200px;
+    min-height: calc(100vh - var(--header-height));
+    padding: var(--spacing-lg);
+    max-width: var(--container-max-width);
     margin: 0 auto;
-    background-color: var(--beige-light);
+    background-color: var(--background);
 }
 
 /* Distribution Centers Specific Styles */
 .distribution-centers {
-    min-height: calc(100vh - 60px);
-    padding: 2rem;
-    max-width: 1200px;
+    min-height: calc(100vh - var(--header-height));
+    padding: var(--spacing-lg);
+    max-width: var(--container-max-width);
     margin: 0 auto;
-    background-color: var(--beige-light);
+    background-color: var(--background);
 }
 
 /* Food Listings Specific Styles */
 .food-listings-container {
-    min-height: calc(100vh - 60px);
-    padding: 2rem;
-    max-width: 1200px;
+    min-height: calc(100vh - var(--header-height));
+    padding: var(--spacing-lg);
+    max-width: var(--container-max-width);
     margin: 0 auto;
-    background-color: var(--beige-light);
+    background-color: var(--background);
 }
 
 /* Footer Specific Styles */
@@ -115,11 +139,11 @@ body {
 
 /* Landing Page Specific Styles */
 .landing-page {
-    background-color: var(--beige) !important;
+    background-color: var(--background) !important;
 }
 
 .landing-page .page-container {
-    background-color: var(--beige) !important;
+    background-color: var(--background) !important;
 }
 
 /* Utility Classes */
@@ -128,7 +152,7 @@ body {
     margin: 0 auto;
     padding: 2.5rem;
     width: 100%;
-    background-color: var(--white);
+    background-color: var(--background-light);
     border-radius: 48px;
     box-shadow: var(--shadow-xl);
     transition: all 0.3s ease;
@@ -136,12 +160,12 @@ body {
 
 .content-wrapper:hover {
     transform: translateY(-2px);
-    box-shadow: 0 35px 70px -20px rgba(92, 64, 51, 0.3);
+    box-shadow: 0 35px 70px -20px rgba(0, 0, 0, 0.3);
 }
 
 /* Button Styles */
 .primary-button {
-    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: var(--white);
     border: none;
     padding: 0.875rem 1.75rem;
@@ -156,15 +180,15 @@ body {
 }
 
 .primary-button:hover {
-    background: linear-gradient(135deg, var(--sage-dark) 0%, var(--sage) 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
 .secondary-button {
     background: transparent;
-    color: var(--sage-dark);
-    border: 2.5px solid var(--sage);
+    color: var(--primary-dark);
+    border: 2.5px solid var(--primary);
     padding: 0.75rem 1.75rem;
     border-radius: 100px;
     font-weight: 600;
@@ -185,7 +209,7 @@ body {
     left: 0;
     width: 0;
     height: 100%;
-    background: var(--sage);
+    background: var(--primary);
     transition: all 0.3s ease;
     z-index: -1;
 }
@@ -201,11 +225,12 @@ body {
 /* Card Styles */
 .card {
     background: var(--white);
-    border-radius: 24px;
-    padding: 2rem;
+    border-radius: var(--border-radius-md);
+    padding: var(--card-padding);
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
-    border: 1px solid rgba(92, 64, 51, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    max-width: var(--card-max-width);
 }
 
 .card:hover {
@@ -218,23 +243,23 @@ body {
 input, textarea, select {
     width: 100%;
     padding: 0.875rem 1.25rem;
-    border: 2px solid var(--beige-light);
+    border: 2px solid var(--background-light);
     border-radius: 12px;
     font-size: 1rem;
-    color: var(--brown);
+    color: var(--text);
     transition: all 0.3s ease;
     background-color: var(--white);
 }
 
 input:focus, textarea:focus, select:focus {
     outline: none;
-    border-color: var(--sage);
-    box-shadow: 0 0 0 4px rgba(124, 152, 133, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(109, 230, 189, 0.1);
 }
 
 /* Text Styles */
 h1, h2, h3, h4, h5, h6 {
-    color: var(--brown);
+    color: var(--text);
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 1rem;
@@ -249,7 +274,7 @@ h5 { font-size: 1.5rem; }
 h6 { font-size: 1.25rem; }
 
 p {
-    color: var(--brown-light);
+    color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: 1rem;
     font-size: 1.1rem;

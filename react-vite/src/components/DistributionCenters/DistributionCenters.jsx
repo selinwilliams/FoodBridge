@@ -8,16 +8,8 @@ import './DistributionCenters.css';
 
 const DistributionCenters = () => {
     const dispatch = useDispatch();
-    const centers = useSelector(state => {
-        console.log("Full Redux State:", state);
-        return state.distributionCenters?.allCenters || {};
-    });
-    
-    console.log("Centers from Redux:", centers);
-    
+    const centers = useSelector(state => state.distributionCenters?.allCenters || {});
     const centersArray = Object.values(centers);
-    console.log("Centers Array:", centersArray);
-    
     const user = useSelector(state => state.session.user);
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('all');
@@ -102,16 +94,16 @@ const DistributionCenters = () => {
 
     if (loading) {
         return (
-            <div className="distribution-centers">
-                <div className="loading">Loading distribution centers...</div>
+            <div className="distribution-centers-container">
+                <div className="loading-spinner">Loading distribution centers...</div>
             </div>
         );
     }
 
     if (errors) {
         return (
-            <div className="distribution-centers">
-                <div className="error">
+            <div className="distribution-centers-container">
+                <div className="error-message">
                     Error loading distribution centers: {Array.isArray(errors) ? errors.join(', ') : errors}
                 </div>
             </div>
@@ -120,133 +112,117 @@ const DistributionCenters = () => {
 
     if (!centersArray.length) {
         return (
-            <div className="distribution-centers">
-                <div className="centers-header">
+            <div className="distribution-centers-container">
+                <div className="distribution-centers-header">
                     <h1>Distribution Centers</h1>
+                    <p>Find food distribution centers near you</p>
                     {user?.is_admin && (
                         <button 
-                            className="admin-create-btn"
+                            className="add-center-button"
                             onClick={() => setShowCreateModal(true)}
                         >
+                            <i className="fas fa-plus"></i>
                             Create New Center
                         </button>
                     )}
                 </div>
                 <div className="no-centers">
-                    No distribution centers available.
-                    {user?.is_admin && " Click 'Create New Center' to add one."}
+                    <h2>No Centers Available</h2>
+                    <p>
+                        {user?.is_admin 
+                            ? "Click 'Create New Center' to add one."
+                            : "Please check back later for available distribution centers."}
+                    </p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="distribution-centers">
-            <div className="centers-header">
+        <div className="distribution-centers-container">
+            <div className="distribution-centers-header">
                 <h1>Distribution Centers</h1>
-                {user?.is_admin && (
-                    <button 
-                        className="admin-create-btn"
-                        onClick={() => setShowCreateModal(true)}
-                    >
-                        Create New Center
-                    </button>
-                )}
-                <div className="search-filters">
+                <p>Find food distribution centers near you</p>
+            </div>
+
+            <div className="centers-controls">
+                <div className="search-bar">
+                    <i className="fas fa-search"></i>
                     <input
                         type="text"
                         placeholder="Search centers by name or address..."
-                        className="search-input"
                         value={searchTerm}
                         onChange={handleSearch}
                     />
-                    <div className="filter-buttons">
-                        <button
-                            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-                            onClick={() => handleFilter('all')}
-                        >
-                            All
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'open' ? 'active' : ''}`}
-                            onClick={() => handleFilter('open')}
-                        >
-                            Open
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'high demand' ? 'active' : ''}`}
-                            onClick={() => handleFilter('high demand')}
-                        >
-                            High Demand
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'limited' ? 'active' : ''}`}
-                            onClick={() => handleFilter('limited')}
-                        >
-                            Limited
-                        </button>
-                    </div>
                 </div>
+
+                {user?.is_admin && (
+                    <button 
+                        className="add-center-button"
+                        onClick={() => setShowCreateModal(true)}
+                    >
+                        <i className="fas fa-plus"></i>
+                        Create New Center
+                    </button>
+                )}
             </div>
 
             <div className="centers-grid">
                 {currentCenters.length === 0 ? (
                     <div className="no-centers">
-                        No distribution centers found matching your criteria.
+                        <h2>No Results Found</h2>
+                        <p>No distribution centers match your search criteria.</p>
                     </div>
                 ) : (
                     currentCenters.map(center => (
                         <div key={center.id} className="center-card">
-                            <div className="center-image">
-                                <img 
-                                    src={center.image_url || '/center.webp'} 
-                                    alt={center.name}
-                                    onError={(e) => {
-                                        e.target.src = '/center.webp';
-                                    }}
-                                />
-                                <div className={`status-badge ${getStatusBadgeClass(center.status)}`}>
-                                    {center.status}
+                            <img 
+                                src={center.image_url || '/center.webp'} 
+                                alt={center.name}
+                                className="center-image"
+                                onError={(e) => {
+                                    e.target.src = '/center.webp';
+                                }}
+                            />
+                            <div className="center-content">
+                                <h3 className="center-name">{center.name}</h3>
+                                <div className="center-details">
+                                    <p>
+                                        <i className="fas fa-map-marker-alt"></i>
+                                        {center.address}
+                                    </p>
+                                    <p>
+                                        <i className="fas fa-clock"></i>
+                                        {center.hours || 'Hours not specified'}
+                                    </p>
+                                    <p>
+                                        <i className="fas fa-users"></i>
+                                        Capacity: {center.capacity || 'Not specified'}
+                                    </p>
+                                    <p>
+                                        <i className="fas fa-phone"></i>
+                                        {center.phone || 'Phone not available'}
+                                    </p>
                                 </div>
-                            </div>
-                            <div className="center-info">
-                                <h3>{center.name}</h3>
-                                <div className="address">
-                                    {center.address}
-                                </div>
-                                <div className="hours-capacity">
-                                    <span>Hours: {center.hours}</span>
-                                    <span>Capacity: {center.capacity}</span>
-                                </div>
-                                <div className="food-types">
-                                    {center.food_types?.split(',').map((type, index) => (
-                                        <span key={index} className="food-type-tag">
-                                            {type.trim()}
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="contact-info">
-                                    <span>📞 {center.phone}</span>
-                                </div>
+
                                 {user?.is_admin && (
-                                    <div className="admin-actions">
+                                    <div className="center-actions">
                                         <button
-                                            className="edit-btn"
+                                            className="edit-button"
                                             onClick={() => handleEditClick(center)}
                                         >
+                                            <i className="fas fa-edit"></i>
                                             Edit
                                         </button>
                                         <button
-                                            className="delete-btn"
+                                            className="delete-button"
                                             onClick={() => handleDeleteClick(center)}
                                         >
+                                            <i className="fas fa-trash"></i>
                                             Delete
                                         </button>
                                     </div>
                                 )}
-                                <button className="view-details-btn">
-                                    View Details
-                                </button>
                             </div>
                         </div>
                     ))
