@@ -3,15 +3,18 @@
     width: 100%;
     max-width: 400px;
     border-radius: 15px;
-    background: var(--white);
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid rgba(110, 231, 183, 0.2);
+    font-family: "Inter", sans-serif;
+    color: #f8fafc;
+    backdrop-filter: blur(8px);
 }
 
 .login-form-modal h1 {
-    color: var(--brown);
+    color: #6ee7b7;
     margin-bottom: 1.5rem;
     text-align: center;
     font-size: 1.75rem;
-    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal form {
@@ -24,48 +27,52 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    color: var(--brown-light);
+    color: #94a3b8;
     font-size: 0.9rem;
-    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal input {
     padding: 0.75rem;
-    border: 2px solid var(--beige-light);
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(110, 231, 183, 0.2);
     border-radius: 8px;
     font-size: 1rem;
+    color: #f8fafc;
     transition: all 0.3s ease;
-    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal input:focus {
     outline: none;
-    border-color: var(--sage);
-    box-shadow: 0 0 0 4px rgba(124, 152, 133, 0.1);
+    border-color: #6ee7b7;
+    box-shadow: 0 0 0 4px rgba(110, 231, 183, 0.1);
+}
+
+.login-form-modal input::placeholder {
+    color: #64748b;
 }
 
 .login-form-modal button[type="submit"] {
     margin-top: 1rem;
     padding: 0.75rem;
-    background: var(--sage);
-    color: var(--white);
-    border: none;
+    background: rgba(110, 231, 183, 0.1);
+    color: #6ee7b7;
+    border: 1px solid #6ee7b7;
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: "Times New Roman", serif;
 }
 
 .login-form-modal button[type="submit"]:hover {
-    background: var(--sage-dark);
+    background: #6ee7b7;
+    color: #0f172a;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(110, 231, 183, 0.3);
 }
 
 .login-form-modal p {
-    color: #ff4444;
+    color: #ef4444;
     font-size: 0.85rem;
     margin-top: 0.25rem;
 }
@@ -73,12 +80,12 @@
 .demo-login-section {
     margin-top: 2rem;
     padding-top: 1.5rem;
-    border-top: 2px solid var(--beige-light);
+    border-top: 1px solid rgba(110, 231, 183, 0.2);
     text-align: center;
 }
 
 .demo-login-section p {
-    color: var(--brown);
+    color: #94a3b8;
     margin-bottom: 1rem;
     font-size: 0.9rem;
 }
@@ -91,40 +98,39 @@
 
 .demo-btn {
     padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 25px;
+    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: "Times New Roman", serif;
     font-size: 0.9rem;
+    background: rgba(15, 23, 42, 0.6);
 }
 
 .demo-btn.provider {
-    background: var(--beige);
-    color: var(--brown);
-    border: 2px solid var(--beige-dark);
+    color: #6ee7b7;
+    border: 1px solid #6ee7b7;
+    background: rgba(110, 231, 183, 0.1);
 }
 
 .demo-btn.admin {
-    background: var(--sage);
-    color: var(--white);
-    border: 2px solid var(--sage-dark);
+    color: #f8fafc;
+    border: 1px solid #94a3b8;
+    background: rgba(148, 163, 184, 0.1);
 }
 
 .demo-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 10px rgba(110, 231, 183, 0.3);
 }
 
 .demo-btn.provider:hover {
-    background: var(--beige-dark);
-    color: var(--white);
+    background: #6ee7b7;
+    color: #0f172a;
 }
 
 .demo-btn.admin:hover {
-    background: var(--sage-dark);
+    background: #94a3b8;
+    color: #0f172a;
 }
 
 @media (max-width: 768px) {
@@ -142,9 +148,20 @@
 #modal-content {
     z-index: 1001;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    background: transparent !important;
+    border: none !important;
+}
+
+#modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent !important;
 }
 
 #modal-background {
     z-index: 1000;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
 }

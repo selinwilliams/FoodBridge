@@ -4,10 +4,11 @@ import { FaUserCircle } from 'react-icons/fa';
 import { thunkLogout } from "../../redux/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
-import SignupFormModal from "../SignupFormModal";
+import { Link, useNavigate } from "react-router-dom";
 
 function ProfileButton() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const user = useSelector((store) => store.session.user);
   const ulRef = useRef();
@@ -37,6 +38,7 @@ function ProfileButton() {
     e.preventDefault();
     dispatch(thunkLogout());
     closeMenu();
+    navigate("/");
   };
 
   return (
@@ -70,11 +72,13 @@ function ProfileButton() {
                 />
               </li>
               <li className="profile-dropdown-item">
-                <OpenModalMenuItem
-                  itemText="Sign Up"
-                  onItemClick={closeMenu}
-                  modalComponent={<SignupFormModal />}
-                />
+                <Link 
+                  to="/signup" 
+                  onClick={closeMenu}
+                  className="signup-link"
+                >
+                  Sign Up
+                </Link>
               </li>
             </>
           )}

@@ -1,22 +1,22 @@
 /* Root Variables */
 :root {
-    --primary-color: #00ff9d;
-    --primary-glow: rgba(0, 255, 157, 0.3);
+    --primary-color: #6ee7b7;
+    --primary-glow: rgba(110, 231, 183, 0.3);
     --secondary-color: #1a1a1a;
-    --background-dark: #141921;
-    --card-background: rgba(255, 255, 255, 0.1);
-    --text-light: #ffffff;
-    --text-gray: #d1d5db;
+    --background-dark: #0f172a;
+    --card-background: rgba(30, 41, 59, 0.95);
+    --text-light: #f8fafc;
+    --text-gray: #94a3b8;
     --neon-glow: 0 0 10px var(--primary-glow);
-    --card-border: 1px solid rgba(255, 255, 255, 0.2);
-    --glass-background: rgba(255, 255, 255, 0.1);
+    --card-border: 1px solid rgba(110, 231, 183, 0.2);
+    --glass-background: rgba(30, 41, 59, 0.95);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 .food-listing-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #1a1f25 0%, #141921 100%);
+    background: var(--background-dark);
     padding: 2rem;
     color: var(--text-light);
 }
@@ -30,11 +30,8 @@
 .food-listing-header h1 {
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    background: linear-gradient(to right, #ffeb3b, var(--primary-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 20px rgba(255, 235, 59, 0.3);
+    color: var(--primary-color);
+    text-shadow: var(--neon-glow);
 }
 
 .filters {
@@ -47,8 +44,8 @@
 
 .filter-btn {
     padding: 0.8rem 1.8rem;
-    border: 1px solid rgba(0, 255, 157, 0.5);
-    background: rgba(0, 255, 157, 0.1);
+    border: 1px solid var(--primary-color);
+    background: rgba(110, 231, 183, 0.1);
     color: var(--text-light);
     border-radius: 100px;
     cursor: pointer;
@@ -61,9 +58,8 @@
 .filter-btn:hover,
 .filter-btn.active {
     background: var(--primary-color);
-    color: var(--secondary-color);
-    box-shadow: 0 0 20px var(--primary-glow);
-    border-color: var(--primary-color);
+    color: var(--background-dark);
+    box-shadow: var(--neon-glow);
 }
 
 .food-grid {
@@ -76,7 +72,7 @@
 }
 
 .food-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-background);
     border-radius: 24px;
     overflow: hidden;
     transition: var(--transition-smooth);
@@ -92,18 +88,13 @@
 .food-card:hover {
     transform: translateY(-5px);
     border-color: var(--primary-color);
-    box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
-    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 30px var(--primary-glow);
 }
 
 .food-card-content {
     padding: 1.8rem;
     position: relative;
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.1),
-        rgba(255, 255, 255, 0.05)
-    );
+    background: var(--glass-background);
     flex: 1;
 }
 
@@ -156,11 +147,11 @@
 }
 
 .pickup-window {
-    background: rgba(0, 255, 157, 0.1);
+    background: rgba(110, 231, 183, 0.1);
     padding: 1.2rem;
     border-radius: 12px;
     margin-bottom: 1.2rem;
-    border: 1px solid rgba(0, 255, 157, 0.2);
+    border: 1px solid var(--primary-color);
 }
 
 .pickup-window p {
@@ -202,7 +193,7 @@
     width: 100%;
     padding: 1.2rem;
     background: var(--primary-color);
-    color: var(--secondary-color);
+    color: var(--background-dark);
     border: none;
     font-weight: 600;
     cursor: pointer;
@@ -214,8 +205,8 @@
 }
 
 .request-btn:hover {
-    background: #00ffa7;
-    box-shadow: 0 0 30px var(--primary-glow);
+    background: var(--primary-color);
+    box-shadow: var(--neon-glow);
     transform: translateY(-2px);
 }
 
@@ -246,8 +237,8 @@
 
 .page-btn:hover {
     background: var(--primary-color);
-    color: var(--secondary-color);
-    box-shadow: 0 0 20px var(--primary-glow);
+    color: var(--background-dark);
+    box-shadow: var(--neon-glow);
 }
 
 .page-number {
@@ -272,8 +263,8 @@
 
 .page-number.active {
     background: var(--primary-color);
-    color: var(--secondary-color);
-    box-shadow: 0 0 20px var(--primary-glow);
+    color: var(--background-dark);
+    box-shadow: var(--neon-glow);
     border-color: var(--primary-color);
 }
 
@@ -282,10 +273,11 @@
     padding: 3rem;
     color: var(--text-light);
     font-size: 1.2rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-background);
     border-radius: 16px;
     margin: 2rem auto;
     max-width: 300px;
+    border: var(--card-border);
 }
 
 .error {
@@ -293,11 +285,11 @@
     padding: 3rem;
     color: #ff6b6b;
     font-size: 1.2rem;
-    background: rgba(255, 107, 107, 0.1);
+    background: rgba(239, 68, 68, 0.1);
     border-radius: 16px;
     margin: 2rem auto;
     max-width: 500px;
-    border: 1px solid rgba(255, 107, 107, 0.3);
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .coming-soon-modal {

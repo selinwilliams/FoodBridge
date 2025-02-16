@@ -287,3 +287,26 @@
         transform: translateY(0);
     }
 }
+
+.signup-link {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.signup-link:hover {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    box-shadow: 0 0 20px var(--primary-glow);
+}

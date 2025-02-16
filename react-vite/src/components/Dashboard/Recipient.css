@@ -1,9 +1,21 @@
+/* Root Variables */
+:root {
+    --primary-color: #6ee7b7;
+    --primary-glow: rgba(110, 231, 183, 0.3);
+    --bg-dark: #0f172a;
+    --bg-card: rgba(30, 41, 59, 0.95);
+    --text-light: #f8fafc;
+    --text-gray: #94a3b8;
+    --accent-color: #AA8B56;
+    --accent-glow: rgba(170, 139, 86, 0.3);
+}
+
 .recipient-dashboard {
     padding: 0 2rem 2rem;
     max-width: 1200px;
     margin: 0px auto 0;
     min-height: calc(100vh - 80px);
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", sans-serif;
 }
 
 .benefits-content {
@@ -11,14 +23,15 @@
 }
 .recipient-header {
     margin-bottom: 2rem;
-   background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    background: var(--bg-card);
     padding: 2rem;
     border-radius: 24px;
-    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #AA8B56;
+    border: 1px solid var(--accent-color);
+    backdrop-filter: blur(8px);
 }
 
 .recipient-profile {
@@ -32,8 +45,8 @@
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #AA8B56;
-    box-shadow: 0 4px 12px rgba(124, 152, 133, 0.2);
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .recipient-info {
@@ -48,7 +61,7 @@
     font-size: 2rem;
     font-weight: 600;
     line-height: 1.2;
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", sans-serif;
 }
 
 .version {
@@ -58,7 +71,7 @@
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
     display: inline-block;
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", sans-serif;
 }
 
 .dashboard-cards .available-food h3 {
@@ -78,38 +91,40 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
-    background: var(--beige-light);;
-    /* background: linear-gradient(135deg, #4E6C50 0%, #395144 100%); */
+    background: var(--bg-card);
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
-    border: 2px solid #AA8B56;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--accent-color);
+    backdrop-filter: blur(8px);
 }
 
 .card {
-    background: linear-gradient(135deg, #4E6C50 0%, #395144 100%);
+    background: rgba(15, 23, 42, 0.6);
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     height: 100%;
     display: flex;
     flex-direction: column;
-    border: 2px solid #AA8B56;
+    border: 1px solid var(--accent-color);
     transition: all 0.3s ease;
-    color: #d3ba6f;
+    color: var(--text-light);
 }
 
 .card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(170, 139, 86, 0.2);
+    box-shadow: 0 12px 28px var(--accent-glow);
+    border-color: var(--primary-color);
 }
 
 .card h3 {
     margin: 0 0 1.5rem 0;
-    color: #F0EBCE;
+    color: var(--primary-color);
     font-size: 1.3rem;
     font-weight: 600;
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", sans-serif;
+    text-shadow: 0 0 10px var(--primary-glow);
 }
 
 .food-stats {
@@ -124,14 +139,14 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: rgba(240, 235, 206, 0.1);
+    background: rgba(15, 23, 42, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 4px solid #AA8B56;
+    border: 2px solid var(--accent-color);
     margin-right: 2rem;
-    box-shadow: 0 4px 12px rgba(57, 81, 68, 0.15);
-    color: #F0EBCE;
+    box-shadow: 0 0 20px var(--accent-glow);
+    color: var(--text-light);
 }
 
 .stat-content {
@@ -151,29 +166,30 @@
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
-    background: rgba(240, 235, 206, 0.1);
+    background: rgba(15, 23, 42, 0.6);
     padding: 1.25rem;
     border-radius: 16px;
-    border: 1px solid #AA8B56;
+    border: 1px solid var(--accent-color);
     transition: all 0.3s ease;
-    color: #F0EBCE;
+    color: var(--text-light);
 }
 
 .metric:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(57, 81, 68, 0.2);
+    box-shadow: 0 0 20px var(--accent-glow);
+    border-color: var(--primary-color);
 }
 
 .value {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #AA8B56;
-    text-shadow: 0 2px 4px rgba(124, 152, 133, 0.1);
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-glow);
 }
 
 .label {
     font-size: 0.9rem;
-    color: #e4d99f;
+    color: var(--text-gray);
     font-weight: 500;
 }
 
@@ -187,27 +203,28 @@
 .actions button {
     padding: 0.875rem 1.75rem;
     border-radius: 100px;
-    border: 2px solid #AA8B56;
+    border: 1px solid var(--accent-color);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
-    font-family: "Times New Roman", serif;
-    background: #AA8B56;
-    color: #F0EBCE;
+    font-family: "Inter", sans-serif;
+    background: rgba(170, 139, 86, 0.1);
+    color: var(--accent-color);
 }
 
 .actions button:hover {
-    background: transparent;
-    color: #AA8B56;
+    background: var(--accent-color);
+    color: var(--text-light);
     transform: translateY(-2px);
+    box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .become-provider-btn {
     padding: 0.75rem 1.5rem;
-    background: #AA8B56;
-    color: #F0EBCE;
-    border: 2px solid transparent;
+    background: rgba(170, 139, 86, 0.1);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
     border-radius: 25px;
     text-decoration: none;
     font-weight: 500;
@@ -215,14 +232,14 @@
     transition: all 0.3s ease;
     display: inline-block;
     text-align: center;
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", sans-serif;
 }
 
 .become-provider-btn:hover {
-    background: transparent;
-    border-color: #AA8B56;
-    color: #AA8B56;
+    background: var(--accent-color);
+    color: var(--text-light);
     transform: translateY(-2px);
+    box-shadow: 0 0 20px var(--accent-glow);
 }
 
 @media (max-width: 768px) {
